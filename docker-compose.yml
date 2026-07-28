@@ -1,0 +1,150 @@
+services:
+  salam-doctor-db:
+    image: postgres:14-alpine
+    container_name: salam-doctor-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: "salam_doctor"
+      POSTGRES_PASSWORD: "Hamid@4467"
+      POSTGRES_DB: "salam_doctor"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    networks:
+      - salam-doctor-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U salam_doctor -d salam_doctor"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: salam-doctor-backend
+    restart: unless-stopped
+    depends_on:
+      salam-doctor-db:
+        condition: service_healthy
+    environment:
+      PORT: "3000"
+      HOST: "0.0.0.0"
+      NODE_ENV: production
+      # Primary international domain for Google Ads — canonical URLs, sitemap.xml
+      # and robots.txt all derive from this. salam-doctor.ir is 301-redirected
+      # to this domain at the nginx layer (see nginx.conf) to preserve SEO value.
+      SITE_BASE: "https://salam-doctor.com"
+    env_file:
+      - .env
+    volumes:
+      - ./leads.db:/app/leads.db
+      - ./uploads:/app/uploads
+      # Persist admin-edited intros so nginx and the backend share the same files
+      - ./clinic-intros:/app/clinic-intros
+      - ./server.js:/app/server.js:ro
+      - ./categoryMonetize.js:/app/categoryMonetize.js:ro
+      - ./serviceLanding.js:/app/serviceLanding.js:ro
+      - ./siteSettings.js:/app/siteSettings.js:ro
+      - ./seoInfra.js:/app/seoInfra.js:ro
+      - ./seoRouter.js:/app/seoRouter.js:ro
+      - ./searchRouter.js:/app/searchRouter.js:ro
+      - ./search-index.js:/app/search-index.js:ro
+      - ./DirectoryRepository.js:/app/DirectoryRepository.js:ro
+      - ./articleTemplate.js:/app/articleTemplate.js:ro
+      - ./blogArticles.js:/app/blogArticles.js:ro
+      - ./uploadApp.js:/app/uploadApp.js:ro
+      - ./blog-list.html:/app/blog-list.html:ro
+      - ./blog-post.html:/app/blog-post.html:ro
+      - ./category.html:/app/category.html:ro
+      - ./hair-transplant.html:/app/hair-transplant.html:ro
+      - ./skin-rejuvenation.html:/app/skin-rejuvenation.html:ro
+      - ./laser-hair.html:/app/laser-hair.html:ro
+      - ./injection.html:/app/injection.html:ro
+      - ./cosmetic-surgery.html:/app/cosmetic-surgery.html:ro
+      - ./slimming.html:/app/slimming.html:ro
+      - ./lasik.html:/app/lasik.html:ro
+      - ./femto-lasik.html:/app/femto-lasik.html:ro
+      - ./prk.html:/app/prk.html:ro
+      - ./products.html:/app/products.html:ro
+      - ./pharmacy.html:/app/pharmacy.html:ro
+      - ./eye.html:/app/eye.html:ro
+      - ./public/uploads:/app/public/uploads
+      - ./seo-config.js:/app/seo-config.js:ro
+      - ./views:/app/views:ro
+      - ./data.min.js:/app/data.min.js:ro
+      - ./profile.html:/app/profile.html:ro
+    expose:
+      - "3000"
+    networks:
+      - salam-doctor-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:3000/api/health',(r)=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  web:
+    image: nginx:alpine
+    container_name: salam-doctor-web
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - .:/usr/share/nginx/html:ro
+      - ./uploads:/usr/share/nginx/html/uploads:ro
+      - ./public/uploads/articles:/usr/share/nginx/html/uploads/articles:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx-site-locations.conf:/etc/nginx/conf.d/site-locations.conf:ro
+      # Shared snippets + generated per-clinic dedicated-site server blocks.
+      - ./deploy/security-headers.conf:/etc/nginx/snippets/security-headers.conf:ro
+      - ./deploy/clinic-proxy.conf:/etc/nginx/snippets/clinic-proxy.conf:ro
+      - ./deploy/clinic-sites.d:/etc/nginx/clinic-sites.d:ro
+      - /etc/nginx/certs/.htpasswd:/etc/nginx/certs/.htpasswd:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
+    networks:
+      - salam-doctor-net
+    # Reload every 6h so renewed Let's Encrypt certs are picked up without a
+    # restart, while nginx stays in the foreground as PID 1.
+    command: >-
+      /bin/sh -c "while :; do sleep 6h & wait $${!}; nginx -s reload; done &
+      nginx -g 'daemon off;'"
+
+  # Automated Let's Encrypt renewal loop (shares the ACME webroot with web).
+  # Initial issuance for new clinic domains: scripts/add-clinic-domain.sh.
+  certbot:
+    image: certbot/certbot:latest
+    container_name: salam-doctor-certbot
+    restart: unless-stopped
+    depends_on:
+      - web
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /var/www/certbot:/var/www/certbot
+    entrypoint: >-
+      /bin/sh -c "trap exit TERM; while :; do
+      certbot renew --webroot -w /var/www/certbot --quiet;
+      sleep 12h & wait $${!}; done"
+
+networks:
+  salam-doctor-net:
+    driver: bridge
+
+volumes:
+  pg_data:
