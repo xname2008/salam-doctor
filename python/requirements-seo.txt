@@ -1,0 +1,2 @@
+# Salam Doctor — Technical SEO + clinic landing templates
+jinja2>=3.1.0

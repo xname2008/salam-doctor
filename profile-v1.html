@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NL3KJ8ZQ');</script>
+<!-- End Google Tag Manager -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="پروفایل کلینیک و پزشک - سلام دکتر">
+  <title>پروفایل کلینیک | سلام دکتر</title>
+  <style>
+    @font-face{
+      font-family:"Vazirmatn";
+      src:url("assets/fonts/Vazirmatn-RD[wght].woff2") format("woff2-variations");
+      font-weight:100 900;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"Vazirmatn";
+      src:url("assets/fonts/Vazirmatn-RD-Regular.woff2") format("woff2");
+      font-weight:400;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"Vazirmatn";
+      src:url("assets/fonts/Vazirmatn-RD-Medium.woff2") format("woff2");
+      font-weight:500;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"Vazirmatn";
+      src:url("assets/fonts/Vazirmatn-RD-SemiBold.woff2") format("woff2");
+      font-weight:600;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"Vazirmatn";
+      src:url("assets/fonts/Vazirmatn-RD-Bold.woff2") format("woff2");
+      font-weight:700;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"Vazirmatn";
+      src:url("assets/fonts/Vazirmatn-RD-ExtraBold.woff2") format("woff2");
+      font-weight:800;
+      font-style:normal;
+      font-display:swap;
+    }
+
+    :root{
+      --blue:#1294e0;
+      --blue-dark:#0d7fc2;
+      --mint:#e9f5f4;
+      --bg:#f4f6f8;
+      --text:#13233c;
+      --muted:#5f6f86;
+      --line:#dbe4ee;
+      --navy:#041f45;
+      --green:#16a34a;
+      --font-main:"Vazirmatn","Tahoma","Arial",sans-serif;
+    }
+
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:var(--font-main);
+      font-size:16px;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.8;
+      padding-bottom:88px;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .container{width:min(1140px,92%);margin:0 auto}
+    a{text-decoration:none;color:inherit}
+    h1,h2,h3,h4,p{margin:0}
+
+    .topbar{
+      position:sticky;top:0;z-index:100;
+      background:#fff;border-bottom:1px solid var(--line);
+    }
+    .topbar-row{
+      min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:14px
+    }
+    .brand{display:flex;align-items:center;gap:10px}
+    .logo{
+      width:40px;height:40px;border-radius:12px;background:var(--blue);
+      color:#fff;display:grid;place-items:center;font-weight:700
+    }
+    .brand-name{font-size:1.55rem;font-weight:800}
+    .menu{
+      display:flex;gap:18px;color:#324760;font-size:.93rem;font-weight:700
+    }
+    .menu a:hover{color:var(--blue)}
+    .dropdown{position:relative;display:inline-flex;align-items:center;cursor:pointer;height:100%;padding:0 5px}
+    .dropdown > a{display:inline-flex;align-items:center;gap:5px;color:inherit;font-weight:inherit;font-size:inherit}
+    .dropdown > a svg{flex-shrink:0;opacity:.75;transition:transform .25s}
+    .dropdown:hover > a{color:var(--blue)}
+    .dropdown:hover > a svg{transform:rotate(180deg)}
+    .dropdown-content{position:absolute;top:100%;right:0;background-color:#fff;min-width:200px;border-radius:12px;box-shadow:0 12px 30px rgba(19,35,60,.15);border:1px solid var(--line);display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateY(15px);transition:all .25s cubic-bezier(.4,0,.2,1);z-index:200;padding:10px 0;overflow:hidden}
+    .dropdown:hover .dropdown-content{opacity:1;visibility:visible;transform:translateY(0)}
+    .dropdown-content a{padding:12px 20px;font-size:.9rem;color:var(--text);font-weight:600;transition:background .2s,color .2s;white-space:nowrap;display:block}
+    .dropdown-content a:hover{background-color:var(--mint);color:var(--blue)}
+    .top-cta{display:flex;align-items:center;gap:8px}
+    .phone{font-size:.92rem;color:#31445f;font-weight:700}
+
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:7px;
+      border-radius:10px;padding:10px 16px;border:none;font-weight:700;cursor:pointer;transition:.2s;
+      font-size:.95rem;line-height:1.2
+    }
+    .btn-main{background:var(--blue);color:#fff}
+    .btn-main:hover{background:var(--blue-dark)}
+    .btn-soft{background:#fff;color:var(--blue);border:1px solid #a7d4ef}
+    .btn-soft:hover{background:#f0f9ff}
+    .btn-green{background:var(--green);color:#fff}
+
+    .profile-page{background:#fff}
+
+    .profile-breadcrumb-wrap{padding:24px 0 8px}
+    .profile-breadcrumb{
+      display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+      font-size:.9rem;color:var(--muted)
+    }
+    .profile-breadcrumb a{transition:color .2s}
+    .profile-breadcrumb a:hover{color:var(--blue)}
+    .profile-breadcrumb-separator{color:#cbd5e1}
+    .profile-breadcrumb-current{font-weight:700;color:var(--text)}
+
+    .profile-hero{
+      background:linear-gradient(180deg,#f8fbfc 0%,var(--mint) 100%);
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      padding:32px 0 40px
+    }
+    .profile-grid{
+      display:grid;
+      grid-template-columns:5fr 7fr;
+      gap:40px;
+      align-items:start
+    }
+    .profile-media{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 18px 40px rgba(19,35,60,.12)
+    }
+    .profile-image-frame{
+      aspect-ratio:4/5;
+      overflow:hidden;
+      background:#dbe7f3
+    }
+    #clinic-image{
+      width:100%;
+      height:auto;
+      object-fit:cover;
+      border-radius:16px;
+      display:block
+    }
+    .profile-content{display:flex;flex-direction:column;gap:20px}
+    .profile-intro{display:flex;flex-direction:column;gap:14px}
+    #clinic-name{
+      font-size:clamp(1.85rem,3.8vw,2.6rem);
+      line-height:1.45;
+      font-weight:800;
+      color:var(--text)
+    }
+    .profile-verified-badge{
+      display:inline-flex;align-items:center;align-self:flex-start;
+      background:#e8f4fd;color:var(--blue);border:1px solid #b8d9ef;
+      border-radius:999px;padding:6px 14px;font-size:.9rem;font-weight:700
+    }
+    .profile-meta{display:flex;flex-direction:column;gap:12px;padding-top:4px}
+  #clinic-address,
+    #clinic-phone{
+      display:flex;align-items:flex-start;gap:10px;
+      font-size:1rem;line-height:1.8;color:var(--muted)
+    }
+    #clinic-phone{font-weight:700;color:var(--text)}
+    .profile-meta svg{
+      width:20px;height:20px;flex-shrink:0;margin-top:4px;color:var(--blue)
+    }
+    .profile-actions-box{
+      background:#fff;border:1px solid var(--line);border-radius:16px;
+      padding:18px;box-shadow:0 8px 20px rgba(19,35,60,.08)
+    }
+    .profile-action-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:10px
+    }
+    .profile-action-grid .btn{
+      min-height:52px;padding:14px 18px;font-size:1rem;width:100%
+    }
+
+    .profile-services{padding:40px 0 56px;background:#fff}
+    .profile-services-header{margin-bottom:24px}
+    #services-title{
+      font-size:clamp(1.6rem,3vw,2.1rem);
+      line-height:1.45;font-weight:800;color:var(--text)
+    }
+    .profile-services-subtitle{
+      margin-top:8px;font-size:.95rem;color:var(--muted)
+    }
+    .services-container,
+    #services-container{
+      display:flex;flex-wrap:wrap;gap:10px
+    }
+    .services-container > span,
+    #services-container > span{
+      display:inline-flex;align-items:center;
+      border-radius:999px;border:1px solid #b8d9ef;
+      background:var(--mint);color:#0f766e;
+      padding:8px 14px;font-size:.9rem;font-weight:700
+    }
+
+    footer{
+      margin-top:28px;background:var(--navy);color:#b7c8e4;padding:34px 0 18px
+    }
+    .footer-grid{
+      display:grid;grid-template-columns:1.1fr 1fr 1fr 1fr;gap:14px
+    }
+    .footer-col h4{color:#fff;margin-bottom:10px}
+    .footer-links{display:grid;gap:6px;font-size:.9rem}
+    .footer-note{
+      margin-top:18px;padding-top:12px;border-top:1px solid #1c3968;
+      text-align:center;font-size:13px;color:#92abd0
+    }
+
+    .bale-float{
+      position:fixed;right:16px;bottom:90px;width:56px;height:56px;border-radius:999px;
+      display:grid;place-items:center;background:#22c55e;color:#fff;font-size:30px;
+      box-shadow:0 12px 24px rgba(34,197,94,.35);z-index:120
+    }
+
+    .chat-toggle{
+      position:fixed;left:16px;bottom:90px;width:56px;height:56px;border-radius:999px;
+      border:none;background:var(--blue);color:#fff;display:grid;place-items:center;cursor:pointer;
+      box-shadow:0 12px 24px rgba(18,148,224,.35);z-index:130;transition:transform .2s ease
+    }
+    .chat-toggle:hover{transform:translateY(-2px)}
+    .chat-toggle svg{width:26px;height:26px}
+
+    .chat-widget{
+      position:fixed;left:16px;bottom:158px;width:320px;max-width:calc(100vw - 32px);
+      border-radius:16px;overflow:hidden;background:#fff;border:1px solid var(--line);
+      box-shadow:0 18px 34px rgba(19,35,60,.2);z-index:129;
+      opacity:0;transform:translateY(10px) scale(.98);pointer-events:none;transition:.25s ease;
+    }
+    .chat-widget.open{
+      opacity:1;transform:translateY(0) scale(1);pointer-events:auto;
+    }
+    .chat-header{
+      background:var(--blue);color:#fff;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px
+    }
+    .chat-title-wrap{display:flex;align-items:center;gap:8px}
+    .chat-status{
+      width:9px;height:9px;border-radius:999px;background:#22c55e;box-shadow:0 0 0 3px rgba(255,255,255,.22)
+    }
+    .chat-title{font-size:14px;font-weight:700}
+    .chat-close{
+      width:28px;height:28px;border:none;border-radius:8px;background:rgba(255,255,255,.18);
+      color:#fff;font-weight:700;cursor:pointer
+    }
+    .chat-messages{
+      background:var(--bg);padding:12px;min-height:170px;max-height:240px;overflow:auto;
+      display:flex;flex-direction:column;gap:10px
+    }
+    .chat-bubble{
+      max-width:80%;padding:9px 11px;border-radius:12px;font-size:13px;line-height:1.7
+    }
+    .chat-bubble.operator{
+      align-self:flex-end;background:#e5e7eb;color:#1f2937;border-bottom-right-radius:4px
+    }
+    .chat-bubble.user{
+      align-self:flex-start;background:var(--blue);color:#fff;border-bottom-left-radius:4px
+    }
+    .chat-input{
+      background:#fff;border-top:1px solid var(--line);padding:10px;display:flex;align-items:center;gap:8px
+    }
+    .chat-input input{
+      flex:1;border:1px solid var(--line);border-radius:10px;padding:10px;font-family:inherit;font-size:13px
+    }
+    .chat-send{
+      width:38px;height:38px;border:none;border-radius:10px;background:var(--blue);color:#fff;display:grid;place-items:center;cursor:pointer
+    }
+    .chat-send svg{width:18px;height:18px}
+
+    .mobile-nav{
+      position:fixed;right:0;left:0;bottom:0;z-index:130;background:#fff;border-top:1px solid var(--line);
+      box-shadow:0 -8px 18px rgba(19,35,60,.12);padding:10px;display:none;transition:transform .25s
+    }
+    .mobile-nav.hide{transform:translateY(110%)}
+    .mobile-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+    @media(min-width:1024px){
+      .profile-actions-box{position:sticky;top:96px}
+    }
+
+    @media(max-width:1100px){
+      .menu{display:none}
+      .footer-grid{grid-template-columns:1fr 1fr}
+    }
+
+    @media(max-width:760px){
+      body{padding-bottom:86px}
+      .profile-breadcrumb-wrap{padding:18px 0 6px}
+      .profile-hero{padding:24px 0 30px}
+      .profile-grid{grid-template-columns:1fr;gap:24px}
+      .profile-action-grid{grid-template-columns:1fr}
+      .footer-grid{grid-template-columns:1fr}
+      .mobile-nav{display:block}
+      .top-cta .phone{display:none}
+      .btn{padding:10px 12px}
+      .bale-float{bottom:84px}
+      .chat-toggle{bottom:84px}
+      .chat-widget{left:10px;right:10px;max-width:none;width:auto;bottom:152px}
+    }
+  </style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NL3KJ8ZQ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+  <header class="topbar">
+    <div class="container topbar-row">
+      <div class="brand">
+        <div class="logo">+</div>
+        <div class="brand-name">سلام دکتر</div>
+      </div>
+      <nav class="menu">
+        <div class="dropdown">
+          <a href="#">
+            پوست و مو
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="dropdown-content">
+            <a href="category.html?type=hair">کاشت مو و ابرو</a>
+            <a href="category.html?type=skin">جوانسازی و پوست</a>
+            <a href="category.html?type=injection">تزریقات زیبایی</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#">
+            لیزر و جراحی
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="dropdown-content">
+            <a href="category.html?type=laser">لیزر موهای زائد</a>
+            <a href="category.html?type=surgery">جراحی زیبایی</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#">
+            تناسب اندام
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="dropdown-content">
+            <a href="category.html?type=slimming">لاغری و پیکرتراشی</a>
+          </div>
+        </div>
+        <a href="#">ویزیت در منزل</a>
+        <a href="#">آزمایش در منزل</a>
+        <a href="#">اجاره تجهیزات</a>
+        <a href="#">مقالات</a>
+      </nav>
+      <div class="top-cta">
+        <span class="phone">۰۹۰۰۷۰۰۰۴۶۲</span>
+        <a class="btn btn-main" href="tel:+989007000462">مشاوره</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="profile-page">
+    <div class="container profile-breadcrumb-wrap">
+      <nav class="profile-breadcrumb" aria-label="مسیر صفحه">
+        <a href="index.html">صفحه اصلی</a>
+        <span class="profile-breadcrumb-separator" aria-hidden="true">&gt;</span>
+        <span id="clinic-breadcrumb-name" class="profile-breadcrumb-current">نام کلینیک</span>
+      </nav>
+    </div>
+
+    <section class="profile-hero">
+      <div class="container">
+        <div class="profile-grid">
+          <div class="profile-media">
+            <div class="profile-image-frame">
+              <img
+                id="clinic-image"
+                src="images/clinic-placeholder.png"
+                alt="تصویر کلینیک"
+              >
+            </div>
+          </div>
+
+          <div class="profile-content">
+            <div class="profile-intro">
+              <h1 id="clinic-name">نام کلینیک</h1>
+              <span class="profile-verified-badge">مرکز تایید شده</span>
+              <div class="profile-meta">
+                <p id="clinic-address">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z" stroke="currentColor" stroke-width="1.8"/>
+                    <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+                  </svg>
+                  <span>آدرس کلینیک در این بخش نمایش داده می‌شود.</span>
+                </p>
+                <p id="clinic-phone">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M6.7 3.5h2.7c.5 0 .9.3 1 .7l1.2 3.7c.1.4 0 .8-.3 1.1l-1.4 1.4c1 1.8 2.5 3.3 4.3 4.3l1.4-1.4c.3-.3.7-.4 1.1-.3l3.7 1.2c.5.1.7.5.7 1v2.7c0 .6-.5 1.1-1.1 1.1h-1.2C10.8 20.7 3.3 13.2 3.3 4.6V3.5c0-.6.5-1 1-1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                  </svg>
+                  <span>۰۹۰۰۷۰۰۰۴۶۲</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="profile-actions-box">
+              <div class="profile-action-grid">
+                <a id="clinic-appointment" class="btn btn-main" href="#">درخواست نوبت فوری</a>
+                <a id="clinic-call" class="btn btn-soft" href="tel:+989007000462">تماس با مرکز</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="profile-services" aria-labelledby="services-title">
+      <div class="container">
+        <div class="profile-services-header">
+          <h2 id="services-title">خدمات و تخصص‌ها</h2>
+          <p class="profile-services-subtitle">فهرست خدمات قابل ارائه در این مرکز درمانی</p>
+        </div>
+        <div id="services-container" class="services-container">
+          <span>ویزیت تخصصی</span>
+          <span>مشاوره آنلاین</span>
+          <span>لیزر درمانی</span>
+          <span>جوان‌سازی پوست</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>سلام دکتر</h4>
+          <div class="footer-links">
+            <span>تماس: ۰۹۰۰۷۰۰۰۴۶۲</span>
+            <span>شیراز، ستارخان، بین فرعی ۴ و ۶</span>
+            <span>info@salamdoctor.ir</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>خدمات پرکاربرد</h4>
+          <div class="footer-links">
+            <a href="#">خدمات پزشکی در منزل</a>
+            <a href="#">ویزیت پزشک در منزل</a>
+            <a href="#">وصل سرم و تزریقات</a>
+            <a href="#">اجاره تجهیزات</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>راهنمای بیماران</h4>
+          <div class="footer-links">
+            <a href="#">نحوه ثبت درخواست</a>
+            <a href="#">پرسش‌های متداول</a>
+            <a href="#">حریم خصوصی</a>
+            <a href="#">قوانین و شرایط</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>مقالات جدید</h4>
+          <div class="footer-links">
+            <a href="#">مراقبت بعد از لیزر</a>
+            <a href="#">علائم نیاز به ویزیت فوری</a>
+            <a href="#">مقایسه روش‌های زیبایی</a>
+            <a href="#">بهترین زمان چکاپ</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-note">© 2026 سلام دکتر. تمامی حقوق محفوظ است.</div>
+    </div>
+  </footer>
+
+  <a class="bale-float" href="https://ble.ir/salamdoctoradmin" target="_blank" rel="noopener noreferrer" aria-label="بله" title="بله"><img src="assets/images/bale-icon.svg" alt="" width="28" height="28"></a>
+  <button id="chat-toggle" class="chat-toggle" type="button" aria-label="باز کردن چت پشتیبانی">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 6.5C5 5.1 6.1 4 7.5 4h9C17.9 4 19 5.1 19 6.5v6c0 1.4-1.1 2.5-2.5 2.5H11l-3.8 3.2c-.8.7-2.2.1-2.2-1v-2.2c0-.6-.4-1-1-1V6.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M8 8.8h8M8 11.8h5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </svg>
+  </button>
+  <aside id="chat-widget" class="chat-widget" aria-hidden="true">
+    <div class="chat-header">
+      <div class="chat-title-wrap">
+        <span class="chat-status"></span>
+        <span class="chat-title">پشتیبانی آنلاین سلام دکتر</span>
+      </div>
+      <button id="chat-close" class="chat-close" type="button" aria-label="بستن چت">×</button>
+    </div>
+    <div class="chat-messages">
+      <div class="chat-bubble operator">سلام! چطور می‌تونم راهنماییتون کنم؟</div>
+      <div class="chat-bubble user">سلام، برای انتخاب مرکز مناسب راهنمایی می‌خوام.</div>
+    </div>
+    <div class="chat-input">
+      <input type="text" placeholder="پیام خود را بنویسید...">
+      <button class="chat-send" type="button" aria-label="ارسال پیام">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 12h13M11 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <nav id="mobile-nav" class="mobile-nav">
+    <div class="mobile-grid">
+      <a class="btn btn-soft" href="category.html?type=skin">پوست و زیبایی</a>
+      <a class="btn btn-soft" href="category.html?type=hair">مو و کاشت</a>
+      <a class="btn btn-green" href="https://ble.ir/salamdoctoradmin" target="_blank" rel="noopener noreferrer">بله</a>
+      <a class="btn btn-main" href="tel:+989007000462">تماس سریع</a>
+    </div>
+  </nav>
+
+  <script>
+    const mobileNav = document.getElementById('mobile-nav');
+    let lastY = window.scrollY;
+    window.addEventListener('scroll', () => {
+      if (window.innerWidth > 760) return;
+      const y = window.scrollY;
+      const down = y > lastY && y > 80;
+      mobileNav.classList.toggle('hide', down);
+      lastY = y;
+    });
+
+    const chatWidget = document.getElementById('chat-widget');
+    const chatToggle = document.getElementById('chat-toggle');
+    const chatClose = document.getElementById('chat-close');
+    function toggleChat(forceOpen) {
+      const open = typeof forceOpen === 'boolean' ? forceOpen : !chatWidget.classList.contains('open');
+      chatWidget.classList.toggle('open', open);
+      chatWidget.setAttribute('aria-hidden', String(!open));
+    }
+    chatToggle.addEventListener('click', () => toggleChat());
+    chatClose.addEventListener('click', () => toggleChat(false));
+  </script>
+  <script src="data.js"></script>
+  <script>
+    (function () {
+      const clinicId = Number(new URLSearchParams(window.location.search).get('id'));
+      const clinic = Array.isArray(clinicsData)
+        ? clinicsData.find((item) => item.id === clinicId)
+        : null;
+
+      if (!clinic) {
+        window.location.replace('index.html');
+        return;
+      }
+
+      const clinicName = document.getElementById('clinic-name');
+      const clinicAddress = document.getElementById('clinic-address');
+      const clinicPhone = document.getElementById('clinic-phone');
+      const clinicImage = document.getElementById('clinic-image');
+      const clinicCall = document.getElementById('clinic-call');
+      const servicesContainer = document.getElementById('services-container');
+
+      if (clinicName) {
+        clinicName.textContent = clinic.name;
+      }
+
+      if (clinicAddress) {
+        const addressText = clinicAddress.querySelector('span');
+        if (addressText) {
+          addressText.textContent = clinic.address;
+        } else {
+          clinicAddress.textContent = clinic.address;
+        }
+      }
+
+      if (clinicPhone) {
+        const phoneText = clinicPhone.querySelector('span');
+        const sitePhone = '۰۹۰۰۷۰۰۰۴۶۲';
+        if (phoneText) {
+          phoneText.textContent = sitePhone;
+        } else {
+          clinicPhone.textContent = sitePhone;
+        }
+      }
+
+      if (clinicCall) {
+        clinicCall.href = 'tel:+989007000462';
+      }
+
+      if (clinicImage) {
+        clinicImage.src = clinic.image;
+        clinicImage.alt = clinic.name;
+      }
+
+      if (servicesContainer) {
+        servicesContainer.innerHTML = '';
+        clinic.services.forEach((service) => {
+          const tag = document.createElement('span');
+          tag.className = 'rounded-full bg-teal-50 px-3 py-1 text-sm font-semibold text-teal-700';
+          tag.textContent = service;
+          servicesContainer.appendChild(tag);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

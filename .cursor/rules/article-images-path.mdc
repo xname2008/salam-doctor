@@ -1,0 +1,25 @@
+---
+description: Canonical path for static article cover/hero images
+globs: articles/**/*.{html,md},articles.html
+alwaysApply: true
+---
+
+# Article Images Path
+
+Always store and reference article cover/hero/thumbnail images under:
+
+`/assets/images/articles/`
+
+## Rules
+
+- Absolute URLs (OG, Twitter, JSON-LD): `https://salam-doctor.ir/assets/images/articles/{slug}-cover.webp`
+- From `articles/*.html` (relative): `../assets/images/articles/{slug}-cover.webp`
+- From site root (`articles.html`, cards): `assets/images/articles/{slug}-cover.webp`
+- Never use `/images/articles/` for article media
+
+## Example
+
+```html
+<meta property="og:image" content="https://salam-doctor.ir/assets/images/articles/laser-hair-removal-cover.webp">
+<img src="../assets/images/articles/laser-hair-removal-cover.webp" alt="...">
+```

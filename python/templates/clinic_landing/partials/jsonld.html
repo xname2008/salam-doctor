@@ -1,0 +1,13 @@
+{# Physician / MedicalClinic JSON-LD. `tojson` serializes the dict;
+   `|safe` keeps quotes intact so the browser can parse application/ld+json. #}
+{% if json_ld %}
+  {% if json_ld is mapping %}
+  <script type="application/ld+json">{{ json_ld | tojson | safe }}</script>
+  {% else %}
+    {% for node in json_ld %}
+  <script type="application/ld+json">{{ node | tojson | safe }}</script>
+    {% endfor %}
+  {% endif %}
+{% elif json_ld_script %}
+  {{ json_ld_script | safe }}
+{% endif %}

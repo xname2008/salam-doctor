@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="General medical center">
+  <rect width="800" height="800" fill="#f8fafc"/>
+  <rect x="70" y="80" width="660" height="640" rx="34" fill="#ffffff" stroke="#cbd5e1"/>
+  <rect x="170" y="180" width="460" height="280" rx="24" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <rect x="360" y="235" width="80" height="170" rx="12" fill="#0d9488"/>
+  <rect x="315" y="280" width="170" height="80" rx="12" fill="#0d9488"/>
+  <circle cx="250" cy="560" r="46" fill="#93c5fd"/>
+  <circle cx="400" cy="560" r="46" fill="#99f6e4"/>
+  <circle cx="550" cy="560" r="46" fill="#fcd34d"/>
+  <path d="M180 650h440" stroke="#cbd5e1" stroke-width="14" stroke-linecap="round"/>
+</svg>

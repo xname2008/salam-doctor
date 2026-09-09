@@ -1,0 +1,12 @@
+/* Restore Persian fonts after Tailwind's system font reset */
+body {
+  font-family: "Vazirmatn", "IRANSansXFaNum", "Tahoma", "Arial", sans-serif;
+}
+
+.bg-primary { background-color: #0d9488 !important; }
+.text-primary { color: #0d9488 !important; }
+.border-primary { border-color: #0d9488 !important; }
+.bg-secondary { background-color: #0f172a !important; }
+.text-secondary { color: #0f172a !important; }
+.bg-accent { background-color: #f59e0b !important; }
+.text-accent { color: #f59e0b !important; }

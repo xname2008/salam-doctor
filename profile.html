@@ -1,0 +1,2084 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NL3KJ8ZQ');</script>
+<!-- End Google Tag Manager -->
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="images/logo-heart.svg?v=5">
+  <link rel="apple-touch-icon" href="images/logo-heart.svg?v=5">
+  <meta name="theme-color" content="#1294e0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <base href="/">
+  <!-- DYNAMIC_SEO_TAGS -->
+  <!-- DYNAMIC_CLINIC_BOOTSTRAP -->
+  <link rel="preload" href="assets/fonts/Vazirmatn-RD-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="images/sample-clinic-services.webp" as="image" type="image/webp">
+  <link rel="stylesheet" href="assets/css/shared.css?v=20260903b">
+  <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css?v=1">
+  <link rel="stylesheet" href="assets/js/clinic-galleries.css?v=20260723f">
+  <script src="assets/vendor/leaflet/leaflet.js?v=1" defer></script>
+  <style>
+    /* Shared base/topbar/buttons/footer/chat/nav styles live in assets/css/shared.css */
+    .profile-page{background:#fff}
+
+    .profile-hero{
+      background:linear-gradient(180deg,#f8fbfc 0%,var(--mint) 100%);
+      border-top:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      padding:32px 0 40px
+    }
+    .profile-grid{
+      display:grid;
+      grid-template-columns:5fr 7fr;
+      gap:40px;
+      align-items:start
+    }
+    .profile-media{
+      max-width:min(100%,420px);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 18px 40px rgba(19,35,60,.12)
+    }
+    .profile-image-frame,
+    .profile-hero-banner{
+      overflow:hidden;
+      line-height:0;
+      width:100%;
+      aspect-ratio:16/9;
+      background:#dbe7f3;
+      cursor:pointer;
+    }
+    #clinic-image{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+
+    /* Communication action bar — directly under hero image */
+    .profile-action-bar{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:8px;
+      padding:12px;
+      background:linear-gradient(180deg,#f8fbfd 0%,#fff 100%);
+      border-top:1px solid var(--line);
+    }
+    .profile-action-bar[data-empty="true"]{display:none}
+    .profile-action-btn{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      min-height:72px;
+      padding:10px 6px;
+      border-radius:14px;
+      border:1px solid transparent;
+      text-decoration:none;
+      font-weight:800;
+      font-size:.72rem;
+      line-height:1.35;
+      text-align:center;
+      color:#fff;
+      transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .profile-action-btn:hover,
+    .profile-action-btn:focus-visible{
+      transform:scale(1.05);
+      box-shadow:0 10px 22px rgba(19,35,60,.16);
+      outline:none;
+    }
+    .profile-action-btn:active{transform:scale(.98)}
+    .profile-action-btn[hidden]{display:none !important}
+    .profile-action-btn__icon{
+      width:28px;height:28px;
+      display:grid;place-items:center;
+    }
+    .profile-action-btn__icon svg{width:22px;height:22px;display:block}
+    .profile-action-btn--phone{
+      background:linear-gradient(160deg,#1294e0,#0d7fc2);
+      border-color:#0d7fc2;
+    }
+    .profile-action-btn--whatsapp{
+      background:linear-gradient(160deg,#2fe074,#1fbe57);
+      border-color:#1da851;
+    }
+    .profile-action-btn--instagram{
+      background:linear-gradient(135deg,#f58529 0%,#dd2a7b 52%,#8134af 100%);
+      border-color:#c13584;
+    }
+    .profile-action-btn--route{
+      background:linear-gradient(160deg,#0e3571,#041f45);
+      border-color:#041f45;
+    }
+    .profile-action-btn--rubika{
+      background:linear-gradient(160deg,#ff8a3d,#2f6fed);
+      border-color:#e56b1f;
+    }
+    .profile-action-btn--bale{
+      background:linear-gradient(160deg,#2fe0a8,#00a884);
+      border-color:#009673;
+    }
+
+    /* Hero image lightbox — full-screen above footer/nav */
+    #profile-simple-lightbox,
+    .profile-simple-lightbox{
+      position:fixed !important;
+      inset:0 !important;
+      z-index:9999 !important;
+      display:flex !important;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.8);
+      padding:16px;
+      cursor:zoom-out;
+      box-sizing:border-box;
+    }
+    #profile-simple-lightbox img,
+    .profile-simple-lightbox img{
+      max-width:min(96vw,1200px);
+      max-height:90vh;
+      width:auto;
+      height:auto;
+      object-fit:contain;
+      border-radius:12px;
+      box-shadow:0 20px 50px rgba(0,0,0,.45);
+      pointer-events:none;
+    }
+    #profile-simple-lightbox .cg-lightbox__close{
+      position:absolute;
+      top:16px;
+      left:16px;
+      width:44px;
+      height:44px;
+      border:none;
+      border-radius:999px;
+      background:rgba(255,255,255,.15);
+      color:#fff;
+      font-size:1.6rem;
+      line-height:1;
+      cursor:pointer;
+      z-index:1;
+    }
+
+    @media(max-width:760px){
+      .profile-action-bar{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:10px;
+        padding:12px;
+      }
+      .profile-action-btn{
+        min-height:56px;
+        flex-direction:row;
+        justify-content:center;
+        gap:10px;
+        padding:12px 14px;
+        font-size:.85rem;
+      }
+      .profile-action-btn__icon{width:24px;height:24px}
+      .profile-action-btn__icon svg{width:20px;height:20px}
+    }
+    @media(max-width:380px){
+      .profile-action-bar{grid-template-columns:1fr}
+      .profile-action-btn{min-height:48px}
+    }
+
+    .profile-content{display:flex;flex-direction:column;gap:20px}
+    .profile-intro{display:flex;flex-direction:column;gap:14px}
+    .profile-identity{
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+    }
+    .profile-logo-frame{
+      width:72px;
+      height:72px;
+      flex-shrink:0;
+      border-radius:14px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:#fff;
+    }
+    .profile-logo-frame img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .profile-identity-text{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-width:0;
+    }
+    #clinic-name{
+      font-size:clamp(1.85rem,3.8vw,2.6rem);
+      line-height:1.45;
+      font-weight:800;
+      color:var(--text)
+    }
+    .profile-verified-badge{
+      display:inline-flex;align-items:center;align-self:flex-start;
+      background:#e8f4fd;color:var(--blue);border:1px solid #b8d9ef;
+      border-radius:999px;padding:6px 14px;font-size:.9rem;font-weight:700
+    }
+    .profile-meta{display:flex;flex-direction:column;gap:12px;padding-top:4px}
+  #clinic-address,
+    #clinic-phone{
+      display:flex;align-items:flex-start;gap:10px;
+      font-size:1rem;line-height:1.8;color:var(--muted)
+    }
+    #clinic-phone{font-weight:700;color:var(--text)}
+    #clinic-phone a[href^="tel:"]{
+      color:inherit;
+      text-decoration:none;
+      font-weight:700;
+      unicode-bidi:isolate
+    }
+    #clinic-phone a[href^="tel:"]:hover{color:var(--blue);text-decoration:underline}
+    .profile-meta svg{
+      width:20px;height:20px;flex-shrink:0;margin-top:4px;color:var(--blue)
+    }
+    .profile-actions-box{
+      background:#fff;border:1px solid var(--line);border-radius:16px;
+      padding:18px;box-shadow:0 8px 20px rgba(19,35,60,.08)
+    }
+    .profile-action-grid{
+      display:grid;grid-template-columns:1fr 1fr;gap:10px
+    }
+    .profile-action-grid .btn{
+      min-height:52px;padding:14px 18px;font-size:1rem;width:100%
+    }
+
+    @media(min-width:1024px){
+      .profile-actions-box{position:sticky;top:96px}
+    }
+
+    .profile-services{padding:40px 0 56px;background:#fff}
+    .profile-services-header{margin-bottom:24px}
+    #services-title{
+      font-size:clamp(1.6rem,3vw,2.1rem);
+      line-height:1.45;font-weight:800;color:var(--text)
+    }
+    .profile-services-subtitle{
+      margin-top:8px;font-size:.95rem;color:var(--muted)
+    }
+    .services-container,
+    #services-container{
+      display:flex;flex-wrap:wrap;gap:10px
+    }
+    .services-container > span,
+    #services-container > span,
+    .services-container > a,
+    #services-container > a{
+      display:inline-flex;align-items:center;
+      border-radius:999px;border:1px solid #b8d9ef;
+      background:var(--mint);color:#0f766e;
+      padding:8px 14px;font-size:.9rem;font-weight:700;
+      text-decoration:none;
+      transition:background .2s,color .2s,border-color .2s
+    }
+    .services-container > a:hover,
+    #services-container > a:hover{ background:#dbeafe; color:#0e3571; border-color:#93c5e8 }
+
+    .profile-contact-socials{
+      padding:40px 0 24px;
+      background:linear-gradient(180deg,#f8fbfc 0%,#fff 100%);
+      border-top:1px solid var(--line)
+    }
+    .profile-contact-socials-header{margin-bottom:22px}
+    .profile-contact-socials-header h2{
+      font-size:clamp(1.45rem,2.8vw,1.95rem);
+      font-weight:800;line-height:1.45;color:var(--text)
+    }
+    .profile-contact-socials-header p{
+      margin-top:8px;font-size:.95rem;color:var(--muted);line-height:1.8
+    }
+    .contact-social-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:14px;
+    }
+    .contact-social-btn{
+      display:inline-flex;align-items:center;gap:12px;
+      min-width:0;
+      width:100%;
+      padding:14px 18px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:#fff;
+      text-decoration:none;
+      color:var(--text);
+      font-weight:700;
+      font-size:.95rem;
+      box-shadow:0 6px 18px rgba(15,53,113,.05);
+      transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease
+    }
+    .contact-social-btn:hover{
+      transform:translateY(-2px);
+      box-shadow:0 12px 28px rgba(15,53,113,.1);
+      border-color:#c5d8ea
+    }
+    .contact-social-icon{
+      width:44px;height:44px;border-radius:12px;
+      display:inline-flex;align-items:center;justify-content:center;
+      flex-shrink:0
+    }
+    .contact-social-icon svg{width:22px;height:22px;display:block}
+    .contact-social-btn--instagram .contact-social-icon{
+      background:linear-gradient(135deg,#f58529,#dd2a7b 55%,#8134af);
+      color:#fff
+    }
+    .contact-social-btn--whatsapp .contact-social-icon{background:#25d366;color:#fff}
+    .contact-social-btn--telegram .contact-social-icon{background:#229ed9;color:#fff}
+    .contact-social-btn--rubika .contact-social-icon{background:#7c3aed;color:#fff}
+    .contact-social-btn--bale .contact-social-icon{background:#00a884;color:#fff}
+    .contact-social-btn--phone .contact-social-icon{background:#0e3571;color:#fff}
+
+    .profile-location{
+      padding:24px 0 56px;background:#fff
+    }
+    .profile-location-header{margin-bottom:20px}
+    .profile-location-header h2{
+      font-size:clamp(1.45rem,2.8vw,1.95rem);
+      font-weight:800;line-height:1.45;color:var(--text)
+    }
+    .profile-location-header p{
+      margin-top:8px;font-size:.95rem;color:var(--muted);line-height:1.8
+    }
+    .clinic-map-frame{
+      position:relative;
+      z-index:1;
+      width:100%;
+      height:300px;
+      min-height:300px;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background:#dbe7f3;
+      box-shadow:0 10px 28px rgba(15,53,113,.08)
+    }
+    .clinic-map-frame .leaflet-container{
+      width:100% !important;
+      height:300px !important;
+      min-height:300px;
+      z-index:1;
+      font-family:inherit;
+      background:#dbe7f3;
+    }
+    .clinic-map-frame .leaflet-pane,
+    .clinic-map-frame .leaflet-top,
+    .clinic-map-frame .leaflet-bottom{z-index:2}
+    .clinic-map-embed{
+      width:100%;
+      height:300px;
+      border:0;
+      display:block;
+      background:#dbe7f3;
+    }
+    .clinic-map-static{
+      width:100%;
+      height:300px;
+      object-fit:cover;
+      display:block;
+      background:#dbe7f3;
+    }
+    .clinic-map-fallback{
+      display:flex;align-items:center;justify-content:center;
+      height:300px;color:var(--muted);font-size:.95rem;text-align:center;padding:16px
+    }
+
+    .profile-special .container,
+    .profile-special-text,
+    .profile-special-text .clinic-intro{
+      width:100%;
+      max-width:none;
+    }
+
+    .clinic-route-buttons{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+      margin-top:16px
+    }
+    .clinic-route-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      min-height:52px;padding:12px 14px;
+      border-radius:14px;border:1px solid var(--line);
+      background:#fff;color:var(--text);
+      font-weight:800;font-size:.92rem;text-decoration:none;text-align:center;
+      transition:background .2s,border-color .2s,transform .2s,box-shadow .2s
+    }
+    .clinic-route-btn:hover{
+      transform:translateY(-1px);
+      border-color:#93c5e8;
+      box-shadow:0 8px 20px rgba(15,53,113,.08)
+    }
+    .clinic-route-btn--google{background:#eef6ff;border-color:#bfd8f5;color:#0e3571}
+    .clinic-route-btn--neshan{background:#fff7ed;border-color:#fed7aa;color:#9a3412}
+    .clinic-route-btn--balad{background:#ecfdf5;border-color:#a7f3d0;color:#065f46}
+    .clinic-route-btn--snapp{background:#e8f9e9;border-color:#a8e6ab;color:#21bc27}
+    .clinic-route-btn svg{width:18px;height:18px;flex-shrink:0}
+
+    @media(max-width:760px){
+      .profile-breadcrumb-wrap{padding:18px 0 6px}
+      .profile-hero{padding:24px 0 30px}
+      .profile-grid{grid-template-columns:1fr;gap:24px}
+      .profile-action-grid{grid-template-columns:1fr}
+      .clinic-route-buttons{grid-template-columns:1fr}
+      .contact-social-grid{grid-template-columns:1fr}
+      .contact-social-btn{min-width:100%}
+    }
+  </style>
+</head>
+<body class="profile-layout">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NL3KJ8ZQ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+  <header class="topbar">
+    <div class="container topbar-row">
+      <a href="/" class="brand" aria-label="سلام دکتر — صفحه اصلی">
+        <span class="logo logo-heart-beat" aria-hidden="true">
+          <img src="images/logo-heart.svg" alt="لوگو سلام دکتر" width="40" height="40"
+               onerror="this.onerror=null;this.src='images/logo-heart.svg'">
+        </span>
+        <span class="brand-name">سلام دکتر</span>
+      </a>
+      <nav class="menu">
+        <div class="dropdown">
+          <a href="#">
+            پوست و مو
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="dropdown-content">
+            <a href="hair-transplant.html">کاشت مو و ابرو</a>
+            <a href="skin-rejuvenation.html">پوست و جوانسازی</a>
+            <a href="injection.html">تزریقات زیبایی</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#">
+            لیزر و جراحی
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="dropdown-content">
+            <a href="laser-hair.html">لیزر موهای زائد</a>
+            <a href="cosmetic-surgery.html">جراحی زیبایی</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#">
+            تناسب اندام
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="dropdown-content">
+            <a href="slimming.html">لاغری و پیکرتراشی</a>
+          </div>
+        </div>
+        <a href="lasik.html">لیزیک</a>
+        <a href="femto-lasik.html">فمتولیزیک</a>
+        <a href="prk.html">PRK</a>
+        <a href="articles.html">مقالات</a>
+        <a href="products.html">محصولات زیبایی</a>
+        <a href="pharmacy.html">داروخانه</a>
+        <a href="faq.html">سوالات متداول</a>
+        <a href="about.html">درباره ما</a>
+      </nav>
+      <button id="nav-hamburger" class="nav-hamburger" aria-label="منو"
+              aria-expanded="false" aria-controls="mobile-drawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div id="drawer-overlay" class="drawer-overlay" hidden></div>
+  <nav id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <span class="drawer-title"><span class="logo logo-heart-beat drawer-logo" aria-hidden="true"><img src="images/logo-heart.svg" alt="" width="30" height="30" onerror="this.onerror=null;this.src='images/logo-heart.svg'"></span>سلام دکتر</span>
+      <button id="drawer-close" class="drawer-close" aria-label="بستن">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <a href="/">خانه</a>
+      <a href="hair-transplant.html">کاشت مو و ابرو</a>
+      <a href="skin-rejuvenation.html">پوست و جوانسازی</a>
+      <a href="injection.html">تزریقات زیبایی</a>
+      <a href="laser-hair.html">لیزر موهای زائد</a>
+      <a href="cosmetic-surgery.html">جراحی زیبایی</a>
+      <a href="slimming.html">لاغری و پیکرتراشی</a>
+      <a href="lasik.html">لیزیک</a>
+      <a href="femto-lasik.html">فمتولیزیک</a>
+      <a href="prk.html">PRK</a>
+      <a href="products.html">محصولات زیبایی</a>
+      <a href="pharmacy.html">داروخانه</a>
+      <a href="faq.html">سوالات متداول</a>
+      <a href="articles.html">مقالات</a>
+      <a href="about.html">درباره ما</a>
+      <a href="tel:+989007000462" class="drawer-cta" dir="ltr" data-site-phone="support">پشتیبانی سایت: ۰۹۰۰۷۰۰۰۴۶۲</a>
+    </div>
+  </nav>
+
+  <main class="profile-page">
+    <div class="page-ad-rail" hidden>
+      <div class="ad-banner-wrap ad-banner-wrap--category" data-ad-slot="profile" hidden>
+        <span class="ad-label">تبلیغات</span>
+        <a class="ad-banner-link" href="/doctor/nahal-clinic" rel="nofollow sponsored" target="_blank" aria-label="کلینیک نهال">
+          <picture class="ad-banner-picture">
+            <source media="(max-width: 768px)" srcset="images/ads/nahal-banner-mobile.jpg">
+            <img class="ad-banner-img" src="images/ads/nahal-banner-category-desktop.jpg" alt="کلینیک نهال — کاشت تخصصی مو، ابرو و ریش" loading="lazy" width="1024" height="126">
+          </picture>
+        </a>
+      </div>
+    </div>
+    <!-- DYNAMIC_PROFILE_BREADCRUMB -->
+
+    <section class="profile-hero">
+      <div class="container">
+        <div class="profile-grid">
+          <div class="profile-media">
+            <div
+              class="profile-hero-banner clinic-media-frame clinic-aspect-video is-clickable"
+              id="clinic-hero-frame"
+              role="button"
+              tabindex="0"
+              aria-label="مشاهده تصویر بزرگ"
+            >
+              <img
+                id="clinic-image"
+                src="images/sample-clinic-services.webp"
+                alt="عکس کلینیک در شیراز"
+                width="1280"
+                height="720"
+                fetchpriority="high"
+                loading="eager"
+                decoding="async"
+              >
+            </div>
+
+            <nav
+              class="profile-action-bar"
+              id="profile-action-bar"
+              aria-label="راه‌های ارتباطی کلینیک"
+              data-empty="true"
+            >
+              <a
+                id="action-phone"
+                class="profile-action-btn profile-action-btn--phone"
+                href="#"
+                hidden
+                data-action="phone"
+              >
+                <span class="profile-action-btn__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M6.7 3.5h2.7c.5 0 .9.3 1 .7l1.2 3.7c.1.4 0 .8-.3 1.1l-1.4 1.4c1 1.8 2.5 3.3 4.3 4.3l1.4-1.4c.3-.3.7-.4 1.1-.3l3.7 1.2c.5.1.7.5.7 1v2.7c0 .6-.5 1.1-1.1 1.1h-1.2C10.8 20.7 3.3 13.2 3.3 4.6V3.5c0-.6.5-1 1-1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+                </span>
+                <span>تماس تلفنی</span>
+              </a>
+              <a
+                id="action-whatsapp"
+                class="profile-action-btn profile-action-btn--whatsapp"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+                data-action="whatsapp"
+              >
+                <span class="profile-action-btn__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 3.5A8.45 8.45 0 0 0 3.6 11.94a8.4 8.4 0 0 0 1.2 4.35L3.5 20.5l4.35-1.25a8.5 8.5 0 0 0 4.2 1.1h.01a8.45 8.45 0 0 0 0-16.85zm4.92 12.05c-.2.57-1.18 1.08-1.66 1.15-.43.06-.97.09-1.57-.1a13.3 13.3 0 0 1-1.36-.5 8.9 8.9 0 0 1-3.9-3.35 4.5 4.5 0 0 1-.9-2.25c-.05-.55.17-1.08.5-1.4.18-.18.44-.28.71-.28h.52c.17 0 .4-.06.62.47.23.56.77 1.88.84 2.02.07.14.1.3.02.48-.08.18-.12.3-.24.46-.12.16-.25.35-.36.47-.12.13-.24.27-.1.52.14.25.62 1.02 1.33 1.65.91.81 1.68 1.06 1.93 1.18.25.12.4.1.55-.06.15-.16.64-.74.81-.99.17-.25.34-.21.57-.12.23.08 1.46.69 1.71.81.25.13.42.19.48.29.06.1.06.59-.14 1.16z"/></svg>
+                </span>
+                <span>واتس‌اپ</span>
+              </a>
+              <a
+                id="action-instagram"
+                class="profile-action-btn profile-action-btn--instagram"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+                data-action="instagram"
+              >
+                <span class="profile-action-btn__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm5 4.5A4.5 4.5 0 1 0 16.5 12 4.5 4.5 0 0 0 12 7.5zm0 7.4A2.9 2.9 0 1 1 14.9 12 2.9 2.9 0 0 1 12 14.9zm5.1-8.85a1.05 1.05 0 1 0 1.05 1.05 1.05 1.05 0 0 0-1.05-1.05z"/></svg>
+                </span>
+                <span>اینستاگرام</span>
+              </a>
+              <a
+                id="action-route"
+                class="profile-action-btn profile-action-btn--route"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+                data-action="route"
+              >
+                <span class="profile-action-btn__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/></svg>
+                </span>
+                <span>مسیریابی</span>
+              </a>
+              <a
+                id="action-rubika"
+                class="profile-action-btn profile-action-btn--rubika"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+                data-action="rubika"
+              >
+                <span class="profile-action-btn__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5A9.5 9.5 0 1 0 21.5 12 9.51 9.51 0 0 0 12 2.5zm3.7 13.2c-.3.4-.8.6-1.3.6h-5c-.9 0-1.5-.8-1.3-1.6l1.6-6.2c.2-.7.8-1.2 1.5-1.2h2.2c.8 0 1.4.6 1.5 1.4l.7 5.4c.1.6-.1 1.1-.4 1.6z"/><circle cx="12" cy="9.2" r="1.1"/></svg>
+                </span>
+                <span id="action-rubika-label">پشتیبانی روبیکا</span>
+              </a>
+              <a
+                id="action-bale"
+                class="profile-action-btn profile-action-btn--bale"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                hidden
+                data-action="bale"
+              >
+                <span class="profile-action-btn__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.4A9.6 9.6 0 1 0 21.6 12 9.61 9.61 0 0 0 12 2.4zm4.1 6.3-1.4 6.7c-.1.5-.4.6-.8.4l-2.2-1.6-1.1 1c-.1.1-.3.3-.6.3l.2-2.4 4.4-4c.2-.2 0-.3-.3-.1l-5.4 3.4-2.3-.7c-.5-.2-.5-.5.1-.7l9-3.5c.4-.2.8.1.4.2z"/></svg>
+                </span>
+                <span id="action-bale-label">پشتیبانی بله</span>
+              </a>
+            </nav>
+          </div>
+
+          <div class="profile-content">
+            <div class="profile-intro">
+              <div class="profile-identity">
+                <div class="profile-logo-frame" id="clinic-logo-frame" hidden>
+                  <img
+                    id="clinic-logo"
+                    src="images/sample-clinic-services.webp"
+                    alt="لوگوی کلینیک"
+                    width="96"
+                    height="96"
+                    loading="lazy"
+                    decoding="async"
+                  >
+                </div>
+                <div class="profile-identity-text">
+                  <h1 id="clinic-name"><!-- DYNAMIC_PROFILE_H1 --></h1>
+                  <span class="profile-verified-badge">مرکز تایید شده</span>
+                </div>
+              </div>
+              <div class="profile-meta">
+                <p id="clinic-address">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z" stroke="currentColor" stroke-width="1.8"/>
+                    <circle cx="12" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+                  </svg>
+                  <span><!-- DYNAMIC_CLINIC_ADDRESS --></span>
+                </p>
+                <p id="clinic-phone">
+                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M6.7 3.5h2.7c.5 0 .9.3 1 .7l1.2 3.7c.1.4 0 .8-.3 1.1l-1.4 1.4c1 1.8 2.5 3.3 4.3 4.3l1.4-1.4c.3-.3.7-.4 1.1-.3l3.7 1.2c.5.1.7.5.7 1v2.7c0 .6-.5 1.1-1.1 1.1h-1.2C10.8 20.7 3.3 13.2 3.3 4.6V3.5c0-.6.5-1 1-1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                  </svg>
+                  <a id="clinic-phone-link" href="tel:+989007000462" dir="ltr"><!-- DYNAMIC_CLINIC_PHONE --></a>
+                </p>
+              </div>
+            </div>
+
+            <div class="profile-actions-box">
+              <div class="profile-action-grid">
+                <a id="clinic-appointment" class="btn btn-main" href="#">درخواست نوبت فوری</a>
+                <a id="clinic-call" class="btn btn-soft" href="tel:+989007000462" dir="ltr">تماس با مرکز</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="profile-special" id="profile-special" hidden aria-labelledby="profile-special-title">
+      <div class="container px-4 md:px-8">
+        <h2 id="profile-special-title">درباره این مرکز</h2>
+        <div class="profile-special-text w-full" id="profile-special-text"></div>
+      </div>
+    </section>
+
+    <!-- ImageGallery mounts (Before/After + Images) -->
+    <div
+      id="clinic-galleries-root"
+      hidden
+      data-ba-heading="نتایج قبل و بعد"
+      data-images-heading="گالری تصاویر"
+      data-clinic-name=""
+    ></div>
+
+    <section class="profile-video" id="profile-video" hidden aria-labelledby="profile-video-title">
+      <div class="container profile-media-block">
+        <h2 id="profile-video-title">ویدیو معرفی</h2>
+        <div class="clinic-media-frame clinic-aspect-video clinic-video-frame" id="clinic-video-frame"></div>
+      </div>
+    </section>
+
+    <section class="profile-services" id="profile-services" aria-labelledby="services-title">
+      <div class="container">
+        <div class="profile-services-header">
+          <h2 id="services-title">خدمات و تخصص‌ها</h2>
+          <p class="profile-services-subtitle">فهرست خدمات قابل ارائه در این مرکز درمانی — روی هر خدمت کلیک کنید تا مراکز مشابه را ببینید</p>
+        </div>
+        <div id="services-container" class="services-container">
+          <span>ویزیت تخصصی</span>
+          <span>مشاوره آنلاین</span>
+          <span>لیزر درمانی</span>
+          <span>جوان‌سازی پوست</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="profile-faq" id="profile-faq" aria-labelledby="profile-faq-title">
+      <div class="container">
+        <h2 id="profile-faq-title">سوالات متداول</h2>
+        <div class="faq-accordion" id="profile-faq-list">
+          <!-- DYNAMIC_PROFILE_FAQS -->
+        </div>
+      </div>
+    </section>
+
+    <section class="profile-contact-socials" id="profile-contact-socials" aria-labelledby="contact-socials-title">
+      <div class="container">
+        <div class="profile-contact-socials-header">
+          <h2 id="contact-socials-title">پیام‌رسان‌ها و شبکه‌های اجتماعی</h2>
+          <p>از طریق تلگرام، روبیکا و بله با این مرکز در ارتباط باشید.</p>
+        </div>
+        <div id="clinic-contact-socials" class="contact-social-grid" role="list"></div>
+      </div>
+    </section>
+
+    <section class="profile-location" id="profile-location" aria-labelledby="location-title">
+      <div class="container">
+        <div class="profile-location-header">
+          <h2 id="location-title">موقعیت مکانی</h2>
+          <p>موقعیت مرکز روی نقشه و مسیر‌یابی با اپلیکیشن‌های محبوب.</p>
+        </div>
+        <div
+          id="map"
+          data-lat="<!-- DYNAMIC_LAT -->"
+          data-lng="<!-- DYNAMIC_LNG -->"
+          data-name="<!-- DYNAMIC_CLINIC_MAP_NAME -->"
+          style="height: 300px; width: 100%;"
+          class="clinic-map-frame rounded-lg border"
+          role="region"
+          aria-label="نقشه موقعیت مرکز"
+        ></div>
+        <div class="clinic-route-buttons" id="clinic-route-buttons">
+          <a id="route-google" class="clinic-route-btn clinic-route-btn--google" href="#" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5z" fill="currentColor"/></svg>
+            مسیر با Google Maps
+          </a>
+          <a id="route-neshan" class="clinic-route-btn clinic-route-btn--neshan" href="#" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12l7-9 2 5 7 1-5 4 2 7-6-4-6 4 2-7-5-4z" fill="currentColor"/></svg>
+            مسیر با نشان
+          </a>
+          <a id="route-balad" class="clinic-route-btn clinic-route-btn--balad" href="#" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 4v6c0 4.4-3 7.4-7 9-4-1.6-7-4.6-7-9V7l7-4z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+            مسیر با بلد
+          </a>
+          <a id="route-snapp" class="clinic-route-btn clinic-route-btn--snapp" href="#" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 17h14l-1.5-5.5a2 2 0 0 0-1.9-1.4H8.4a2 2 0 0 0-1.9 1.4L5 17zm2.5-7.5L9 7h6l1.5 2.5M7 17a1.5 1.5 0 1 0 0 .01M17 17a1.5 1.5 0 1 0 0 .01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            اسنپ
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-section">
+      <div class="container">
+        <nav class="toc-nav" id="profile-toc" aria-label="فهرست مطالب صفحه">
+          <p class="toc-title">در این صفحه بخوانید:</p>
+          <ul class="toc-list">
+            <li data-toc-target="profile-special"><a href="#profile-special-title">درباره مرکز</a></li>
+            <li data-toc-target="clinic-galleries-root"><a href="#clinic-galleries-root">گالری تصاویر</a></li>
+            <li data-toc-target="profile-video"><a href="#profile-video-title">ویدیو معرفی</a></li>
+            <li data-toc-target="profile-services"><a href="#services-title">خدمات و تخصص‌ها</a></li>
+            <li data-toc-target="profile-faq"><a href="#profile-faq-title">سوالات متداول</a></li>
+            <li data-toc-target="profile-contact-socials"><a href="#contact-socials-title">راه‌های ارتباطی</a></li>
+            <li data-toc-target="profile-location"><a href="#location-title">موقعیت روی نقشه</a></li>
+          </ul>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>سلام دکتر</h4>
+          <div class="footer-links">
+            <span><a href="tel:+989007000462" dir="ltr" data-site-phone="support">پشتیبانی سایت: ۰۹۰۰۷۰۰۰۴۶۲</a></span>
+            <span>شیراز، روبروی پاسارگاد شرقی، جنب نگین عدالت</span>
+            <span>info@salamdoctor.ir</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>خدمات پرکاربرد</h4>
+          <div class="footer-links">
+            <a href="/shiraz/hair-transplant">کاشت مو در شیراز</a>
+            <a href="/shiraz/botox">تزریق بوتاکس در شیراز</a>
+            <a href="/shiraz/laser-hair-removal">لیزر موهای زائد در شیراز</a>
+            <a href="/shiraz/fillers">تزریق فیلر در شیراز</a>
+            <a href="/shiraz/skin-rejuvenation">جوانسازی پوست در شیراز</a>
+            <a href="/tehran/hair-transplant">کاشت مو در تهران</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>راهنمای بیماران</h4>
+          <div class="footer-links">
+            <a href="/faq.html">پرسش‌های متداول</a>
+            <a href="/about.html">درباره ما</a>
+            <a href="/articles.html">مقالات آموزشی</a>
+            <a href="/sitemap">نقشه سایت</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>مقالات جدید</h4>
+          <div class="footer-links">
+            <a href="/articles/laser-hair-removal-comparison.html">مقایسه لیزر کاندلا و الکساندرایت</a>
+            <a href="/articles/fit-hair-transplant-cost.html">هزینه و مراقبت کاشت مو FIT</a>
+            <a href="/articles.html">همه مقالات</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-note">© 2026 سلام دکتر. تمامی حقوق محفوظ است.</div>
+    </div>
+  </footer>
+
+  <nav id="mobile-nav" class="mobile-nav">
+    <div class="mobile-grid">
+      <a class="btn btn-soft" href="skin-rejuvenation.html">پوست و زیبایی</a>
+      <a class="btn btn-soft" href="hair-transplant.html">مو و کاشت</a>
+      <a id="mobile-clinic-call" class="btn btn-main" href="#" dir="ltr" hidden>تماس تلفنی</a>
+      <a id="mobile-clinic-whatsapp" class="btn btn-green" href="#" target="_blank" rel="noopener noreferrer" hidden>واتس‌اپ</a>
+    </div>
+  </nav>
+
+  <script src="/assets/js/clinic-slugs.js?v=20260903s"></script>
+  <script src="/assets/js/clinic-profile-url.js?v=20260903t"></script>
+  <script src="data.min.js?v=20260805b" defer></script>
+  <script defer src="assets/js/socket.io.min.js"></script>
+  <script src="assets/js/shared.js?v=20260903s" defer></script>
+  <script src="assets/js/clinic-galleries.js?v=20260723f" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    (function () {
+      const boot = window.__CLINIC_PROFILE__ || {};
+      const slugMatch = (window.location.pathname || '').match(/\/doctor\/([^/]+)/);
+      const slug = boot.slug || (slugMatch ? decodeURIComponent(slugMatch[1]) : '');
+      let clinicId = Number(boot.id || new URLSearchParams(window.location.search).get('id'));
+      let clinic = Array.isArray(clinicsData)
+        ? clinicsData.find((item) => item.id === clinicId)
+        : null;
+      if (!clinic && Array.isArray(clinicsData) && slug) {
+        var slugs = window.CLINIC_SLUGS || {};
+        var mappedId = Object.keys(slugs).find(function (k) { return slugs[k] === slug; });
+        if (mappedId) clinicId = Number(mappedId);
+        var trail = slug.match(/^clinic-(\d+)$/) || slug.match(/-(\d+)$/);
+        if (!clinicId && trail) clinicId = Number(trail[1]);
+        clinic = clinicsData.find((item) => item.id === clinicId) ||
+          clinicsData.find((item) => item.slug === slug) ||
+          null;
+      }
+
+      if (!clinic) {
+        window.location.replace('index.html');
+        return;
+      }
+
+      function refreshProfileToc() {
+        const toc = document.getElementById('profile-toc');
+        if (!toc) return;
+        const items = toc.querySelectorAll('li[data-toc-target]');
+        let anyVisible = false;
+        items.forEach(function (li) {
+          const target = document.getElementById(li.getAttribute('data-toc-target'));
+          const visible = !!(target && !target.hidden && target.offsetParent !== null);
+          li.hidden = !visible;
+          if (visible) anyVisible = true;
+        });
+        toc.hidden = !anyVisible;
+      }
+
+      function formatLocalBookingHeadline(specialty, city, neighborhood) {
+        var spec = String(specialty || '').trim() || 'خدمات پزشکی';
+        var cityName = String(city || '').trim();
+        var hood = String(neighborhood || '').trim();
+        var location = cityName && hood ? cityName + ', ' + hood : (cityName || hood);
+        return location ? ('نوبت دهی ' + spec + ' در ' + location) : ('نوبت دهی ' + spec);
+      }
+
+      function firstServiceLabel(clinic) {
+        var services = clinic && clinic.services;
+        if (!Array.isArray(services) || !services.length) return '';
+        var first = services[0];
+        if (typeof first === 'string') return first;
+        return (first && (first.name || first.label)) || '';
+      }
+
+      function clinicDisplayName(clinic) {
+        return (
+          clinic.profileTitle ||
+          clinic.displayName ||
+          clinic.name ||
+          clinic.sliderTitle ||
+          'مرکز درمانی'
+        );
+      }
+
+      function clinicProfileTitle(clinic) {
+        var displayName = clinicDisplayName(clinic);
+        var city = clinic.city || clinic.cityFa || clinic.city_name || 'شیراز';
+        return displayName + ' در ' + city + ' | سلام دکتر';
+      }
+
+      function clinicLocalSeoHeadline(clinic) {
+        return clinicDisplayName(clinic);
+      }
+
+      const clinicName = document.getElementById('clinic-name');
+      const clinicAddress = document.getElementById('clinic-address');
+      const clinicPhone = document.getElementById('clinic-phone');
+      const clinicImage = document.getElementById('clinic-image');
+      const clinicCall = document.getElementById('clinic-call');
+      const clinicAppointment = document.getElementById('clinic-appointment');
+      const servicesContainer = document.getElementById('services-container');
+
+      var localSeoHeadline = clinicLocalSeoHeadline(clinic);
+      if (clinicName) clinicName.textContent = localSeoHeadline;
+
+      (function updateProfileMeta(headline, clinicDesc) {
+        var pageTitle = clinicProfileTitle(clinic);
+        document.title = pageTitle;
+        var metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+          metaDesc.setAttribute(
+            'content',
+            headline + '. ' + (clinicDesc || 'رزرو نوبت آنلاین از طریق سلام دکتر.')
+          );
+        }
+        var ogTitle = document.querySelector('meta[property="og:title"]');
+        var ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogTitle) ogTitle.setAttribute('content', headline);
+        if (ogDesc) ogDesc.setAttribute('content', headline + ' — سلام دکتر');
+        var canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) {
+          var path = (typeof window.clinicProfilePath === 'function')
+            ? window.clinicProfilePath(clinic)
+            : ('/doctor/' + encodeURIComponent(slug || ('clinic-' + clinic.id)));
+          canonical.setAttribute('href', 'https://salam-doctor.com' + path);
+        }
+      })(localSeoHeadline, clinic.description || '');
+
+      (function renderProfileFaqs(clinic) {
+        var root = document.getElementById('profile-faq-list');
+        if (!root || root.querySelector('details')) return;
+        var name = clinic.name || 'این مرکز';
+        var items = Array.isArray(clinic.faqs) && clinic.faqs.length ? clinic.faqs : [
+          { question: 'آیا ' + name + ' طرف قرارداد بیمه است؟', answer: 'پوشش بیمه بسته به نوع خدمت و شرکت بیمه متفاوت است. هنگام رزرو نوبت از کارشناسان سلام دکتر بپرسید کدام بیمه‌ها پذیرفته می‌شود.' },
+          { question: 'مدت انتظار برای نوبت چقدر است؟', answer: 'زمان انتظار معمولاً از نوبت همان روز تا چند روز کاری متغیر است. برای نزدیک‌ترین نوبت از دکمه درخواست نوبت فوری استفاده کنید.' }
+        ];
+        function esc(s) {
+          return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+        }
+        root.innerHTML = items.map(function (item, i) {
+          var q = esc(item.question || item.q);
+          var a = esc(item.answer || item.a);
+          if (!q || !a) return '';
+          var id = 'profile-faq-' + (i + 1);
+          return '<details class="faq-accordion__item"><summary class="faq-accordion__summary" id="' + id + '-q"><span class="faq-accordion__question">' + q + '</span><span class="faq-accordion__icon" aria-hidden="true"></span></summary><div class="faq-accordion__panel" id="' + id + '-a" role="region" aria-labelledby="' + id + '-q"><p>' + a + '</p></div></details>';
+        }).join('');
+      })(clinic);
+
+      var CONTACT_FALLBACK = 'ثبت نشده';
+
+      function setDisplayedClinicPhone(displayPhone, telHref) {
+        var link =
+          document.getElementById('clinic-phone-link') ||
+          (clinicPhone && clinicPhone.querySelector('a[href^="tel:"]'));
+        var label = displayPhone || CONTACT_FALLBACK;
+        if (link) {
+          link.textContent = label;
+          link.setAttribute('dir', 'ltr');
+          if (telHref) link.href = telHref;
+          else if (displayPhone && displayPhone !== CONTACT_FALLBACK) {
+            var href = toTelHref(displayPhone);
+            if (href) link.href = href;
+          }
+          return;
+        }
+        if (!clinicPhone) return;
+        var phoneText = clinicPhone.querySelector('span');
+        if (phoneText) phoneText.textContent = label;
+        else clinicPhone.textContent = label;
+      }
+
+      if (clinicAddress) {
+        const addressText = clinicAddress.querySelector('span');
+        const displayAddress = (clinic.address && String(clinic.address).trim()) || CONTACT_FALLBACK;
+        if (addressText) {
+          addressText.textContent = displayAddress;
+        } else {
+          clinicAddress.textContent = displayAddress;
+        }
+      }
+
+      if (clinicPhone) {
+        const contact = (typeof getClinicContactInfo === 'function')
+          ? getClinicContactInfo(clinic)
+          : { phone: clinic.phone || null };
+        const displayPhone = contact.phone || CONTACT_FALLBACK;
+        setDisplayedClinicPhone(displayPhone, contact.phone ? toTelHref(contact.phone) : null);
+      }
+
+      if (clinicCall || clinicAppointment) {
+        const contact = (typeof getClinicContactInfo === 'function')
+          ? getClinicContactInfo(clinic)
+          : { phone: clinic.phone || null };
+        var callHref = contact.phone ? toTelHref(contact.phone) : null;
+        var appointmentHref =
+          Number(clinic.id) === 114 ? 'tel:+987136265696' : callHref;
+
+        if (clinicCall) {
+          clinicCall.setAttribute('dir', 'ltr');
+          if (callHref) clinicCall.href = callHref;
+        }
+        if (clinicAppointment) {
+          clinicAppointment.setAttribute('dir', 'ltr');
+          if (appointmentHref) clinicAppointment.href = appointmentHref;
+        }
+        updateMobileNavContact(contact);
+      }
+
+      function toTelHref(phone) {
+        var dial = String(phone || '').replace(/[^\d+]/g, '');
+        if (!dial) return null;
+        if (dial.charAt(0) !== '+') {
+          if (dial.indexOf('00') === 0) dial = '+' + dial.slice(2);
+          else if (dial.indexOf('0') === 0) dial = '+98' + dial.slice(1);
+        }
+        return 'tel:' + dial;
+      }
+
+      function escapeAttr(value) {
+        return String(value == null ? '' : value)
+          .replace(/&/g, '&amp;')
+          .replace(/"/g, '&quot;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+      }
+
+      function escapeHtml(value) {
+        return String(value == null ? '' : value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      var SOCIAL_ICONS = {
+        instagram:
+          '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zm5 4.5A4.5 4.5 0 1 0 16.5 12 4.5 4.5 0 0 0 12 7.5zm0 7.4A2.9 2.9 0 1 1 14.9 12 2.9 2.9 0 0 1 12 14.9zm5.1-8.85a1.05 1.05 0 1 0 1.05 1.05 1.05 1.05 0 0 0-1.05-1.05z"/></svg>',
+        whatsapp:
+          '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 3.5A8.45 8.45 0 0 0 3.6 11.94a8.4 8.4 0 0 0 1.2 4.35L3.5 20.5l4.35-1.25a8.5 8.5 0 0 0 4.2 1.1h.01a8.45 8.45 0 0 0 0-16.85zm4.92 12.05c-.2.57-1.18 1.08-1.66 1.15-.43.06-.97.09-1.57-.1a13.3 13.3 0 0 1-1.36-.5 8.9 8.9 0 0 1-3.9-3.35 4.5 4.5 0 0 1-.9-2.25c-.05-.55.17-1.08.5-1.4.18-.18.44-.28.71-.28h.52c.17 0 .4-.06.62.47.23.56.77 1.88.84 2.02.07.14.1.3.02.48-.08.18-.12.3-.24.46-.12.16-.25.35-.36.47-.12.13-.24.27-.1.52.14.25.62 1.02 1.33 1.65.91.81 1.68 1.06 1.93 1.18.25.12.4.1.55-.06.15-.16.64-.74.81-.99.17-.25.34-.21.57-.12.23.08 1.46.69 1.71.81.25.13.42.19.48.29.06.1.06.59-.14 1.16z"/></svg>',
+        telegram:
+          '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.5 4.3 3.9 11.1c-1.2.47-1.19 1.13-.22 1.43l4.52 1.41 1.74 5.32c.22.67.4.92.9.92.47 0 .68-.22.94-.47l2.27-2.2 4.71 3.48c.87.48 1.5.23 1.72-.8L22.9 5.7c.3-1.2-.43-1.73-1.4-1.4z"/></svg>',
+        rubika:
+          '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.5A9.5 9.5 0 1 0 21.5 12 9.51 9.51 0 0 0 12 2.5zm3.7 13.2c-.3.4-.8.6-1.3.6h-5c-.9 0-1.5-.8-1.3-1.6l1.6-6.2c.2-.7.8-1.2 1.5-1.2h2.2c.8 0 1.4.6 1.5 1.4l.7 5.4c.1.6-.1 1.1-.4 1.6z"/><circle cx="12" cy="9.2" r="1.1"/></svg>',
+        bale:
+          '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.4A9.6 9.6 0 1 0 21.6 12 9.61 9.61 0 0 0 12 2.4zm4.1 6.3-1.4 6.7c-.1.5-.4.6-.8.4l-2.2-1.6-1.1 1c-.1.1-.3.3-.6.3l.2-2.4 4.4-4c.2-.2 0-.3-.3-.1l-5.4 3.4-2.3-.7c-.5-.2-.5-.5.1-.7l9-3.5c.4-.2.8.1.4.2z"/></svg>',
+        phone:
+          '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6.7 3.5h2.7c.5 0 .9.3 1 .7l1.2 3.7c.1.4 0 .8-.3 1.1l-1.4 1.4c1 1.8 2.5 3.3 4.3 4.3l1.4-1.4c.3-.3.7-.4 1.1-.3l3.7 1.2c.5.1.7.5.7 1v2.7c0 .6-.5 1.1-1.1 1.1h-1.2C10.8 20.7 3.3 13.2 3.3 4.6V3.5c0-.6.5-1 1-1z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+      };
+
+      var PLATFORM_MESSENGER_FALLBACKS = {
+        telegram: 'https://t.me/salamdoctoradmin',
+        rubika: 'https://rubika.ir/',
+        bale: 'https://ble.ir/salamdoctoradmin',
+      };
+
+      function toWhatsAppHref(contact) {
+        if (contact && contact.whatsapp) return String(contact.whatsapp).trim();
+        var phone = contact && contact.phone ? String(contact.phone) : '';
+        return phoneDigitsToWhatsApp(phone);
+      }
+
+      function phoneDigitsToWhatsApp(phone) {
+        var digits = String(phone || '').replace(/[^\d]/g, '');
+        if (!digits) return null;
+        if (digits.indexOf('00') === 0) digits = digits.slice(2);
+        if (digits.charAt(0) === '0') digits = '98' + digits.slice(1);
+        if (digits.length < 10) return null;
+        return 'https://wa.me/' + digits;
+      }
+
+      function consultWhatsAppHref(contact) {
+        if (!contact) return null;
+        var raw = contact.whatsapp_consult || contact.whatsappConsult || '';
+        if (!raw) return null;
+        if (/^https?:\/\//i.test(String(raw).trim())) return String(raw).trim();
+        return phoneDigitsToWhatsApp(raw);
+      }
+
+      function consultPhoneHref(contact) {
+        if (!contact) return null;
+        var raw = contact.phone_consult || contact.phoneConsult || '';
+        if (!raw) return null;
+        return toTelHref(raw);
+      }
+
+      function whatsappHrefFromRaw(raw) {
+        if (!raw) return null;
+        if (/^https?:\/\//i.test(String(raw).trim())) return String(raw).trim();
+        return phoneDigitsToWhatsApp(raw);
+      }
+
+      function buildDeptConsultTilesHtml(title, phone, whatsapp) {
+        var label = String(title || '').trim() || 'مشاوره';
+        var waHref = whatsappHrefFromRaw(whatsapp);
+        var phoneHref = phone ? toTelHref(phone) : null;
+        if (!waHref && !phoneHref) return '';
+        var html =
+          '<div class="clinic-consult-tiles flex flex-row gap-3" role="group" aria-label="مشاوره ' +
+          escapeAttr(label) +
+          '">';
+        if (waHref) {
+          html +=
+            '<a class="clinic-consult-tile clinic-consult-tile--whatsapp" href="' +
+            escapeAttr(waHref) +
+            '" target="_blank" rel="noopener noreferrer">' +
+            '<span class="clinic-consult-tile__icon" aria-hidden="true">' +
+            SOCIAL_ICONS.whatsapp +
+            '</span><span>مشاوره واتس‌اپ - ' +
+            escapeHtml(label) +
+            '</span></a>';
+        }
+        if (phoneHref) {
+          html +=
+            '<a class="clinic-consult-tile clinic-consult-tile--phone" href="' +
+            escapeAttr(phoneHref) +
+            '" dir="ltr">' +
+            '<span class="clinic-consult-tile__icon" aria-hidden="true">' +
+            SOCIAL_ICONS.phone +
+            '</span><span>مشاوره تلفنی - ' +
+            escapeHtml(label) +
+            '</span></a>';
+        }
+        html += '</div>';
+        return html;
+      }
+
+      function blockSectionTitle(block, fallback) {
+        if (!block) return fallback || '';
+        var heading = block.querySelector('.clinic-intro__section-title, h3, h2');
+        if (!heading) return fallback || '';
+        var clone = heading.cloneNode(true);
+        var label = clone.querySelector('.clinic-intro__section-label');
+        if (label) label.remove();
+        return String(clone.textContent || '').replace(/\s+/g, ' ').trim() || fallback || '';
+      }
+
+      function resolveDeptConsult(deptTitle, deptPhone, deptWa, contact, blockTitle) {
+        var c = contact || {};
+        var title = String(deptTitle || blockTitle || '').trim();
+        var phone =
+          deptPhone ||
+          c.phone_consult ||
+          c.phoneConsult ||
+          c.phone ||
+          null;
+        var wa =
+          deptWa ||
+          c.whatsapp_consult ||
+          c.whatsappConsult ||
+          c.whatsapp ||
+          null;
+        return {
+          title: title || 'مشاوره',
+          phone: phone,
+          whatsapp: wa,
+        };
+      }
+
+      function buildConsultTilesHtml(contact) {
+        var waHref = consultWhatsAppHref(contact);
+        var phoneHref = consultPhoneHref(contact);
+        if (!waHref && !phoneHref) return '';
+        var html = '<div class="clinic-consult-tiles" role="group" aria-label="مشاوره">';
+        if (waHref) {
+          html +=
+            '<a class="clinic-consult-tile clinic-consult-tile--whatsapp" href="' +
+            escapeAttr(waHref) +
+            '" target="_blank" rel="noopener noreferrer">' +
+            '<span class="clinic-consult-tile__icon" aria-hidden="true">' +
+            SOCIAL_ICONS.whatsapp +
+            '</span><span>مشاوره واتس‌اپ</span></a>';
+        }
+        if (phoneHref) {
+          html +=
+            '<a class="clinic-consult-tile clinic-consult-tile--phone" href="' +
+            escapeAttr(phoneHref) +
+            '" dir="ltr">' +
+            '<span class="clinic-consult-tile__icon" aria-hidden="true">' +
+            SOCIAL_ICONS.phone +
+            '</span><span>مشاوره تلفنی</span></a>';
+        }
+        html += '</div>';
+        return html;
+      }
+
+      function applyDeptTitleToBlock(block, title) {
+        if (!block || !title) return;
+        var heading = block.querySelector('.clinic-intro__section-title');
+        if (!heading) return;
+        var label = heading.querySelector('.clinic-intro__section-label');
+        heading.textContent = '';
+        if (label) heading.appendChild(label);
+        heading.appendChild(document.createTextNode(' ' + String(title).trim()));
+      }
+
+      function injectConsultTilesIntoIntro(root, contact, dept) {
+        if (!root) return;
+        root.querySelectorAll('.clinic-consult-tiles').forEach(function (el) {
+          el.remove();
+        });
+
+        var blocks = root.querySelectorAll('.clinic-intro__block');
+        var d = dept || {};
+        var c = contact || {};
+
+        // Prefer structured sections; otherwise inject at end of intro root
+        var targets = [];
+        if (blocks.length) {
+          targets.push(blocks[0]);
+          if (blocks[1]) targets.push(blocks[1]);
+        } else {
+          targets.push(root);
+        }
+
+        var specs = [
+          resolveDeptConsult(
+            d.dept1_title,
+            d.dept1_phone,
+            d.dept1_whatsapp,
+            c,
+            blockSectionTitle(targets[0], 'دپارتمان اول')
+          ),
+          resolveDeptConsult(
+            d.dept2_title,
+            d.dept2_phone,
+            d.dept2_whatsapp,
+            c,
+            blockSectionTitle(targets[1] || targets[0], 'دپارتمان دوم')
+          ),
+        ];
+
+        if (d.dept1_title && targets[0]) applyDeptTitleToBlock(targets[0], d.dept1_title);
+        if (d.dept2_title && targets[1]) applyDeptTitleToBlock(targets[1], d.dept2_title);
+
+        var injected = 0;
+        for (var i = 0; i < targets.length && i < 2; i += 1) {
+          var tiles = buildDeptConsultTilesHtml(
+            specs[i].title,
+            specs[i].phone,
+            specs[i].whatsapp
+          );
+          if (!tiles) continue;
+          targets[i].insertAdjacentHTML('beforeend', tiles);
+          injected += 1;
+        }
+
+        // Last resort: shared consult-only numbers (same tiles under both sections)
+        if (!injected) {
+          var shared = buildConsultTilesHtml(c);
+          if (!shared) {
+            // Use main clinic phone / whatsapp if consult fields empty
+            shared = buildDeptConsultTilesHtml(
+              'مشاوره',
+              c.phone,
+              c.whatsapp_consult || c.whatsapp
+            );
+          }
+          if (!shared) return;
+          var limit = Math.min(2, targets.length);
+          for (var j = 0; j < limit; j += 1) {
+            targets[j].insertAdjacentHTML('beforeend', shared);
+          }
+        }
+      }
+
+      function readDeptFromClinic(source) {
+        var src = source || {};
+        return {
+          dept1_title: src.dept1_title || src.dept1Title || null,
+          dept1_phone: src.dept1_phone || src.dept1Phone || null,
+          dept1_whatsapp: src.dept1_whatsapp || src.dept1Whatsapp || null,
+          dept2_title: src.dept2_title || src.dept2Title || null,
+          dept2_phone: src.dept2_phone || src.dept2Phone || null,
+          dept2_whatsapp: src.dept2_whatsapp || src.dept2Whatsapp || null,
+        };
+      }
+
+      function setActionLink(el, href, isExternal) {
+        if (!el) return false;
+        if (!href) {
+          el.hidden = true;
+          el.removeAttribute('href');
+          return false;
+        }
+        el.href = href;
+        el.hidden = false;
+        if (/^tel:/i.test(href)) el.setAttribute('dir', 'ltr');
+        if (isExternal) {
+          el.setAttribute('target', '_blank');
+          el.setAttribute('rel', 'noopener noreferrer');
+        } else {
+          el.removeAttribute('target');
+          el.removeAttribute('rel');
+        }
+        return true;
+      }
+
+      function refreshActionBarVisibility() {
+        var bar = document.getElementById('profile-action-bar');
+        if (!bar) return;
+        var visible = bar.querySelectorAll('.profile-action-btn:not([hidden])').length;
+        bar.setAttribute('data-empty', visible ? 'false' : 'true');
+      }
+
+      function updateMobileNavContact(contact) {
+        var callBtn = document.getElementById('mobile-clinic-call');
+        var waBtn = document.getElementById('mobile-clinic-whatsapp');
+        var phoneHref = contact && contact.phone ? toTelHref(contact.phone) : null;
+        var whatsappHref = toWhatsAppHref(contact);
+
+        if (callBtn) {
+          if (phoneHref) {
+            callBtn.href = phoneHref;
+            callBtn.hidden = false;
+          } else {
+            callBtn.removeAttribute('href');
+            callBtn.hidden = true;
+          }
+        }
+        if (waBtn) {
+          if (whatsappHref) {
+            waBtn.href = whatsappHref;
+            waBtn.hidden = false;
+          } else {
+            waBtn.removeAttribute('href');
+            waBtn.hidden = true;
+          }
+        }
+      }
+
+      function renderClinicContactLinks(contact) {
+        var section = document.getElementById('profile-contact-socials');
+        var wrap = document.getElementById('clinic-contact-socials');
+
+        var phoneHref = contact && contact.phone ? toTelHref(contact.phone) : null;
+        var whatsappHref = toWhatsAppHref(contact);
+        var instagramHref = contact && contact.instagram ? String(contact.instagram).trim() : '';
+        var telegramHref =
+          (contact && contact.telegram && String(contact.telegram).trim()) ||
+          PLATFORM_MESSENGER_FALLBACKS.telegram;
+        var rubikaHref =
+          contact && (contact.rubika_link || contact.rubikaLink || contact.rubika)
+            ? String(contact.rubika_link || contact.rubikaLink || contact.rubika).trim()
+            : '';
+        var baleHref =
+          contact && (contact.bale_link || contact.baleLink || contact.bale)
+            ? String(contact.bale_link || contact.baleLink || contact.bale).trim()
+            : '';
+        var rubikaLabel =
+          (contact && (contact.rubika_title || contact.rubikaTitle) &&
+            String(contact.rubika_title || contact.rubikaTitle).trim()) ||
+          'پشتیبانی روبیکا';
+        var baleLabel =
+          (contact && (contact.bale_title || contact.baleTitle) &&
+            String(contact.bale_title || contact.baleTitle).trim()) ||
+          'پشتیبانی بله';
+
+        setActionLink(document.getElementById('action-phone'), phoneHref, false);
+        setActionLink(document.getElementById('action-whatsapp'), whatsappHref || null, true);
+        setActionLink(document.getElementById('action-instagram'), instagramHref || null, true);
+        setActionLink(document.getElementById('action-rubika'), rubikaHref || null, true);
+        setActionLink(document.getElementById('action-bale'), baleHref || null, true);
+        var rubikaLabelEl = document.getElementById('action-rubika-label');
+        var baleLabelEl = document.getElementById('action-bale-label');
+        if (rubikaLabelEl) rubikaLabelEl.textContent = rubikaLabel;
+        if (baleLabelEl) baleLabelEl.textContent = baleLabel;
+        refreshActionBarVisibility();
+        updateMobileNavContact(contact);
+
+        if (clinicCall && phoneHref) clinicCall.href = phoneHref;
+
+        if (!section || !wrap) return;
+
+        var socialRubikaHref = rubikaHref || PLATFORM_MESSENGER_FALLBACKS.rubika;
+        var socialBaleHref = baleHref || PLATFORM_MESSENGER_FALLBACKS.bale;
+
+        var items = [
+          { key: 'telegram', label: 'تلگرام', href: telegramHref, external: true },
+          { key: 'rubika', label: rubikaLabel, href: socialRubikaHref, external: true },
+          { key: 'bale', label: baleLabel, href: socialBaleHref, external: true },
+        ];
+
+        var html = items
+          .filter(function (item) { return !!item.href; })
+          .map(function (item) {
+            var target = item.external
+              ? ' target="_blank" rel="noopener noreferrer"'
+              : '';
+            return (
+              '<a class="contact-social-btn contact-social-btn--' +
+              item.key +
+              '" href="' +
+              escapeAttr(item.href) +
+              '"' +
+              target +
+              ' role="listitem">' +
+              '<span class="contact-social-icon">' +
+              SOCIAL_ICONS[item.key] +
+              '</span><span>' +
+              item.label +
+              '</span></a>'
+            );
+          })
+          .join('');
+
+        wrap.innerHTML = html;
+        section.hidden = !html;
+      }
+
+      var SHIRAZ_CENTER = { latitude: 29.5918, longitude: 52.5837 };
+      var clinicLeafletMap = null;
+
+      function initLeafletMapWithCoords(clinicLat, clinicLng) {
+        var el = document.getElementById('map');
+        if (!el || typeof L === 'undefined') return false;
+        if (!Number.isFinite(clinicLat) || !Number.isFinite(clinicLng)) return false;
+
+        el.style.height = '300px';
+        el.style.width = '100%';
+
+        if (clinicLeafletMap) {
+          try {
+            clinicLeafletMap.remove();
+          } catch (_err) {}
+          clinicLeafletMap = null;
+        }
+        el.innerHTML = '';
+
+        delete L.Icon.Default.prototype._getIconUrl;
+        L.Icon.Default.mergeOptions({
+          iconRetinaUrl: 'assets/vendor/leaflet/images/marker-icon-2x.png',
+          iconUrl: 'assets/vendor/leaflet/images/marker-icon.png',
+          shadowUrl: 'assets/vendor/leaflet/images/marker-shadow.png',
+        });
+
+        // Precise TileLayer init (after lat/lng are known from API)
+        var map = L.map('map').setView([clinicLat, clinicLng], 15);
+        var tiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+        }).addTo(map);
+        L.marker([clinicLat, clinicLng]).addTo(map);
+        setTimeout(function () {
+          map.invalidateSize();
+        }, 400);
+
+        // If OSM tiles are blocked (common in IR), fall back to same-origin proxy
+        var tileErrors = 0;
+        tiles.on('tileerror', function () {
+          tileErrors += 1;
+          if (tileErrors < 2 || map._salamTileProxy) return;
+          map._salamTileProxy = true;
+          try {
+            map.removeLayer(tiles);
+          } catch (_err) {}
+          L.tileLayer('/api/map-tiles/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+          setTimeout(function () {
+            map.invalidateSize();
+          }, 200);
+        });
+
+        clinicLeafletMap = map;
+        return true;
+      }
+
+      function renderClinicMap(coords, clinicName, options) {
+        var section = document.getElementById('profile-location');
+        var mapEl = document.getElementById('map');
+        var googleBtn = document.getElementById('route-google');
+        var neshanBtn = document.getElementById('route-neshan');
+        var baladBtn = document.getElementById('route-balad');
+        var snappBtn = document.getElementById('route-snapp');
+        var shouldInitMap = !options || options.initMap !== false;
+
+        if (!section || !mapEl) return;
+
+        var lat = coords && coords.latitude != null ? Number(coords.latitude) : NaN;
+        var lng = coords && coords.longitude != null ? Number(coords.longitude) : NaN;
+        var hasClinicCoords = Number.isFinite(lat) && Number.isFinite(lng);
+        if (!hasClinicCoords) {
+          lat = SHIRAZ_CENTER.latitude;
+          lng = SHIRAZ_CENTER.longitude;
+        }
+
+        mapEl.setAttribute('data-lat', String(lat));
+        mapEl.setAttribute('data-lng', String(lng));
+        if (clinicName) mapEl.setAttribute('data-name', String(clinicName));
+
+        section.hidden = false;
+
+        var mapsHref =
+          'https://www.google.com/maps/dir/?api=1&destination=' +
+          encodeURIComponent(lat + ',' + lng);
+
+        if (hasClinicCoords) {
+          setActionLink(document.getElementById('action-route'), mapsHref, true);
+        } else {
+          setActionLink(document.getElementById('action-route'), null, true);
+        }
+        refreshActionBarVisibility();
+
+        if (googleBtn) googleBtn.href = mapsHref;
+        if (neshanBtn) {
+          neshanBtn.href =
+            'https://neshan.org/maps/#/routing/car/origin/current/destination/' +
+            encodeURIComponent(lat) +
+            ',' +
+            encodeURIComponent(lng);
+        }
+        if (baladBtn) {
+          baladBtn.href =
+            'https://balad.ir/directions?destination.lat=' +
+            encodeURIComponent(lat) +
+            '&destination.lng=' +
+            encodeURIComponent(lng);
+        }
+        if (snappBtn) {
+          snappBtn.href =
+            'https://app.snapp.taxi/pre-ride?dest=' +
+            encodeURIComponent(lat + ',' + lng);
+        }
+
+        // Leaflet init only after coords are known (API/catalog), not on early page load
+        if (shouldInitMap) {
+          initLeafletMapWithCoords(lat, lng);
+        }
+      }
+
+      function renderClinicServices(list) {
+        if (!servicesContainer) return;
+        servicesContainer.innerHTML = '';
+        var normalized =
+          typeof normalizeClinicServices === 'function'
+            ? normalizeClinicServices(list || [])
+            : (list || []).map(function (s) {
+                if (typeof s === 'string') {
+                  var slug = s
+                    .toLowerCase()
+                    .replace(/[^\w\u0600-\u06FF]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+                  return {
+                    label: s,
+                    slug: slug,
+                    url: '/services/' + encodeURIComponent(slug),
+                  };
+                }
+                return s;
+              });
+        normalized.forEach(function (service) {
+          var label =
+            typeof clinicServiceLabel === 'function'
+              ? clinicServiceLabel(service)
+              : service.label || service.name || String(service);
+          if (!label) return;
+          var href =
+            (service && service.url) ||
+            (service && service.slug
+              ? '/services/' + encodeURIComponent(service.slug)
+              : null);
+          if (href) {
+            var link = document.createElement('a');
+            link.href = href;
+            link.textContent = label;
+            servicesContainer.appendChild(link);
+          } else {
+            var tag = document.createElement('span');
+            tag.textContent = label;
+            servicesContainer.appendChild(tag);
+          }
+        });
+      }
+
+      renderClinicContactLinks(
+        typeof getClinicContactInfo === 'function'
+          ? getClinicContactInfo(clinic)
+          : clinic.contact_info || {}
+      );
+      renderClinicMap(
+        typeof getClinicCoordinates === 'function'
+          ? getClinicCoordinates(clinic)
+          : { latitude: clinic.latitude, longitude: clinic.longitude },
+        clinic.name,
+        { initMap: false }
+      );
+
+      function joinAsset(base, path) {
+        if (!path) return '';
+        if (/^https?:\/\//i.test(path) || path.charAt(0) === '/') return path;
+        var root = String(base || '').replace(/\/$/, '');
+        return root + '/' + String(path).split('/').map(function (part) {
+          return encodeURIComponent(part);
+        }).join('/');
+      }
+
+      function openSimpleLightbox(src, alt) {
+        if (!src) return;
+        var existing = document.getElementById('profile-simple-lightbox');
+        if (existing) existing.remove();
+        var overlay = document.createElement('div');
+        overlay.id = 'profile-simple-lightbox';
+        overlay.className =
+          'profile-simple-lightbox fixed inset-0 z-[9999] flex items-center justify-center bg-black/80';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-label', 'نمایش تصویر');
+        overlay.innerHTML =
+          '<button type="button" class="cg-lightbox__close" aria-label="بستن">×</button>' +
+          '<div class="cg-lightbox__stage">' +
+          '<img class="cg-lightbox__img" alt="" width="1280" height="720">' +
+          '</div>';
+        document.body.appendChild(overlay);
+        var img = overlay.querySelector('img');
+        img.src = src;
+        img.alt = alt || '';
+        function close() {
+          if (overlay && overlay.parentNode) overlay.remove();
+          document.body.style.overflow = '';
+          document.removeEventListener('keydown', onKey);
+        }
+        function onKey(e) {
+          if (e.key === 'Escape') close();
+        }
+        // Click anywhere on the opened modal closes it immediately
+        overlay.addEventListener('click', function () {
+          close();
+        });
+        document.addEventListener('keydown', onKey);
+        document.body.style.overflow = 'hidden';
+      }
+
+      function bindHeroLightbox(img) {
+        var frame = document.getElementById('clinic-hero-frame');
+        if (!frame || !img) return;
+        function openHero() {
+          openSimpleLightbox(img.currentSrc || img.src, img.alt || '');
+        }
+        frame.onclick = openHero;
+        frame.onkeydown = function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openHero();
+          }
+        };
+      }
+
+      function renderVideo(base, video) {
+        var section = document.getElementById('profile-video');
+        var frame = document.getElementById('clinic-video-frame');
+        if (!section || !frame || !video || !video.src) return;
+        frame.innerHTML = '';
+        var el = document.createElement('video');
+        el.controls = true;
+        el.playsInline = true;
+        el.preload = 'metadata';
+        el.src = joinAsset(base, video.src);
+        if (video.poster) el.poster = joinAsset(base, video.poster);
+        el.setAttribute('aria-label', video.title || 'ویدیو معرفی');
+        frame.appendChild(el);
+        section.hidden = false;
+      }
+
+      function applyClinicMedia(clinic, media) {
+        var base = clinic.assetsBase || '';
+        var clinicImage = document.getElementById('clinic-image');
+        var logoFrame = document.getElementById('clinic-logo-frame');
+        var logoImg = document.getElementById('clinic-logo');
+
+        var heroSrc = (media && media.hero)
+          ? joinAsset(base, media.hero)
+          : (clinic.image || 'images/sample-clinic-services.webp');
+        if (clinicImage) {
+          clinicImage.src = heroSrc;
+          var heroAltName = String(clinic.name || '').trim() || 'مرکز درمانی';
+          clinicImage.alt = 'عکس کلینیک ' + heroAltName + ' در شیراز';
+          bindHeroLightbox(clinicImage);
+        }
+
+        if (media && media.logo && logoFrame && logoImg) {
+          logoImg.src = joinAsset(base, media.logo);
+          logoImg.alt = 'لوگوی کلینیک ' + (clinic.name || '');
+          logoFrame.hidden = false;
+        }
+
+        if (media && media.video) {
+          renderVideo(base, media.video);
+        }
+
+        var galleriesRoot = document.getElementById('clinic-galleries-root');
+        if (
+          galleriesRoot &&
+          base &&
+          media &&
+          ((media.gallery && media.gallery.length) ||
+            (media.beforeAfter && media.beforeAfter.length))
+        ) {
+          galleriesRoot.dataset.assetsBase = base;
+          galleriesRoot.dataset.clinicName = clinic.name || '';
+          galleriesRoot.hidden = false;
+          galleriesRoot.removeAttribute('hidden');
+
+          function tryMountGalleries() {
+            if (typeof window.mountClinicGalleries === 'function') {
+              return !!window.mountClinicGalleries({
+                assetsBase: base,
+                clinicName: clinic.name || '',
+                beforeAfterHeading: galleriesRoot.dataset.baHeading || 'نتایج قبل و بعد',
+                imagesHeading: galleriesRoot.dataset.imagesHeading || 'گالری تصاویر',
+              });
+            }
+            return false;
+          }
+
+          if (!tryMountGalleries()) {
+            var tries = 0;
+            var timer = setInterval(function () {
+              tries += 1;
+              if (tryMountGalleries() || tries > 40) clearInterval(timer);
+            }, 100);
+          }
+        }
+      }
+
+      // Default hero from data.js, then upgrade from media.json when available
+      applyClinicMedia(clinic, null);
+      refreshProfileToc();
+      if (clinic.assetsBase) {
+        fetch(String(clinic.assetsBase).replace(/\/$/, '') + '/media.json')
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (media) {
+            if (media) applyClinicMedia(clinic, media);
+            refreshProfileToc();
+            setTimeout(refreshProfileToc, 1500);
+          })
+          .catch(function () { /* keep data.js hero */ });
+      }
+
+      if (servicesContainer) {
+        renderClinicServices(clinic.services || []);
+      }
+
+      var CLINIC_CATEGORY_HINTS = [
+        { id: 'hair', name: 'کاشت مو و ابرو', href: 'hair-transplant.html', keywords: ['کاشت', 'مو', 'ابرو', 'ریش'] },
+        { id: 'skin', name: 'جوانسازی و پوست', href: 'skin-rejuvenation.html', keywords: ['پوست', 'جوان', 'فیشیال', 'هایفو', 'مزو'] },
+        { id: 'laser', name: 'لیزر موهای زائد', href: 'laser-hair.html', keywords: ['لیزر', 'الکساندرایت', 'کندلا', 'تیتانیوم'] },
+        { id: 'injection', name: 'تزریقات زیبایی', href: 'injection.html', keywords: ['تزریق', 'بوتاکس', 'ژل', 'فیلر', 'مزوژل'] },
+        { id: 'surgery', name: 'جراحی زیبایی', href: 'cosmetic-surgery.html', keywords: ['جراحی', 'بلفارو', 'لابیا', 'سانترال', 'لیفت'] },
+        { id: 'slimming', name: 'لاغری و پیکرتراشی', href: 'slimming.html', keywords: ['لاغری', 'پیکرتراشی', 'کرایو', 'چربی'] },
+        { id: 'lasik', name: 'لیزیک', href: 'lasik.html', keywords: ['لیزیک', 'چشم'] },
+        { id: 'prk', name: 'پی‌آر‌کی', href: 'prk.html', keywords: ['prk', 'پی آر کی'] }
+      ];
+
+      function inferClinicCategory(clinic) {
+        var blob = '';
+        if (Array.isArray(clinic.services)) {
+          blob = clinic.services.map(function (s) {
+            if (typeof s === 'string') return s;
+            if (s && typeof s === 'object') return String(s.label || s.name || '');
+            return '';
+          }).join(' ');
+        }
+        blob += ' ' + (clinic.sliderTagline || '') + ' ' + (clinic.name || '');
+        blob = blob.toLowerCase();
+        var best = null;
+        var bestScore = 0;
+        CLINIC_CATEGORY_HINTS.forEach(function (cat) {
+          var score = 0;
+          cat.keywords.forEach(function (kw) {
+            if (blob.indexOf(String(kw).toLowerCase()) !== -1) score += 1;
+          });
+          if (score > bestScore) {
+            bestScore = score;
+            best = cat;
+          }
+        });
+        return best;
+      }
+
+      function clinicBreadcrumbLabel(name) {
+        var n = String(name || '').trim();
+        if (!n) return 'کلینیک';
+        if (/^کلینیک\s/.test(n)) return n;
+        return 'کلینیک ' + n;
+      }
+
+      var breadcrumbName = document.getElementById('clinic-breadcrumb-name');
+      var breadcrumbCategory = document.getElementById('clinic-breadcrumb-category');
+      var ssrBreadcrumb = document.querySelector('[data-ssr-breadcrumb="1"]');
+      // Prefer server-rendered SEO breadcrumbs (Home > City > Clinic).
+      if (!ssrBreadcrumb) {
+        if (breadcrumbName) breadcrumbName.textContent = clinicBreadcrumbLabel(clinic.name);
+
+        var inferredCategory = inferClinicCategory(clinic);
+        if (breadcrumbCategory && inferredCategory) {
+          breadcrumbCategory.textContent = inferredCategory.name;
+          breadcrumbCategory.href = inferredCategory.href;
+        } else if (breadcrumbCategory) {
+          breadcrumbCategory.textContent = 'مراکز درمانی';
+          breadcrumbCategory.href = 'category.html';
+        }
+      }
+
+      var specialSection = document.getElementById('profile-special');
+      var specialText = document.getElementById('profile-special-text');
+      if (specialSection && specialText) {
+        function currentContact() {
+          return typeof getClinicContactInfo === 'function'
+            ? getClinicContactInfo(clinic)
+            : clinic.contact_info || {};
+        }
+
+        function currentDept() {
+          return readDeptFromClinic(clinic);
+        }
+
+        function introLooksStructured(html) {
+          return !!(html && String(html).indexOf('clinic-intro__block') !== -1);
+        }
+
+        function showClinicIntro(html) {
+          if (!html || !String(html).trim()) return;
+          specialText.innerHTML = html;
+          specialSection.hidden = false;
+          hydrateIntroDynamicBits(specialText, currentContact());
+          injectConsultTilesIntoIntro(specialText, currentContact(), currentDept());
+        }
+
+        function hydrateIntroDynamicBits(root, contact) {
+          if (!root) return;
+          var c = contact || {};
+          var phone =
+            c.phone_consult ||
+            c.phoneConsult ||
+            c.phone ||
+            '';
+          var tel = phone ? toTelHref(phone) : null;
+          var display = String(phone || '').trim();
+          var nodes = root.querySelectorAll(
+            '[data-intro-support-phone], .clinic-intro__contact li'
+          );
+          nodes.forEach(function (li) {
+            if (!li.hasAttribute('data-intro-support-phone')) {
+              var text = li.textContent || '';
+              if (!/پشتیبانی|سلام دکتر/.test(text)) return;
+            }
+            var strong = li.querySelector('strong');
+            var labelHtml = strong
+              ? strong.outerHTML + ' '
+              : '<strong>پشتیبانی سلام دکتر:</strong> ';
+            if (tel && display) {
+              li.innerHTML =
+                labelHtml +
+                '<a href="' +
+                escapeAttr(tel) +
+                '" dir="ltr">' +
+                escapeHtml(display) +
+                '</a>';
+            }
+          });
+        }
+
+        function loadStaticIntro(id) {
+          return fetch(
+            '/clinic-intros/' + encodeURIComponent(id) + '.html?t=' + Date.now(),
+            { cache: 'no-store' }
+          )
+            .then(function (r) { return r.ok ? r.text() : ''; })
+            .catch(function () { return ''; });
+        }
+
+        function resolveAndShowIntro(data) {
+          var dbIntro = data && data.intro ? String(data.intro) : '';
+          // Admin saves structured HTML into SQLite. Prefer that so edits show even when
+          // /clinic-intros/*.html is served by nginx from a different (stale) copy.
+          if (introLooksStructured(dbIntro)) {
+            showClinicIntro(dbIntro);
+            return Promise.resolve();
+          }
+          return loadStaticIntro(clinicId).then(function (staticIntro) {
+            if (introLooksStructured(staticIntro)) {
+              showClinicIntro(staticIntro);
+              return;
+            }
+            showClinicIntro(staticIntro || dbIntro);
+          });
+        }
+
+        function applyClinicOverlay(data) {
+          if (!data) return;
+          if (data.address) clinic.address = data.address;
+          if (data.phone) clinic.phone = data.phone;
+          var dept = readDeptFromClinic(data);
+          clinic.dept1_title = dept.dept1_title;
+          clinic.dept1_phone = dept.dept1_phone;
+          clinic.dept1_whatsapp = dept.dept1_whatsapp;
+          clinic.dept2_title = dept.dept2_title;
+          clinic.dept2_phone = dept.dept2_phone;
+          clinic.dept2_whatsapp = dept.dept2_whatsapp;
+          if (data.contact_info || data.contactInfo) {
+            clinic.contact_info = data.contact_info || data.contactInfo;
+            if (clinic.contact_info.address) clinic.address = clinic.contact_info.address;
+            if (clinic.contact_info.phone) clinic.phone = clinic.contact_info.phone;
+            renderClinicContactLinks(
+              typeof getClinicContactInfo === 'function'
+                ? getClinicContactInfo(clinic)
+                : clinic.contact_info
+            );
+            injectConsultTilesIntoIntro(specialText, currentContact(), currentDept());
+            setDisplayedClinicPhone(
+              clinic.contact_info.phone || clinic.phone || CONTACT_FALLBACK,
+              clinic.contact_info.phone ? toTelHref(clinic.contact_info.phone) : null
+            );
+            if (clinicCall && clinic.contact_info.phone) {
+              var tel = toTelHref(clinic.contact_info.phone);
+              if (tel) {
+                clinicCall.href = tel;
+                clinicCall.setAttribute('dir', 'ltr');
+              }
+            }
+            var addressText = clinicAddress && clinicAddress.querySelector('span');
+            if (addressText) {
+              addressText.textContent =
+                clinic.contact_info.address || clinic.address || CONTACT_FALLBACK;
+            }
+          } else if (
+            dept.dept1_title ||
+            dept.dept2_title ||
+            dept.dept1_phone ||
+            dept.dept2_phone
+          ) {
+            injectConsultTilesIntoIntro(specialText, currentContact(), currentDept());
+          } else {
+            if (clinicAddress && data.address) {
+              var addrSpan = clinicAddress.querySelector('span');
+              if (addrSpan) addrSpan.textContent = data.address;
+            }
+            if (clinicPhone && data.phone) {
+              setDisplayedClinicPhone(data.phone, toTelHref(data.phone));
+            }
+          }
+          if (data.latitude != null || data.longitude != null) {
+            clinic.latitude = data.latitude;
+            clinic.longitude = data.longitude;
+            renderClinicMap(
+              {
+                latitude: data.latitude,
+                longitude: data.longitude,
+              },
+              clinic.name,
+              { initMap: false }
+            );
+          }
+          if (Array.isArray(data.services) && data.services.length) {
+            clinic.services = data.services;
+            renderClinicServices(data.services);
+          }
+        }
+
+        fetch('/api/clinic-profile?clinic_id=' + encodeURIComponent(clinicId))
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (data) {
+            applyClinicOverlay(data);
+
+            // Initialize Leaflet ONLY after clinic lat/lng are fetched
+            var clinicLat = NaN;
+            var clinicLng = NaN;
+            if (data && data.latitude != null && data.longitude != null) {
+              clinicLat = Number(data.latitude);
+              clinicLng = Number(data.longitude);
+            } else {
+              var mapElAfterFetch = document.getElementById('map');
+              clinicLat = mapElAfterFetch
+                ? parseFloat(mapElAfterFetch.getAttribute('data-lat'))
+                : NaN;
+              clinicLng = mapElAfterFetch
+                ? parseFloat(mapElAfterFetch.getAttribute('data-lng'))
+                : NaN;
+            }
+            if (!Number.isFinite(clinicLat) || !Number.isFinite(clinicLng)) {
+              clinicLat = SHIRAZ_CENTER.latitude;
+              clinicLng = SHIRAZ_CENTER.longitude;
+            }
+
+            if (typeof L !== 'undefined') {
+              initLeafletMapWithCoords(clinicLat, clinicLng);
+            } else {
+              var tries = 0;
+              var waitL = setInterval(function () {
+                tries += 1;
+                if (typeof L !== 'undefined') {
+                  clearInterval(waitL);
+                  initLeafletMapWithCoords(clinicLat, clinicLng);
+                } else if (tries > 40) {
+                  clearInterval(waitL);
+                }
+              }, 50);
+            }
+
+            return resolveAndShowIntro(data);
+          })
+          .catch(function () {
+            var mapEl = document.getElementById('map');
+            var clinicLat = mapEl ? parseFloat(mapEl.getAttribute('data-lat')) : NaN;
+            var clinicLng = mapEl ? parseFloat(mapEl.getAttribute('data-lng')) : NaN;
+            if (!Number.isFinite(clinicLat) || !Number.isFinite(clinicLng)) {
+              clinicLat = SHIRAZ_CENTER.latitude;
+              clinicLng = SHIRAZ_CENTER.longitude;
+            }
+            initLeafletMapWithCoords(clinicLat, clinicLng);
+
+            return resolveAndShowIntro(null);
+          })
+          .then(function () {
+            if (typeof window.applyPersianDigits === 'function') {
+              window.applyPersianDigits(document.body);
+            }
+            refreshProfileToc();
+          });
+      }
+    })();
+    });
+  </script>
+</body>
+</html>

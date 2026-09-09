@@ -44,15 +44,43 @@ services:
       - ./uploads:/app/uploads
       # Persist admin-edited intros so nginx and the backend share the same files
       - ./clinic-intros:/app/clinic-intros
+      - ./rhinoplasty.html:/app/rhinoplasty.html:ro
       - ./server.js:/app/server.js:ro
+      - ./persianDate.js:/app/persianDate.js:ro
+      - ./articleCatalog.js:/app/articleCatalog.js:ro
+      - ./staticArticles.js:/app/staticArticles.js:ro
+      - ./assets/js/articles-catalog.generated.js:/app/assets/js/articles-catalog.generated.js
+      - ./articles:/app/articles
+      - ./doctorProfileRouter.js:/app/doctorProfileRouter.js:ro
+      - ./clinicSlug.js:/app/clinicSlug.js:ro
+      - ./serviceSlugMap.js:/app/serviceSlugMap.js:ro
+      - ./faqPageJsonLd.js:/app/faqPageJsonLd.js:ro
+      - ./jsonLdMedicalEntity.js:/app/jsonLdMedicalEntity.js:ro
+      - ./local-seo-registry.js:/app/local-seo-registry.js:ro
+      - ./blogBreadcrumb.js:/app/blogBreadcrumb.js:ro
+      - ./blogSiloApi.js:/app/blogSiloApi.js:ro
+      - ./heroSlides.js:/app/heroSlides.js:ro
+      - ./directoryAdmin.js:/app/directoryAdmin.js:ro
+      - ./catalogClinicSync.js:/app/catalogClinicSync.js:ro
+      - ./admin.html:/app/admin.html:ro
+      - ./syncWorker.js:/app/syncWorker.js:ro
+      - ./commercialLandingLeads.js:/app/commercialLandingLeads.js:ro
+      - ./commercialLandingRouter.js:/app/commercialLandingRouter.js:ro
+      - ./commercialLandingSkag.js:/app/commercialLandingSkag.js:ro
+      - ./commercial-landing-config.js:/app/commercial-landing-config.js:ro
+      - ./data:/app/data:ro
       - ./categoryMonetize.js:/app/categoryMonetize.js:ro
       - ./serviceLanding.js:/app/serviceLanding.js:ro
       - ./siteSettings.js:/app/siteSettings.js:ro
       - ./seoInfra.js:/app/seoInfra.js:ro
+      - ./breadcrumb.js:/app/breadcrumb.js:ro
+      - ./utils:/app/utils:ro
+      - ./scripts/gtm-snippets.js:/app/scripts/gtm-snippets.js:ro
       - ./seoRouter.js:/app/seoRouter.js:ro
       - ./searchRouter.js:/app/searchRouter.js:ro
       - ./search-index.js:/app/search-index.js:ro
       - ./DirectoryRepository.js:/app/DirectoryRepository.js:ro
+      - ./hub-labels.js:/app/hub-labels.js:ro
       - ./articleTemplate.js:/app/articleTemplate.js:ro
       - ./blogArticles.js:/app/blogArticles.js:ro
       - ./uploadApp.js:/app/uploadApp.js:ro
@@ -76,6 +104,7 @@ services:
       - ./views:/app/views:ro
       - ./data.min.js:/app/data.min.js:ro
       - ./profile.html:/app/profile.html:ro
+      - ./articles.html:/app/articles.html:ro
     expose:
       - "3000"
     networks:
@@ -111,11 +140,12 @@ services:
       - ./public/uploads/articles:/usr/share/nginx/html/uploads/articles:ro
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./nginx-site-locations.conf:/etc/nginx/conf.d/site-locations.conf:ro
+      - ./deploy/nginx-seo-performance.conf:/etc/nginx/conf.d/nginx-seo-performance.conf:ro
       # Shared snippets + generated per-clinic dedicated-site server blocks.
       - ./deploy/security-headers.conf:/etc/nginx/snippets/security-headers.conf:ro
       - ./deploy/clinic-proxy.conf:/etc/nginx/snippets/clinic-proxy.conf:ro
       - ./deploy/clinic-sites.d:/etc/nginx/clinic-sites.d:ro
-      - /etc/nginx/certs/.htpasswd:/etc/nginx/certs/.htpasswd:ro
+      - ./certs/.htpasswd:/etc/nginx/certs/.htpasswd:ro
       - /etc/letsencrypt:/etc/letsencrypt:ro
       - /var/www/certbot:/var/www/certbot:ro
     networks:

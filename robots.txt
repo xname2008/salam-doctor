@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /leads.json
+Disallow: /api/
+
+Sitemap: https://salam-doctor.com/sitemap.xml
+Sitemap: https://salam-doctor.com/sitemap-articles.xml

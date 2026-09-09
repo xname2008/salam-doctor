@@ -1,0 +1,72 @@
+{# E-E-A-T: Experience, Expertise, Authoritativeness, Trustworthiness #}
+<section id="eeat" class="py-16 md:py-20 bg-white">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="text-center max-w-2xl mx-auto mb-12">
+      <p class="text-trust font-bold text-sm mb-2">اعتماد بالینی · E-E-A-T</p>
+      <h2 class="text-2xl md:text-3xl font-extrabold text-navy mb-3">تیم پزشکی با سوابق قابل‌راستی‌آزمایی</h2>
+      <p class="text-muted leading-relaxed">شماره نظام، بورد تخصصی و فلوشیپ‌ها شفاف نمایش داده می‌شوند تا بیمار با اطمینان تصمیم بگیرد.</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {% for doctor in doctors %}
+      <article class="rounded-2xl border border-line bg-slate-50/50 p-6 shadow-card hover:border-trust/30 transition">
+        <div class="flex items-start gap-4 mb-4">
+          {% if doctor.avatar_url %}
+          <img src="{{ doctor.avatar_url }}" alt="{{ doctor.name }}"
+               class="w-16 h-16 rounded-2xl object-cover border-2 border-white shadow">
+          {% else %}
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-trust/20 to-growth/20 flex items-center justify-center text-trust text-2xl">
+            <i class="fa-solid fa-user-doctor"></i>
+          </div>
+          {% endif %}
+          <div>
+            <h3 class="font-extrabold text-lg text-navy">{{ doctor.name }}</h3>
+            <p class="text-sm text-trust font-semibold">{{ doctor.title }}</p>
+          </div>
+        </div>
+
+        <dl class="space-y-3 text-sm">
+          {% if doctor.license_number %}
+          <div class="flex justify-between gap-2 py-2 border-b border-line/80">
+            <dt class="text-muted font-medium"><i class="fa-solid fa-id-card ml-1 text-growth"></i> شماره نظام پزشکی</dt>
+            <dd class="font-bold text-ink dir-ltr">{{ doctor.license_number }}</dd>
+          </div>
+          {% endif %}
+          {% if doctor.board_specialty %}
+          <div class="flex justify-between gap-2 py-2 border-b border-line/80">
+            <dt class="text-muted font-medium"><i class="fa-solid fa-certificate ml-1 text-gold"></i> بورد تخصصی</dt>
+            <dd class="font-bold text-ink text-left">{{ doctor.board_specialty }}</dd>
+          </div>
+          {% endif %}
+          {% if doctor.years_experience %}
+          <div class="flex justify-between gap-2 py-2 border-b border-line/80">
+            <dt class="text-muted font-medium">سابقه فعالیت</dt>
+            <dd class="font-bold">{{ doctor.years_experience }}+ سال</dd>
+          </div>
+          {% endif %}
+          {% if doctor.publications_count %}
+          <div class="flex justify-between gap-2 py-2 border-b border-line/80">
+            <dt class="text-muted font-medium">مقالات علمی</dt>
+            <dd class="font-bold">{{ doctor.publications_count }} مورد</dd>
+          </div>
+          {% endif %}
+        </dl>
+
+        {% if doctor.fellowships %}
+        <div class="mt-4">
+          <p class="text-xs font-bold text-muted mb-2">فلوشیپ و دوره‌های تخصصی</p>
+          <ul class="space-y-1.5">
+            {% for f in doctor.fellowships %}
+            <li class="text-sm flex items-start gap-2">
+              <i class="fa-solid fa-graduation-cap text-growth text-xs mt-1"></i>
+              <span>{{ f }}</span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,20 @@
+<section class="py-12 bg-white border-t border-slate-200" id="faq" aria-labelledby="faq-title">
+  <div class="max-w-3xl mx-auto px-4">
+    <h2 id="faq-title" class="text-xl md:text-2xl font-extrabold text-navy mb-5">سوالات متداول</h2>
+    <div class="grid gap-2.5">
+      {% if faqs %}
+        {% for item in faqs %}
+        <details class="group rounded-2xl border border-slate-200 bg-white px-4 shadow-sm open:border-trust/40">
+          <summary class="flex cursor-pointer list-none items-center justify-between gap-3 py-3.5 font-bold text-ink marker:content-none [&::-webkit-details-marker]:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-trust">
+            <span>{{ item.question or item.q }}</span>
+            <span class="inline-block h-2.5 w-2.5 shrink-0 border-b-2 border-s-2 border-slate-400 rotate-45 transition group-open:-rotate-[135deg] group-open:border-trust" aria-hidden="true"></span>
+          </summary>
+          <div class="pb-4 text-sm leading-8 text-muted" role="region">
+            <p>{{ item.answer or item.a }}</p>
+          </div>
+        </details>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+</section>

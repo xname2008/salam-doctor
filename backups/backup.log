@@ -1,0 +1,37 @@
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260416-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260416-033001.db Copying
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260416-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260416-033001.db Copied
+Backup complete: /home/xname2008/Documents/nginx/html/backups/leads-20260416-033001.db.gz
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260417-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260417-033001.db Copying
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260417-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260417-033001.db Copied
+Backup complete: /home/xname2008/Documents/nginx/html/backups/leads-20260417-033001.db.gz
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260418-033002.db to /home/xname2008/Documents/nginx/html/backups/leads-20260418-033002.db Copying
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260418-033002.db to /home/xname2008/Documents/nginx/html/backups/leads-20260418-033002.db Copied
+Backup complete: /home/xname2008/Documents/nginx/html/backups/leads-20260418-033002.db.gz
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260419-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260419-033001.db Copying
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260419-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260419-033001.db Copied
+Backup complete: /home/xname2008/Documents/nginx/html/backups/leads-20260419-033001.db.gz
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260420-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260420-033001.db Copying
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260420-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260420-033001.db Copied
+Backup complete: /home/xname2008/Documents/nginx/html/backups/leads-20260420-033001.db.gz
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260421-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260421-033001.db Copying
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260421-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260421-033001.db Copied
+Backup complete: /home/xname2008/Documents/nginx/html/backups/leads-20260421-033001.db.gz
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260422-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260422-033001.db Copying
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260422-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260422-033001.db Copied
+Backup complete: /home/xname2008/Documents/nginx/html/backups/leads-20260422-033001.db.gz
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260423-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260423-033001.db Copying
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260423-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260423-033001.db Copied
+Backup complete: /home/xname2008/Documents/nginx/html/backups/leads-20260423-033001.db.gz
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260424-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260424-033001.db Copying
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260424-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260424-033001.db Copied
+Backup complete: /home/xname2008/Documents/nginx/html/backups/leads-20260424-033001.db.gz
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260425-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260425-033001.db Copying
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260425-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260425-033001.db Copied
+Backup complete: /home/xname2008/Documents/nginx/html/backups/leads-20260425-033001.db.gz
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260416-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260416-033001.db Copying
+ salam-doctor-backend copy salam-doctor-backend:/tmp/leads-backup-20260416-033001.db to /home/xname2008/Documents/nginx/html/backups/leads-20260416-033001.db Copied
+Backup complete: /home/xname2008/Documents/nginx/html/backups/leads-20260416-033001.db.gz
+/bin/sh: 1: /home/xname2008/Documents/nginx/html/backup-db.sh: Permission denied
+/bin/sh: 1: /home/xname2008/Documents/nginx/html/backup-db.sh: Permission denied
+/bin/sh: 1: /home/xname2008/Documents/nginx/html/backup-db.sh: Permission denied
+/bin/sh: 1: /home/xname2008/Documents/nginx/html/backup-db.sh: Permission denied

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Salam Doctor — Platform Brief (EN)</title>
+  <style>
+    @page { size: A4; margin: 14mm 16mm; }
+  </style>
+  <style>
+    :root {
+      --blue: #1294e0;
+      --navy: #041f45;
+      --mint: #e9f5f4;
+      --text: #13233c;
+      --muted: #5f6f86;
+      --line: #dbe4ee;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.55;
+      color: var(--text);
+      background: #fff;
+    }
+    .page {
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 12mm 14mm;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid var(--blue);
+      margin-bottom: 14px;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 22pt;
+      font-weight: 800;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 10pt;
+    }
+    .meta {
+      text-align: right;
+      font-size: 9pt;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+    .meta strong { color: var(--navy); display: block; font-size: 10pt; }
+    .lead {
+      background: linear-gradient(135deg, var(--mint) 0%, #fff 100%);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+    .lead p { margin: 0; font-size: 11pt; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .stat {
+      background: var(--navy);
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+    .stat b {
+      display: block;
+      font-size: 16pt;
+      line-height: 1.2;
+      color: #7dd3fc;
+    }
+    .stat span { font-size: 8.5pt; opacity: 0.9; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    section {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    h2 {
+      margin: 0 0 8px;
+      font-size: 10pt;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--blue);
+    }
+    ul { margin: 0; padding-left: 16px; }
+    li { margin-bottom: 3px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5pt;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 5px 8px;
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      background: var(--mint);
+      font-weight: 700;
+      width: 32%;
+    }
+    .flow {
+      font-family: ui-monospace, monospace;
+      font-size: 8.5pt;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      line-height: 1.45;
+      white-space: pre;
+      margin: 0;
+    }
+    .footer {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8.5pt;
+      color: var(--muted);
+    }
+    .tag {
+      display: inline-block;
+      background: var(--mint);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 8pt;
+      margin: 2px 2px 0 0;
+    }
+    @media print {
+      body { background: #fff; }
+      .page { padding: 0; max-width: none; }
+      section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <h1>Salam Doctor</h1>
+        <p>Medical referral &amp; clinic directory platform — Shiraz, Iran</p>
+      </div>
+      <div class="meta">
+        <strong>salam-doctor.ir</strong>
+        Platform Brief — English<br>
+        May 2026 · Confidential
+      </div>
+    </header>
+
+    <div class="lead">
+      <p><strong>Salam Doctor (سلام دکتر)</strong> is a Persian, RTL web platform that connects patients in Shiraz with vetted clinics and specialists. It combines a searchable clinic directory, consultation lead capture, live chat, and service landing pages — designed for fast deployment, low operating cost, and easy content updates.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>29+</b><span>Clinics listed</span></div>
+      <div class="stat"><b>5,000</b><span>Monthly visits (plan)</span></div>
+      <div class="stat"><b>RTL</b><span>Persian-first UX</span></div>
+      <div class="stat"><b>24/7</b><span>Lead + chat intake</span></div>
+    </div>
+
+    <div class="grid-2">
+      <section>
+        <h2>What it does</h2>
+        <ul>
+          <li>Directory of beauty &amp; medical clinics in Shiraz</li>
+          <li>Category browsing (hair, skin, laser, surgery, etc.)</li>
+          <li>Individual clinic profiles with services &amp; contact</li>
+          <li>Consultation request form → stored as leads</li>
+          <li>Real-time chat widget + Bale messenger link</li>
+          <li>Landing pages: home visit, lab, equipment rental</li>
+        </ul>
+      </section>
+      <section>
+        <h2>What it is not</h2>
+        <ul>
+          <li>Not an EMR or hospital information system</li>
+          <li>Not online appointment scheduling (yet)</li>
+          <li>Not payment / insurance processing</li>
+          <li>Not a native mobile app</li>
+          <li>Clinic data is not a dynamic CMS — edited in code</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="grid-2">
+      <section>
+        <h2>Technology stack</h2>
+        <table>
+          <tr><th>Frontend</th><td>HTML5, CSS, vanilla JavaScript (no React/Vue). Swiper.js carousels. Local Persian fonts (Vazirmatn, IRANSans).</td></tr>
+          <tr><th>Backend</th><td>Node.js (native <code>http</code>), SQLite (<code>better-sqlite3</code>), Socket.IO for live chat.</td></tr>
+          <tr><th>Hosting</th><td>Docker Compose: Nginx (static + reverse proxy) + Node backend. HTTPS via Let’s Encrypt.</td></tr>
+          <tr><th>Data</th><td>Clinics in <code>data.js</code>; leads in SQLite <code>leads.db</code>.</td></tr>
+        </table>
+      </section>
+      <section>
+        <h2>Architecture</h2>
+        <pre class="flow">Visitor → Nginx (443) → Static HTML/CSS/JS
+              ↓
+         /api/*  → Node.js :3000 → SQLite
+         /socket.io/ → In-memory chat sessions
+              ↓
+         admin.html (Basic Auth) → leads + chat panel</pre>
+      </section>
+    </div>
+
+    <div class="grid-2">
+      <section>
+        <h2>Key pages &amp; APIs</h2>
+        <p style="margin:0 0 6px"><span class="tag">index.html</span><span class="tag">category.html</span><span class="tag">profile.html</span><span class="tag">admin.html</span></p>
+        <ul>
+          <li><code>POST /api/consultation</code> — save lead (name, phone, service)</li>
+          <li><code>GET /api/leads</code> — list leads (protected)</li>
+          <li><code>GET /api/health</code> — uptime check</li>
+          <li>WebSocket <code>/socket.io/</code> — visitor ↔ admin chat</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Business model (typical)</h2>
+        <ul>
+          <li><strong>Referral / introduction</strong> — match patients to partner clinics</li>
+          <li><strong>Lead generation</strong> — consultation forms &amp; chat captured centrally</li>
+          <li><strong>Brand trust</strong> — curated directory positions Salam Doctor as a local authority</li>
+          <li><strong>Service expansion</strong> — home care, lab, equipment rental as additional verticals</li>
+        </ul>
+      </section>
+    </div>
+
+    <section style="margin-bottom:12px">
+      <h2>Roadmap &amp; growth levers</h2>
+      <div class="grid-2" style="gap:10px;margin:0">
+        <ul>
+          <li>Migrate clinics to a proper database / admin CMS</li>
+          <li>Persist chat history; optional CRM integration</li>
+          <li>SMS / WhatsApp / Bale notifications on new leads</li>
+        </ul>
+        <ul>
+          <li>Online booking with clinic calendars</li>
+          <li>Reviews &amp; ratings; SEO for each clinic profile</li>
+          <li>Expand beyond Shiraz; partner onboarding portal</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="footer">
+      <span>Contact: Bale <strong>ble.ir/09007000462</strong> · Web <strong>https://salam-doctor.ir</strong></span>
+      <span>Print this page to PDF (Ctrl/Cmd + P)</span>
+    </div>
+  </div>
+</body>
+</html>

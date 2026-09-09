@@ -1,0 +1,56 @@
+{# Client-side SKAG fallback when page is cached/CDN without server-side UTM render #}
+<script>
+(function () {
+  'use strict';
+
+  var PRESETS = {
+    candela: {
+      h1: 'لیزر کندلا تیتانیوم در {city} — {clinic}',
+      cta_primary: 'رزرو فوری لیزر کندلا',
+      cta_secondary: 'مشاوره رایگان کندلا'
+    },
+    'hair-transplant': {
+      h1: 'کاشت مو در {city} — {clinic}',
+      cta_primary: 'رزرو مشاوره کاشت مو',
+      cta_secondary: 'برآورد هزینه کاشت مو'
+    },
+    botox: {
+      h1: 'تزریق بوتاکس تخصصی در {city} — {clinic}',
+      cta_primary: 'رزرو نوبت بوتاکس',
+      cta_secondary: 'مشاهده تعرفه بوتاکس'
+    }
+  };
+
+  function qp(name) {
+    return new URLSearchParams(window.location.search).get(name);
+  }
+
+  function fmt(tpl, vars) {
+    return String(tpl).replace(/\{(\w+)\}/g, function (_, k) { return vars[k] || ''; });
+  }
+
+  var clinic = {{ clinic_name | tojson }};
+  var city = {{ city | tojson }};
+  var keyword = qp('skag') || qp('utm_term') || qp('keyword') || qp('device') || qp('service') || qp('utm_content');
+  var presetKey = keyword ? keyword.toLowerCase().replace(/[^\w\u0600-\u06FF]+/g, '-').replace(/^-+|-+$/g, '') : '';
+  var preset = PRESETS[presetKey];
+  var vars = { clinic: clinic, city: city, keyword: keyword || clinic };
+
+  var h1El = document.getElementById('skag-h1');
+  var ctaEls = document.querySelectorAll('[data-skag="cta-primary"]');
+  var cta2Els = document.querySelectorAll('[data-skag="cta-secondary"]');
+
+  if (preset && h1El) {
+    h1El.textContent = fmt(preset.h1, vars);
+    ctaEls.forEach(function (el) { el.textContent = fmt(preset.cta_primary, vars); });
+    cta2Els.forEach(function (el) { el.textContent = fmt(preset.cta_secondary, vars); });
+  } else if (keyword && h1El) {
+    h1El.textContent = keyword + ' در ' + city + ' — ' + clinic;
+    ctaEls.forEach(function (el) { el.textContent = 'رزرو فوری ' + keyword; });
+  }
+
+  if (keyword && window.dataLayer) {
+    window.dataLayer.push({ event: 'skag_landing_view', skag_keyword: keyword, clinic_id: {{ clinic_id }} });
+  }
+})();
+</script>

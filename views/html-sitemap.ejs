@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<%- include('partials/gtm-head') %>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1294e0">
+  <title><%= title %></title>
+  <meta name="description" content="<%= description %>">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="<%= canonical %>">
+  <link rel="icon" type="image/svg+xml" href="/images/logo-heart.svg?v=5">
+
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:site_name" content="سلام دکتر">
+  <meta property="og:title" content="<%= title %>">
+  <meta property="og:description" content="<%= description %>">
+  <meta property="og:url" content="<%= canonical %>">
+
+  <link rel="preload" href="/assets/fonts/Vazirmatn-RD-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/tailwind.min.css">
+  <link rel="stylesheet" href="/assets/css/shared.css?v=20260903c">
+  <style>
+    body{font-family:"Vazirmatn","IRANSansXFaNum","Tahoma",sans-serif;background:#f8fafc;color:#0f172a}
+    .sitemap-cols{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:1.25rem 2rem;
+    }
+    @media (min-width:1024px){
+      .sitemap-cols{grid-template-columns:repeat(4,minmax(0,1fr))}
+    }
+    .sitemap-cols--clinics{
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    @media (min-width:900px){
+      .sitemap-cols--clinics{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media (min-width:1200px){
+      .sitemap-cols--clinics{grid-template-columns:repeat(4,minmax(0,1fr))}
+    }
+    .sitemap-section{
+      background:#fff;
+      border:1px solid #e2e8f0;
+      border-radius:1rem;
+      padding:1.25rem 1.35rem;
+      margin-bottom:1.5rem;
+    }
+    .sitemap-section h2{
+      font-size:1.1rem;
+      font-weight:800;
+      margin:0 0 .85rem;
+      color:#0f172a;
+      padding-bottom:.55rem;
+      border-bottom:1px solid #e2e8f0;
+    }
+    .sitemap-section h3{
+      font-size:.95rem;
+      font-weight:800;
+      margin:0 0 .5rem;
+      color:#0369a1;
+    }
+    .sitemap-section ul{
+      list-style:none;
+      margin:0;
+      padding:0;
+    }
+    .sitemap-section li{margin:0 0 .35rem}
+    .sitemap-section a{
+      color:#334155;
+      text-decoration:none;
+      font-size:.9rem;
+      line-height:1.55;
+      display:inline-block;
+    }
+    .sitemap-section a:hover{color:#0284c7;text-decoration:underline}
+    .sitemap-toc a{font-weight:700;color:#0369a1}
+  </style>
+</head>
+<body>
+<%- include('partials/gtm-body') %>
+  <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+      <a href="/" class="flex items-center gap-2 font-extrabold text-slate-900" aria-label="سلام دکتر — صفحه اصلی">
+        <img src="/images/logo-heart.svg" alt="" width="36" height="36" class="h-9 w-9">
+        <span>سلام دکتر</span>
+      </a>
+      <a href="tel:+989007000462" class="rounded-xl bg-sky-600 px-4 py-2 text-sm font-bold text-white hover:bg-sky-700">مشاوره رایگان</a>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-4 py-8 sm:py-10">
+    <nav class="seo-breadcrumb mb-4" aria-label="breadcrumb">
+      <a href="/">خانه</a>
+      <span class="seo-breadcrumb-separator" aria-hidden="true">›</span>
+      <span class="seo-breadcrumb-current" aria-current="page">نقشه سایت</span>
+    </nav>
+
+    <h1 class="mb-2 text-2xl font-extrabold text-slate-900 sm:text-3xl">نقشه سایت سلام دکتر</h1>
+    <p class="mb-6 max-w-3xl text-slate-600 leading-relaxed">
+      فهرست سلسله‌مراتبی شهرها، تخصص‌ها و کلینیک‌های فعال برای دسترسی سریع کاربران و خزنده‌های موتور جستجو.
+    </p>
+
+    <nav class="sitemap-section sitemap-toc" aria-label="فهرست بخش‌ها">
+      <h2>پرش به بخش</h2>
+      <ul class="sitemap-cols">
+        <li><a href="#cities-services">شهرها و تخصص‌ها</a></li>
+        <li><a href="#clinics">کلینیک‌ها و پزشکان</a></li>
+        <li><a href="#popular">خدمات پرکاربرد</a></li>
+        <li><a href="#static-pages">صفحات اصلی</a></li>
+      </ul>
+    </nav>
+
+    <section id="popular" class="sitemap-section" aria-labelledby="popular-heading">
+      <h2 id="popular-heading">خدمات پرکاربرد</h2>
+      <ul class="sitemap-cols">
+        <% popularLinks.forEach(function (link) { %>
+          <li><a href="<%= link.href %>"><%= link.label %></a></li>
+        <% }) %>
+      </ul>
+    </section>
+
+    <section id="cities-services" class="sitemap-section" aria-labelledby="cities-heading">
+      <h2 id="cities-heading">شهرها و تخصص‌ها</h2>
+      <p class="mb-4 text-sm text-slate-500">هر شهر × تخصص‌های اصلی (لینک مستقیم به صفحه محلی)</p>
+      <% cityServiceGroups.forEach(function (group) { %>
+        <div class="mb-8 last:mb-0">
+          <h3 id="city-<%= group.city.slug %>"><%= group.city.nameFa %><% if (group.city.regionFa) { %> <span class="text-slate-400 font-medium text-sm">(<%= group.city.regionFa %>)</span><% } %></h3>
+          <ul class="sitemap-cols">
+            <% group.links.forEach(function (link) { %>
+              <li><a href="<%= link.href %>"><%= link.label %></a></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% }) %>
+    </section>
+
+    <section id="clinics" class="sitemap-section" aria-labelledby="clinics-heading">
+      <h2 id="clinics-heading">کلینیک‌ها و پزشکان فعال</h2>
+      <% if (!clinics.length) { %>
+        <p class="text-sm text-slate-500">در حال حاضر فهرست کلینیک‌ها از پایگاه‌داده در دسترس نیست.</p>
+      <% } else { %>
+        <p class="mb-4 text-sm text-slate-500"><%= clinics.length.toLocaleString('fa-IR') %> مرکز با پروفایل منتشرشده</p>
+        <ul class="sitemap-cols sitemap-cols--clinics">
+          <% clinics.forEach(function (c) { %>
+            <li><a href="<%= c.href %>"><%= c.name %></a></li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </section>
+
+    <section id="static-pages" class="sitemap-section" aria-labelledby="static-heading">
+      <h2 id="static-heading">صفحات اصلی سایت</h2>
+      <ul class="sitemap-cols">
+        <% staticPages.forEach(function (p) { %>
+          <li><a href="<%= p.href %>"><%= p.label %></a></li>
+        <% }) %>
+        <li><a href="/sitemap.xml">نقشه سایت XML</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white py-10 mt-4">
+    <div class="mx-auto max-w-6xl px-4">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>سلام دکتر</h4>
+          <div class="footer-links">
+            <a href="tel:+989007000462" dir="ltr">پشتیبانی: ۰۹۰۰۷۰۰۰۴۶۲</a>
+            <span>info@salamdoctor.ir</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>خدمات پرکاربرد</h4>
+          <div class="footer-links">
+            <% popularLinks.slice(0, 6).forEach(function (link) { %>
+              <a href="<%= link.href %>"><%= link.label %></a>
+            <% }) %>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>راهنمای بیماران</h4>
+          <div class="footer-links">
+            <a href="/articles.html">مقالات آموزشی</a>
+            <a href="/faq.html">سوالات متداول</a>
+            <a href="/about.html">درباره ما</a>
+            <a href="/sitemap">نقشه سایت</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>مقالات جدید</h4>
+          <div class="footer-links">
+            <a href="/articles/laser-hair-removal-comparison.html">مقایسه لیزر کاندلا و الکساندرایت</a>
+            <a href="/articles/fit-hair-transplant-cost.html">هزینه و مراقبت کاشت مو FIT</a>
+            <a href="/articles.html">همه مقالات</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-note">© 2026 سلام دکتر. تمامی حقوق محفوظ است.</div>
+    </div>
+  </footer>
+</body>
+</html>

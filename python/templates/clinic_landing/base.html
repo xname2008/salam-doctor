@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NL3KJ8ZQ');</script>
+<!-- End Google Tag Manager -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#041f45">
+  <title>{{ h1 }}</title>
+  <meta name="description" content="{{ meta_description or subheadline }}">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#041f45',
+            trust: '#1294e0',
+            growth: '#0d9488',
+            gold: '#c9a227',
+            ink: '#13233c',
+            muted: '#5f6f86',
+            line: '#dbe4ee'
+          },
+          fontFamily: { vazir: ['Vazirmatn', 'Tahoma', 'sans-serif'] },
+          boxShadow: {
+            hero: '0 32px 64px -12px rgba(4, 31, 69, 0.25)',
+            card: '0 12px 32px rgba(4, 31, 69, 0.08)'
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  {% block head_extra %}{% endblock %}
+  {% include "partials/jsonld.html" %}
+</head>
+<body class="font-vazir bg-slate-50 text-ink antialiased">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NL3KJ8ZQ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+  {% block body %}{% endblock %}
+  {% include "partials/skag_script.html" %}
+</body>
+</html>

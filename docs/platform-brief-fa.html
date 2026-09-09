@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سلام دکتر — معرفی پلتفرم (فارسی)</title>
+  <style>
+    @page { size: A4; margin: 14mm 16mm; }
+  </style>
+  <style>
+    @font-face {
+      font-family: "Vazirmatn";
+      src: url("../assets/fonts/Vazirmatn-RD-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "IRANSansXFaNum";
+      src: url("../assets/fonts/IRANSansXFaNum-Regular.woff2") format("woff2");
+      font-weight: 400;
+      font-display: swap;
+    }
+    :root {
+      --blue: #1294e0;
+      --navy: #041f45;
+      --mint: #e9f5f4;
+      --text: #13233c;
+      --muted: #5f6f86;
+      --line: #dbe4ee;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Vazirmatn", "IRANSansXFaNum", Tahoma, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.75;
+      color: var(--text);
+      background: #fff;
+    }
+    .page {
+      max-width: 210mm;
+      margin: 0 auto;
+      padding: 12mm 14mm;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid var(--blue);
+      margin-bottom: 14px;
+    }
+    .brand h1 {
+      margin: 0;
+      font-size: 22pt;
+      font-weight: 800;
+      color: var(--navy);
+    }
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 10pt;
+    }
+    .meta {
+      text-align: left;
+      font-size: 9pt;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .meta strong { color: var(--navy); display: block; font-size: 10pt; }
+    .lead {
+      background: linear-gradient(135deg, var(--mint) 0%, #fff 100%);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+    .lead p { margin: 0; font-size: 11pt; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .stat {
+      background: var(--navy);
+      color: #fff;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+    .stat b {
+      display: block;
+      font-size: 16pt;
+      line-height: 1.2;
+      color: #7dd3fc;
+      font-family: "IRANSansXFaNum", inherit;
+    }
+    .stat span { font-size: 8.5pt; opacity: 0.9; }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    section {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    h2 {
+      margin: 0 0 8px;
+      font-size: 10pt;
+      color: var(--blue);
+      font-weight: 800;
+    }
+    ul { margin: 0; padding-right: 18px; padding-left: 0; }
+    li { margin-bottom: 3px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9.5pt;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 5px 8px;
+      text-align: right;
+      vertical-align: top;
+    }
+    th {
+      background: var(--mint);
+      font-weight: 700;
+      width: 28%;
+    }
+    code {
+      font-family: ui-monospace, monospace;
+      font-size: 8.5pt;
+      direction: ltr;
+      unicode-bidi: embed;
+    }
+    .flow {
+      font-family: ui-monospace, monospace;
+      font-size: 8.5pt;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 8px 10px;
+      line-height: 1.55;
+      white-space: pre;
+      margin: 0;
+      direction: ltr;
+      text-align: left;
+    }
+    .footer {
+      margin-top: 12px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 8.5pt;
+      color: var(--muted);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .tag {
+      display: inline-block;
+      background: var(--mint);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 8pt;
+      margin: 2px 0 0 2px;
+      direction: ltr;
+    }
+    @media print {
+      body { background: #fff; }
+      .page { padding: 0; max-width: none; }
+      section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <h1>سلام دکتر</h1>
+        <p>پلتفرم معرفی مراکز درمانی و زیبایی — شیراز</p>
+      </div>
+      <div class="meta">
+        <strong>salam-doctor.ir</strong>
+        معرفی پلتفرم — فارسی<br>
+        خرداد ۱۴۰۵ · محرمانه
+      </div>
+    </header>
+
+    <div class="lead">
+      <p><strong>سلام دکتر</strong> یک وب‌سایت فارسی و راست‌به‌چپ است که بیماران شیراز را به کلینیک‌ها و متخصصان معتبر وصل می‌کند. دایرکتوری مراکز، فرم درخواست مشاوره، چت زنده و صفحات تخصصی خدمات — با هزینه نگهداری پایین و امکان به‌روزرسانی سریع محتوا.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b>۲۹+</b><span>مرکز ثبت‌شده</span></div>
+      <div class="stat"><b>۵٬۰۰۰</b><span>بازدید ماهانه (فرض)</span></div>
+      <div class="stat"><b>RTL</b><span>تجربه کاربری فارسی</span></div>
+      <div class="stat"><b>۲۴/۷</b><span>دریافت سرنخ و چت</span></div>
+    </div>
+
+    <div class="grid-2">
+      <section>
+        <h2>چه کارهایی انجام می‌دهد</h2>
+        <ul>
+          <li>فهرست کلینیک‌های درمانی و زیبایی در شیراز</li>
+          <li>مرور بر اساس دسته: پوست، مو، لیزر، جراحی و …</li>
+          <li>صفحه پروفایل هر مرکز با خدمات و تماس</li>
+          <li>فرم درخواست مشاوره → ذخیره به‌عنوان سرنخ (لید)</li>
+          <li>ویجت چت زنده + لینک پیام‌رسان بله</li>
+          <li>صفحات تخصصی: ویزیت در منزل، آزمایشگاه، اجاره تجهیزات</li>
+        </ul>
+      </section>
+      <section>
+        <h2>چه چیزی نیست</h2>
+        <ul>
+          <li>سیستم پرونده الکترونیک بیمار (EMR) نیست</li>
+          <li>رزرو آنلاین نوبت (فعلاً) ندارد</li>
+          <li>پرداخت یا بیمه یکپارچه ندارد</li>
+          <li>اپلیکیشن موبایل بومی ندارد</li>
+          <li>اطلاعات کلینیک‌ها CMS پویا نیست — در کد ویرایش می‌شود</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="grid-2">
+      <section>
+        <h2>فناوری و زیرساخت</h2>
+        <table>
+          <tr><th>فرانت‌اند</th><td>HTML5، CSS، جاوااسکریپت خالص (بدون React/Vue). اسلایدر Swiper.js. فونت‌های فارسی محلی (وزیرمتن، ایران‌سنس).</td></tr>
+          <tr><th>بک‌اند</th><td>Node.js (ماژول <code>http</code>)، SQLite با <code>better-sqlite3</code>، Socket.IO برای چت زنده.</td></tr>
+          <tr><th>میزبانی</th><td>Docker Compose: Nginx (فایل استاتیک + پروکسی) + Node. HTTPS با Let's Encrypt.</td></tr>
+          <tr><th>داده</th><td>کلینیک‌ها در <code>data.js</code>؛ سرنخ‌ها در <code>leads.db</code> (SQLite).</td></tr>
+        </table>
+      </section>
+      <section>
+        <h2>معماری ساده</h2>
+        <pre class="flow">کاربر → Nginx (443) → HTML/CSS/JS استاتیک
+         ↓
+    /api/*  → Node.js :3000 → SQLite
+    /socket.io/ → جلسات چت در حافظه
+         ↓
+    admin.html (رمز) → پنل سرنخ‌ها و چت</pre>
+      </section>
+    </div>
+
+    <div class="grid-2">
+      <section>
+        <h2>صفحات و APIهای اصلی</h2>
+        <p style="margin:0 0 6px"><span class="tag">index.html</span><span class="tag">category.html</span><span class="tag">profile.html</span><span class="tag">admin.html</span></p>
+        <ul>
+          <li><code>POST /api/consultation</code> — ثبت سرنخ (نام، موبایل، خدمت)</li>
+          <li><code>GET /api/leads</code> — لیست سرنخ‌ها (محافظت‌شده)</li>
+          <li><code>GET /api/health</code> — بررسی سلامت سرویس</li>
+          <li>WebSocket <code>/socket.io/</code> — چت بازدیدکننده ↔ ادمین</li>
+        </ul>
+      </section>
+      <section>
+        <h2>مدل کسب‌وکار (معمول)</h2>
+        <ul>
+          <li><strong>ارجاع و معرفی</strong> — اتصال بیمار به کلینیک‌های همکار</li>
+          <li><strong>جذب سرنخ</strong> — فرم مشاوره و چت در یک نقطه متمرکز</li>
+          <li><strong>اعتماد برند</strong> — دایرکتوری منتخب، مرجع محلی در شیراز</li>
+          <li><strong>گسترش خدمات</strong> — ویزیت در منزل، آزمایش، اجاره تجهیزات</li>
+        </ul>
+      </section>
+    </div>
+
+    <section style="margin-bottom:12px">
+      <h2>مسیر رشد و توسعه</h2>
+      <div class="grid-2" style="gap:10px;margin:0">
+        <ul>
+          <li>انتقال کلینیک‌ها به دیتابیس / پنل مدیریت محتوا</li>
+          <li>ذخیره تاریخچه چت؛ اتصال CRM</li>
+          <li>اعلان SMS / واتساپ / بله برای سرنخ جدید</li>
+        </ul>
+        <ul>
+          <li>رزرو آنلاین با تقویم کلینیک‌ها</li>
+          <li>نظرات و امتیاز؛ SEO برای هر پروفایل</li>
+          <li>گسترش به شهرهای دیگر؛ پورتال همکاری کلینیک‌ها</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="footer">
+      <span>تماس: بله <strong dir="ltr">ble.ir/09007000462</strong> · وب <strong dir="ltr">https://salam-doctor.ir</strong></span>
+      <span>برای PDF: چاپ صفحه (Ctrl/Cmd + P)</span>
+    </div>
+  </div>
+</body>
+</html>

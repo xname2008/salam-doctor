@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<%- include('partials/gtm-head') %>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1294e0">
+  <title><%= article.title %> | سلام دکتر</title>
+  <% if (article.summary) { %><meta name="description" content="<%= article.summary %>"><% } %>
+  <link rel="canonical" href="<%= canonical %>">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="icon" type="image/svg+xml" href="/images/logo-heart.svg?v=5">
+
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:site_name" content="سلام دکتر">
+  <meta property="og:title" content="<%= article.title %>">
+  <% if (article.summary) { %><meta property="og:description" content="<%= article.summary %>"><% } %>
+  <meta property="og:url" content="<%= canonical %>">
+  <meta property="og:image" content="<%= ogImage %>">
+  <% if (article.published_at) { %><meta property="article:published_time" content="<%= article.published_at %>"><% } %>
+  <% if (article.updated_at) { %><meta property="article:modified_time" content="<%= article.updated_at %>"><% } %>
+  <meta name="twitter:card" content="summary_large_image">
+
+  <%# Structured data: Article + BreadcrumbList (+ FAQPage when real Q/A exists) %>
+  <% jsonLdBlocks.forEach(function (block) { %>
+  <script type="application/ld+json"><%- block %></script>
+  <% }) %>
+
+  <%# Fonts: preload only the weight used above the fold; font-display:swap %>
+  <link rel="preload" href="/assets/fonts/Vazirmatn-RD-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/Vazirmatn-RD-Bold.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/fonts/Vazirmatn-font-face.css">
+
+  <%# Self-contained critical CSS — no external framework payload (CWV) %>
+  <style>
+    :root{--blue:#1294e0;--blue-d:#0e7fc0;--navy:#0f172a;--text:#1e293b;--body:#28384f;
+      --muted:#64748b;--line:#e2e8f0;--bg:#f8fafc;--mint:#effaf6;--gold:#f59e0b}
+    *{margin:0;padding:0;box-sizing:border-box}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+    body{font-family:"Vazirmatn","IRANSansX",Tahoma,sans-serif;background:var(--bg);
+      color:var(--text);line-height:1.9;font-size:1.02rem;text-rendering:optimizeSpeed}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;height:auto;display:block}
+
+    .topbar{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line)}
+    .topbar__row{max-width:1080px;margin:0 auto;padding:0 16px;min-height:64px;
+      display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem;color:var(--navy)}
+    .brand img{width:36px;height:36px}
+    .topbar__cta{background:var(--blue);color:#fff;font-weight:700;font-size:.9rem;
+      padding:10px 18px;border-radius:12px;transition:background .15s}
+    .topbar__cta:hover{background:var(--blue-d)}
+
+    .crumbs{max-width:1080px;margin:0 auto;padding:14px 16px 0;font-size:.83rem;color:var(--muted);
+      display:flex;gap:8px;flex-wrap:wrap}
+    .crumbs a:hover{color:var(--blue)}
+    .crumbs .current{color:var(--text);font-weight:700;max-width:60vw;overflow:hidden;
+      text-overflow:ellipsis;white-space:nowrap}
+
+    .layout{max-width:1080px;margin:0 auto;padding:20px 16px 56px;display:grid;
+      grid-template-columns:minmax(0,1fr);gap:28px}
+    @media(min-width:960px){.layout{grid-template-columns:minmax(0,1fr) 280px}}
+
+    article{background:#fff;border:1px solid var(--line);border-radius:20px;
+      padding:clamp(20px,4vw,44px);box-shadow:0 1px 3px rgba(15,23,42,.05)}
+    .a-head h1{font-size:clamp(1.55rem,3.6vw,2.25rem);line-height:1.55;font-weight:800;
+      color:var(--navy);margin-bottom:14px;text-wrap:balance}
+    .a-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:var(--muted);
+      font-size:.84rem;padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid var(--line)}
+    .a-meta b{color:var(--text);font-weight:600}
+    .a-cover{margin:0 0 24px}
+    .a-cover img{width:100%;border-radius:16px;aspect-ratio:16/9;object-fit:cover}
+
+    .a-body{color:var(--body)}
+    .a-body h2{font-size:1.45rem;font-weight:800;color:var(--navy);margin:34px 0 12px;
+      padding-right:14px;border-right:4px solid var(--blue);scroll-margin-top:84px}
+    .a-body h3{font-size:1.18rem;font-weight:700;color:var(--navy);margin:26px 0 10px;scroll-margin-top:84px}
+    .a-body p{margin:0 0 16px}
+    .a-body ul,.a-body ol{padding-right:24px;margin:0 0 16px}
+    .a-body li{margin-bottom:6px}
+    .a-body strong{color:var(--navy)}
+    .a-body blockquote{border-right:4px solid var(--blue);background:var(--mint);
+      margin:20px 0;padding:14px 18px;border-radius:0 12px 12px 0}
+    .a-body img{border-radius:12px;margin:18px 0}
+    .a-body table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.92rem}
+    .a-body th,.a-body td{border:1px solid var(--line);padding:10px 12px;text-align:right}
+    .a-body th{background:var(--bg);font-weight:700;color:var(--navy)}
+
+    .toc{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;
+      margin-bottom:26px}
+    .toc--side{margin:0;position:sticky;top:80px}
+    .toc__title{display:flex;align-items:center;gap:8px;font-weight:800;font-size:.95rem;
+      color:var(--navy);margin-bottom:10px}
+    .toc ol{list-style:none;counter-reset:toc}
+    .toc li{counter-increment:toc;font-size:.9rem;line-height:1.7;margin-bottom:6px}
+    .toc li::before{content:counter(toc) "· ";color:var(--blue);font-weight:700;margin-left:4px}
+    .toc ol ol{margin:4px 18px 8px 0}
+    .toc ol ol li{counter-increment:none;font-size:.84rem;color:var(--muted)}
+    .toc ol ol li::before{content:"–";margin-left:6px}
+    .toc a:hover{color:var(--blue)}
+    @media(min-width:960px){.toc--top{display:none}}
+    @media(max-width:959.9px){.toc--side{display:none}}
+
+    .cta-hub{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--navy) 0%,#1e3a5f 100%);
+      border-radius:18px;margin:30px 0;color:#e2e8f0}
+    .cta-hub__glow{position:absolute;inset:auto -40px -60px auto;width:220px;height:220px;
+      background:radial-gradient(closest-side,rgba(18,148,224,.5),transparent);pointer-events:none}
+    .cta-hub__body{position:relative;padding:24px 26px}
+    .cta-hub__eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:.76rem;font-weight:700;
+      color:var(--gold);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);
+      border-radius:999px;padding:4px 12px;margin-bottom:12px}
+    .cta-hub__title{font-size:1.15rem;font-weight:800;color:#fff;margin-bottom:6px}
+    .cta-hub__text{font-size:.9rem;line-height:1.9;margin-bottom:16px;color:#cbd5e1}
+    .cta-hub__actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .cta-hub__btn{display:inline-flex;align-items:center;gap:8px;background:var(--blue);color:#fff;
+      font-weight:800;font-size:.95rem;padding:12px 20px;border-radius:12px;transition:transform .15s,background .15s}
+    .cta-hub__btn:hover{background:var(--blue-d);transform:translateY(-1px)}
+    .cta-hub__call{font-size:.88rem;font-weight:700;color:#7dd3fc;border-bottom:1px dashed #7dd3fc}
+    .cta-hub--final{margin:34px 0 8px}
+
+    .faq{margin-top:36px}
+    .faq h2{font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:14px}
+    .faq details{background:#fff;border:1px solid var(--line);border-radius:14px;margin-bottom:10px;overflow:hidden}
+    .faq summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:12px;
+      align-items:center;padding:15px 18px;font-weight:700;color:var(--navy);font-size:.96rem}
+    .faq summary::-webkit-details-marker{display:none}
+    .faq summary::after{content:"+";color:var(--blue);font-size:1.3rem;line-height:1;transition:transform .2s}
+    .faq details[open] summary::after{transform:rotate(45deg)}
+    .faq .faq__a{padding:0 18px 15px;color:var(--body);font-size:.92rem;border-top:1px solid var(--line);padding-top:12px}
+
+    .side-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-top:20px}
+    .side-card h3{font-size:.95rem;font-weight:800;color:var(--navy);margin-bottom:8px}
+    .side-card p{font-size:.85rem;color:var(--muted);line-height:1.8;margin-bottom:12px}
+    .side-card a{display:block;text-align:center;background:var(--blue);color:#fff;font-weight:700;
+      font-size:.88rem;padding:10px;border-radius:10px}
+
+    footer{background:var(--navy);color:#94a3b8;text-align:center;font-size:.85rem;padding:28px 16px}
+    footer a{color:#7dd3fc}
+  </style>
+</head>
+<body>
+<%- include('partials/gtm-body') %>
+
+  <header class="topbar">
+    <div class="topbar__row">
+      <a href="/index.html" class="brand" aria-label="سلام دکتر — صفحه اصلی">
+        <img src="/images/logo-heart.svg" alt="" width="36" height="36" loading="eager">
+        <span>سلام دکتر</span>
+      </a>
+      <a href="tel:+989007000462" class="topbar__cta">مشاوره رایگان</a>
+    </div>
+  </header>
+
+  <nav class="crumbs" aria-label="مسیر صفحه">
+    <a href="/index.html">خانه</a><span aria-hidden="true">›</span>
+    <a href="/articles.html">مقالات</a><span aria-hidden="true">›</span>
+    <span class="current" aria-current="page"><%= article.title %></span>
+  </nav>
+
+  <div class="layout">
+    <article itemscope itemtype="https://schema.org/Article">
+      <header class="a-head">
+        <h1 itemprop="headline"><%= article.title %></h1>
+        <div class="a-meta">
+          <span itemprop="author" itemscope itemtype="https://schema.org/Organization">نویسنده: <b itemprop="name"><%= article.author || 'تیم سلام دکتر' %></b></span>
+          <% if (article.published_at) { %>
+            <span>تاریخ انتشار:
+            <time itemprop="datePublished" datetime="<%= article.published_at %>"><%= publishedLabel || article.published_at %></time></span>
+          <% } %>
+          <% if (article.category) { %><span><%= article.category %></span><% } %>
+          <span><%= Number(article.views || 0).toLocaleString('fa-IR') %> بازدید</span>
+        </div>
+      </header>
+
+      <% if (article.cover_image) { %>
+        <figure class="a-cover">
+          <img src="<%= article.cover_image %>" alt="<%= article.title %>" width="1200" height="675"
+               loading="eager" fetchpriority="high" itemprop="image">
+        </figure>
+      <% } %>
+
+      <% if (toc.length >= 2) { %>
+        <nav class="toc toc--top" aria-label="فهرست مطالب">
+          <p class="toc__title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" stroke="#1294e0" stroke-width="2.4" stroke-linecap="round"/></svg>
+            فهرست مطالب
+          </p>
+          <ol>
+            <% toc.forEach(function (item) { %>
+              <li><a href="#<%= item.id %>"><%= item.text %></a>
+                <% if (item.children.length) { %>
+                  <ol><% item.children.forEach(function (sub) { %><li><a href="#<%= sub.id %>"><%= sub.text %></a></li><% }) %></ol>
+                <% } %>
+              </li>
+            <% }) %>
+          </ol>
+        </nav>
+      <% } %>
+
+      <div class="a-body" itemprop="articleBody">
+        <%- bodyParts.before %>
+
+        <%# Mid-article conversion widget — after ~40% of the content %>
+        <%- include('_cta-hub-widget', { hub_page_url: hub.url, hub_page_keyword: hub.keyword, variant: 'inline' }) %>
+
+        <%- bodyParts.after %>
+      </div>
+
+      <% if (faq.length) { %>
+        <section class="faq" aria-labelledby="faq-title">
+          <h2 id="faq-title">سوالات متداول</h2>
+          <% faq.forEach(function (f, i) { %>
+            <details <%= i === 0 ? 'open' : '' %>>
+              <summary><%= f.question %></summary>
+              <p class="faq__a"><%= f.answer %></p>
+            </details>
+          <% }) %>
+        </section>
+      <% } %>
+
+      <%# Final conversion widget — catches readers who finished the article %>
+      <%- include('_cta-hub-widget', { hub_page_url: hub.url, hub_page_keyword: hub.keyword, variant: 'final' }) %>
+    </article>
+
+    <aside aria-label="فهرست و دسترسی سریع">
+      <% if (toc.length >= 2) { %>
+        <nav class="toc toc--side" aria-label="فهرست مطالب">
+          <p class="toc__title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" stroke="#1294e0" stroke-width="2.4" stroke-linecap="round"/></svg>
+            فهرست مطالب
+          </p>
+          <ol>
+            <% toc.forEach(function (item) { %>
+              <li><a href="#<%= item.id %>"><%= item.text %></a>
+                <% if (item.children.length) { %>
+                  <ol><% item.children.forEach(function (sub) { %><li><a href="#<%= sub.id %>"><%= sub.text %></a></li><% }) %></ol>
+                <% } %>
+              </li>
+            <% }) %>
+          </ol>
+        </nav>
+        <div class="side-card">
+          <h3>نیاز به مشاوره دارید؟</h3>
+          <p>کارشناسان سلام دکتر به‌صورت رایگان بهترین مرکز را متناسب با شرایط شما معرفی می‌کنند.</p>
+          <a href="<%= hub.url %>" rel="dofollow" title="<%= hub.keyword %>"><%= hub.keyword %></a>
+        </div>
+      <% } %>
+    </aside>
+  </div>
+
+  <footer>
+    <p>© 2026 <a href="<%= siteBase %>/">سلام دکتر</a> — مرجع مراکز درمانی و زیبایی شیراز</p>
+  </footer>
+</body>
+</html>

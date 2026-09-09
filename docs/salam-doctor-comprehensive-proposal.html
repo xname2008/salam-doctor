@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سلام دکتر | پروپوزال جامع همکاری با کلینیک‌های کاشت مو و زیبایی</title>
+  <meta name="description" content="پروپوزال B2B پلتفرم نوبت‌دهی و مدیریت پزشکی سلام دکتر برای کلینیک‌های تخصصی کاشت مو و زیبایی.">
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       EDIT: Tailwind theme — brand colors
+       ═══════════════════════════════════════════════════════════════ -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#041f45',
+            'navy-soft': '#0e3571',
+            trust: '#1294e0',
+            'trust-light': '#e8f6fd',
+            growth: '#0d9488',
+            'growth-light': '#e6f7f4',
+            gold: '#c9a227',
+            'gold-soft': '#f7f1de',
+            ink: '#13233c',
+            muted: '#5f6f86',
+            line: '#dbe4ee'
+          },
+          fontFamily: { vazir: ['Vazirmatn', 'Tahoma', 'sans-serif'] },
+          boxShadow: { card: '0 8px 24px rgba(4, 31, 69, 0.08)' }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    /* ── Print & layout ─────────────────────────────────────────── */
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: #e8eef5; font-family: 'Vazirmatn', Tahoma, sans-serif; color: #13233c; }
+    @page { size: A4; margin: 0; }
+
+    .page {
+      width: 210mm; height: 297mm; margin: 24px auto; background: #fff;
+      box-shadow: 0 20px 50px rgba(4, 31, 69, 0.14); overflow: hidden;
+      display: flex; flex-direction: column; position: relative;
+    }
+
+    .hero-wash {
+      background:
+        radial-gradient(ellipse 80% 60% at 100% 0%, rgba(18, 148, 224, 0.22), transparent 55%),
+        radial-gradient(ellipse 50% 40% at 0% 100%, rgba(201, 162, 39, 0.14), transparent 50%),
+        linear-gradient(165deg, #041f45 0%, #0a2d5c 48%, #0e4578 100%);
+    }
+
+    .gold-rule { height: 2px; background: linear-gradient(90deg, transparent, #c9a227, transparent); flex-shrink: 0; }
+    .section-kicker { font-size: 0.65rem; font-weight: 700; color: #1294e0; letter-spacing: 0.02em; }
+    .section-title { font-size: 1.05rem; font-weight: 800; color: #041f45; line-height: 1.45; }
+
+    .feature-icon {
+      background: linear-gradient(145deg, #e8f6fd, #fff);
+      border: 1px solid #dbe4ee;
+    }
+    .feature-icon-growth {
+      background: linear-gradient(145deg, #e6f7f4, #fff);
+      border: 1px solid #b8e8df;
+    }
+    .feature-icon-gold {
+      background: linear-gradient(145deg, #f7f1de, #fff);
+      border: 1px solid #e8d9a8;
+    }
+
+    .vip-band {
+      background: linear-gradient(120deg, #041f45 0%, #1a3a5c 40%, #8b6914 100%);
+    }
+
+    .cta-band {
+      background: linear-gradient(120deg, #041f45 0%, #0e3571 55%, #1294e0 140%);
+    }
+
+    .dot-grid {
+      background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.12) 1px, transparent 0);
+      background-size: 20px 20px;
+    }
+
+    .page-footer {
+      margin-top: auto;
+      border-top: 1px solid #dbe4ee;
+      padding: 0.45rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.62rem; color: #5f6f86;
+    }
+
+    @media screen { body { padding: 0 16px 40px; } }
+
+    @media print {
+      html, body { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+      .page {
+        margin: 0 !important; box-shadow: none !important;
+        page-break-after: always; break-after: page;
+      }
+      .page:last-child { page-break-after: auto; break-after: auto; }
+      .no-print { display: none !important; }
+      .keep-together, section, .feature-card, .stat-card { page-break-inside: avoid; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       EDIT: Contact & meta — change values here
+       ═══════════════════════════════════════════════════════════════ -->
+  <!--
+    SITE_FA: salam-doctor.ir
+    SITE_EN: salam-doctor.com
+    PHONE: ۰۹۰۰۷۰۰۰۴۶۲
+    CITY: شیراز
+    TRAFFIC_MONTHLY: ۵٬۰۰۰
+  -->
+
+  <div class="no-print max-w-[210mm] mx-auto pt-6 pb-2 text-center text-sm text-muted">
+  برای خروجی PDF: Print → Save as PDF · Paper size: A4 · Margins: None · Background graphics: On
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PAGE 1 — COVER
+       ═══════════════════════════════════════════════════════════════ -->
+  <article class="page" aria-label="صفحه کاور">
+    <header class="hero-wash text-white flex-1 flex flex-col px-8 pt-8 pb-6 relative">
+      <div class="absolute inset-0 dot-grid pointer-events-none opacity-60"></div>
+
+      <div class="relative flex items-center justify-between gap-4 mb-10">
+        <div class="flex items-center gap-3">
+          <div class="w-14 h-14 rounded-2xl bg-white/12 border border-white/25 grid place-items-center overflow-hidden">
+            <img src="../images/logo-heart.svg" alt="لوگو سلام دکتر" class="w-9 h-9 object-contain"
+                 onerror="this.outerHTML='<i class=\'fa-solid fa-heart-pulse text-2xl text-white\'></i>'">
+          </div>
+          <div>
+            <p class="text-[1.35rem] font-extrabold leading-none">سلام دکتر</p>
+            <p class="text-[0.72rem] text-blue-100/85 mt-1 font-medium">پلتفرم نوبت‌دهی و مدیریت پزشکی</p>
+          </div>
+        </div>
+        <span class="rounded-full border border-gold/40 bg-gold/15 px-3 py-1.5 text-[0.65rem] font-bold text-gold-soft">
+          <i class="fa-solid fa-crown text-gold text-[0.6rem] ml-1"></i>
+          ویژه کلینیک‌های کاشت مو و زیبایی
+        </span>
+      </div>
+
+      <div class="relative flex-1 flex flex-col justify-center max-w-[36rem]">
+        <p class="text-[0.75rem] font-bold text-gold tracking-wide mb-3 flex items-center gap-2">
+          <span class="inline-block w-8 h-px bg-gold"></span>
+          پروپوزال همکاری B2B · نسخه ۲۰۲۶
+        </p>
+        <h1 class="text-[1.75rem] font-extrabold leading-[1.45] mb-4">
+          بیمارانی که <span class="text-sky-200">همین حالا</span> در گوگل به‌دنبال درمان هستند —
+          <span class="text-gold">مستقیم به کلینیک شما</span>
+        </h1>
+        <p class="text-[0.88rem] leading-[1.9] text-blue-100/92 font-medium mb-8">
+          سلام دکتر ترکیبی از سئوی تخصصی، گوگل ادز هدفمند، لندینگ اختصاصی، CRM یکپارچه و زیرساخت ابری امن است —
+          تا کلینیک شما نه فقط دیده شود، بلکه <strong class="text-white font-bold">تبدیل به تماس و مراجعه</strong> شود.
+        </p>
+
+        <div class="grid grid-cols-3 gap-3">
+          <div class="rounded-xl bg-white/10 border border-white/15 px-3 py-3 text-center">
+            <p class="text-[1.1rem] font-extrabold text-white leading-none">۵٬۰۰۰+</p>
+            <p class="text-[0.62rem] text-blue-100/80 mt-1.5 font-semibold">بازدید ماهانه پلتفرم</p>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 px-3 py-3 text-center">
+            <p class="text-[1.1rem] font-extrabold text-gold leading-none">ROI</p>
+            <p class="text-[0.62rem] text-blue-100/80 mt-1.5 font-semibold">کلیک‌های هدفمند و قابل‌سنجش</p>
+          </div>
+          <div class="rounded-xl bg-white/10 border border-white/15 px-3 py-3 text-center">
+            <p class="text-[1.1rem] font-extrabold text-white leading-none">۳۶۰°</p>
+            <p class="text-[0.62rem] text-blue-100/80 mt-1.5 font-semibold">جذب · مدیریت · گزارش</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="relative mt-8 pt-5 border-t border-white/15 flex items-center justify-between text-[0.72rem] text-blue-100/75">
+        <span>salam-doctor.ir · salam-doctor.com</span>
+        <span>ارائه به مدیریت محترم کلینیک</span>
+      </div>
+    </header>
+  </article>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PAGE 2 — CHALLENGES
+       ═══════════════════════════════════════════════════════════════ -->
+  <article class="page" aria-label="چالش‌های کلینیک‌ها">
+    <div class="px-8 pt-7 pb-4 flex-1 flex flex-col gap-4">
+      <header class="keep-together">
+        <p class="section-kicker mb-1">بخش ۱</p>
+        <h2 class="section-title mb-2">چالش‌هایی که هر کلینیک کاشت مو و زیبایی می‌شناسد</h2>
+        <p class="text-[0.78rem] leading-[1.85] text-muted max-w-[38rem]">
+          بازار پررقابت است. بیمار هوشمندتر شده و قبل از تماس، در گوگل مقایسه می‌کند.
+          اگر حضور دیجیتال شما پراکنده، غیرقابل‌سنجش یا گران باشد — سهم شما به رقیب می‌رود.
+        </p>
+      </header>
+
+      <div class="grid grid-cols-2 gap-3">
+        <!-- EDIT: challenge cards -->
+        <div class="feature-card rounded-xl border border-line bg-slate-50/80 p-4 keep-together">
+          <div class="flex items-center gap-2.5 mb-2">
+            <span class="w-8 h-8 rounded-lg bg-red-50 border border-red-100 text-red-500 grid place-items-center text-sm">
+              <i class="fa-solid fa-money-bill-trend-up"></i>
+            </span>
+            <h3 class="text-[0.88rem] font-extrabold text-ink">بودجه تبلیغاتی هدر می‌رود</h3>
+          </div>
+          <p class="text-[0.74rem] leading-[1.8] text-muted">
+            تبلیغات عمومی اینستاگرام یا بنرهای پراکنده، مخاطب «در حال اسکرول» می‌آورد — نه کسی که همین لحظه به‌دنبال کاشت مو، بوتاکس یا لیزر است.
+          </p>
+        </div>
+
+        <div class="feature-card rounded-xl border border-line bg-slate-50/80 p-4 keep-together">
+          <div class="flex items-center gap-2.5 mb-2">
+            <span class="w-8 h-8 rounded-lg bg-orange-50 border border-orange-100 text-orange-500 grid place-items-center text-sm">
+              <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </span>
+            <h3 class="text-[0.88rem] font-extrabold text-ink">در گوگل دیده نمی‌شوید</h3>
+          </div>
+          <p class="text-[0.74rem] leading-[1.8] text-muted">
+            بدون سئوی محلی و صفحات تخصصی، کلینیک شما در جستجوی «کاشت مو شیراز» یا «لیزر موهای زائد» جایی ندارد — در حالی که بیمار آماده تماس است.
+          </p>
+        </div>
+
+        <div class="feature-card rounded-xl border border-line bg-slate-50/80 p-4 keep-together">
+          <div class="flex items-center gap-2.5 mb-2">
+            <span class="w-8 h-8 rounded-lg bg-purple-50 border border-purple-100 text-purple-500 grid place-items-center text-sm">
+              <i class="fa-solid fa-puzzle-piece"></i>
+            </span>
+            <h3 class="text-[0.88rem] font-extrabold text-ink">ابزارهای پراکنده و غیرمتصل</h3>
+          </div>
+          <p class="text-[0.74rem] leading-[1.8] text-muted">
+            CRM جدا، تلفن جدا، گزارش مالی جدا — منشی وقتش را صرف جمع‌کردن اطلاعات می‌کند، نه پاسخ به بیمار.
+          </p>
+        </div>
+
+        <div class="feature-card rounded-xl border border-line bg-slate-50/80 p-4 keep-together">
+          <div class="flex items-center gap-2.5 mb-2">
+            <span class="w-8 h-8 rounded-lg bg-amber-50 border border-amber-100 text-amber-600 grid place-items-center text-sm">
+              <i class="fa-solid fa-star-half-stroke"></i>
+            </span>
+            <h3 class="text-[0.88rem] font-extrabold text-ink">اعتمادسازی سخت است</h3>
+          </div>
+          <p class="text-[0.74rem] leading-[1.8] text-muted">
+            بیمار قبل از مراجعه به دنبال مدارک، نمونه‌کار، نظرات و شفافیت است. بدون صفحه اختصاصی حرفه‌ای، نرخ تبدیل تماس به نوبت پایین می‌ماند.
+          </p>
+        </div>
+      </div>
+
+      <section class="rounded-xl border border-trust/20 bg-trust-light/60 px-5 py-4 keep-together">
+        <h3 class="text-[0.92rem] font-extrabold text-navy mb-2 flex items-center gap-2">
+          <i class="fa-solid fa-lightbulb text-trust"></i>
+          نتیجه‌گیری: شما به یک مسیر یکپارچه نیاز دارید
+        </h3>
+        <p class="text-[0.76rem] leading-[1.85] text-ink">
+          از <strong>دیده‌شدن در گوگل</strong> تا <strong>ثبت تماس</strong>، <strong>مدیریت بیمار</strong> و <strong>گزارش مالی</strong> —
+          همه در یک پلتفرم. این دقیقاً همان چیزی است که سلام دکتر برای کلینیک‌های تخصصی ساخته شده است.
+        </p>
+      </section>
+
+      <div class="grid grid-cols-2 gap-3 mt-1">
+        <div class="stat-card rounded-xl p-4 text-white" style="background: linear-gradient(160deg, #5f6f86, #3d4f63);">
+          <p class="text-[0.65rem] font-bold text-white/70 mb-1">تبلیغات عمومی</p>
+          <p class="text-[0.8rem] font-extrabold leading-snug">لایک و ویو — بدون نیت خرید</p>
+        </div>
+        <div class="stat-card rounded-xl p-4 text-white compare-card-google" style="background: linear-gradient(160deg, #041f45, #0e4578);">
+          <p class="text-[0.65rem] font-bold text-blue-100/70 mb-1">سلام دکتر + گوگل</p>
+          <p class="text-[0.8rem] font-extrabold leading-snug">جستجوی درمان → تماس → مراجعه</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="page-footer">
+      <span>سلام دکتر · پروپوزال جامع</span>
+      <span>صفحه ۲ از ۶</span>
+    </footer>
+  </article>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PAGE 3 — SOLUTION: Acquisition (Google, ROI, Landing)
+       ═══════════════════════════════════════════════════════════════ -->
+  <article class="page" aria-label="راهکار جذب بیمار">
+    <div class="px-8 pt-7 pb-4 flex-1 flex flex-col gap-3.5">
+      <header class="keep-together">
+        <p class="section-kicker mb-1">بخش ۲</p>
+        <h2 class="section-title">راهکار جامع سلام دکتر — از جستجو تا پذیرش</h2>
+      </header>
+
+      <!-- Feature 1: Google -->
+      <section class="feature-card rounded-xl border border-line bg-white p-4 shadow-card keep-together">
+        <div class="flex gap-3">
+          <div class="feature-icon w-11 h-11 rounded-xl shrink-0 grid place-items-center text-trust text-lg">
+            <i class="fa-brands fa-google"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-[0.92rem] font-extrabold text-navy mb-1">۱. تسخیر صفحه اول گوگل</h3>
+            <p class="text-[0.74rem] leading-[1.85] text-muted mb-2">
+              ترکیب <strong class="text-ink">سئوی تخصصی (Local SEO)</strong> و <strong class="text-ink">کمپین‌های گوگل ادز</strong>
+              برای حضور کلینیک شما در لحظه‌ای که بیمار عبارت‌هایی مثل «کاشت مو»، «بوتاکس»، «لیزر کندلا» یا «PRP مو» را جستجو می‌کند.
+            </p>
+            <ul class="text-[0.7rem] text-muted space-y-1 mr-4 list-disc">
+              <li>صفحات دسته‌بندی تخصصی با ساختار سئو و JSON-LD</li>
+              <li>ایندکس سریع و پایدار با زیرساخت ابری و CDN</li>
+              <li>جایگاه تاپ ۱۰ در هر تخصص — ظرفیت محدود و انحصاری</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature 2: ROI -->
+      <section class="feature-card rounded-xl border border-growth/25 bg-growth-light/50 p-4 keep-together">
+        <div class="flex gap-3">
+          <div class="feature-icon-growth w-11 h-11 rounded-xl shrink-0 grid place-items-center text-growth text-lg">
+            <i class="fa-solid fa-bullseye"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-[0.92rem] font-extrabold text-navy mb-1">۲. کلیک‌های هدفمند و ROI بالا</h3>
+            <p class="text-[0.74rem] leading-[1.85] text-muted mb-2">
+              بودجه شما صرف کلیدواژه‌های <strong class="text-ink">پول‌ساز</strong> می‌شود — نه نمایش بی‌هدف.
+              هر کلیک، تماس و واتساپ در سیستم ثبت می‌شود تا بدانید هر تومان کجا بازگشته است.
+            </p>
+            <div class="grid grid-cols-3 gap-2">
+              <div class="rounded-lg bg-white border border-line px-2 py-2 text-center">
+                <p class="text-[0.85rem] font-extrabold text-growth">هدفمند</p>
+                <p class="text-[0.58rem] text-muted mt-0.5">تارگت کلیدواژه</p>
+              </div>
+              <div class="rounded-lg bg-white border border-line px-2 py-2 text-center">
+                <p class="text-[0.85rem] font-extrabold text-growth">قابل‌سنجش</p>
+                <p class="text-[0.58rem] text-muted mt-0.5">ردیابی کلیک و لید</p>
+              </div>
+              <div class="rounded-lg bg-white border border-line px-2 py-2 text-center">
+                <p class="text-[0.85rem] font-extrabold text-growth">مقرون‌به‌صرفه</p>
+                <p class="text-[0.58rem] text-muted mt-0.5">هزینه به ازای لید واقعی</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature 3: Landing -->
+      <section class="feature-card rounded-xl border border-gold/30 bg-gold-soft/40 p-4 keep-together">
+        <div class="flex gap-3">
+          <div class="feature-icon-gold w-11 h-11 rounded-xl shrink-0 grid place-items-center text-gold text-lg">
+            <i class="fa-solid fa-laptop-medical"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="text-[0.92rem] font-extrabold text-navy mb-1">۳. لندینگ پیج اختصاصی کلینیک</h3>
+            <p class="text-[0.74rem] leading-[1.85] text-muted mb-2">
+              صفحه‌ای کاملاً شخصی‌سازی‌شده درون پلتفرم — نه یک ردیف ساده در دایرکتوری.
+              بیمار قبل از تماس، کلینیک شما را می‌شناسد و اعتماد می‌کند.
+            </p>
+            <div class="grid grid-cols-2 gap-2 text-[0.7rem] text-muted">
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-gold text-[0.6rem]"></i> گالری قبل و بعد</span>
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-gold text-[0.6rem]"></i> معرفی پزشکان و رزومه</span>
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-gold text-[0.6rem]"></i> لیست خدمات و قیمت</span>
+              <span class="flex items-center gap-1.5"><i class="fa-solid fa-check text-gold text-[0.6rem]"></i> تماس، واتساپ، مسیریابی</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="vip-band rounded-xl text-white px-5 py-4 keep-together">
+        <p class="text-[0.65rem] font-bold text-gold mb-1"><i class="fa-solid fa-crown ml-1"></i> پکیج VIP طلایی</p>
+        <p class="text-[0.8rem] font-bold leading-[1.75]">
+          جایگاه ۱ تا ۳ + لندینگ اختصاصی + تضمین حداقل ۵٬۰۰۰ بازدید هدفمند ماهانه به صفحه کلینیک شما.
+          <!-- EDIT: package price -->قیمت سالانه: ۲۵۰٬۰۰۰٬۰۰۰ تومان (معادل ۲ ماه رایگان)
+        </p>
+      </section>
+    </div>
+
+    <footer class="page-footer">
+      <span>سلام دکتر · جذب بیمار هدفمند</span>
+      <span>صفحه ۳ از ۶</span>
+    </footer>
+  </article>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PAGE 4 — MANAGEMENT SYSTEMS
+       ═══════════════════════════════════════════════════════════════ -->
+  <article class="page" aria-label="سیستم‌های مدیریتی">
+    <div class="px-8 pt-7 pb-4 flex-1 flex flex-col gap-3.5">
+      <header class="keep-together">
+        <p class="section-kicker mb-1">بخش ۳</p>
+        <h2 class="section-title">پنل‌های مدیریتی — کلینیک را از یک جا اداره کنید</h2>
+        <p class="text-[0.76rem] leading-[1.85] text-muted mt-1">
+          سلام دکتر فقط ترافیک نمی‌آورد؛ زیرساخت عملیاتی کلینیک را هم یکپارچه می‌کند.
+        </p>
+      </header>
+
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Feature 4a: CRM -->
+        <section class="feature-card rounded-xl border border-line bg-white p-4 keep-together">
+          <div class="feature-icon w-10 h-10 rounded-xl grid place-items-center text-trust mb-2.5">
+            <i class="fa-solid fa-users-gear"></i>
+          </div>
+          <h3 class="text-[0.88rem] font-extrabold text-navy mb-1">پنل CRM جامع</h3>
+          <p class="text-[0.72rem] leading-[1.8] text-muted">
+            ثبت تمام لیدها، وضعیت پیگیری، تاریخچه تماس و تبدیل به نوبت.
+            منشی می‌داند هر بیمار از کدام کانال آمده و در چه مرحله‌ای است.
+          </p>
+        </section>
+
+        <!-- Feature 4b: Clinic panel -->
+        <section class="feature-card rounded-xl border border-line bg-white p-4 keep-together">
+          <div class="feature-icon-growth w-10 h-10 rounded-xl grid place-items-center text-growth mb-2.5">
+            <i class="fa-solid fa-hospital-user"></i>
+          </div>
+          <h3 class="text-[0.88rem] font-extrabold text-navy mb-1">پنل اختصاصی کلینیک</h3>
+          <p class="text-[0.72rem] leading-[1.8] text-muted">
+            ویرایش پروفایل، خدمات، گالری، ساعات کاری و جایگاه تبلیغاتی —
+            بدون وابستگی به تیم فنی خارجی.
+          </p>
+        </section>
+
+        <!-- Feature 4c: Accounting -->
+        <section class="feature-card rounded-xl border border-line bg-white p-4 keep-together">
+          <div class="feature-icon w-10 h-10 rounded-xl grid place-items-center text-navy-soft mb-2.5">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+          </div>
+          <h3 class="text-[0.88rem] font-extrabold text-navy mb-1">پنل حسابداری و گزارش مالی</h3>
+          <p class="text-[0.72rem] leading-[1.8] text-muted">
+            گزارش درآمد، هزینه تبلیغات، تسویه‌ها و خروجی قابل ارائه به مدیر مالی —
+            شفافیت کامل در ارزش قرارداد.
+          </p>
+        </section>
+
+        <!-- Feature 5: VOIP -->
+        <section class="feature-card rounded-xl border border-line bg-white p-4 keep-together">
+          <div class="feature-icon-growth w-10 h-10 rounded-xl grid place-items-center text-growth mb-2.5">
+            <i class="fa-solid fa-phone-volume"></i>
+          </div>
+          <h3 class="text-[0.88rem] font-extrabold text-navy mb-1">تلفن ابری (Cloud PBX) و VOIP</h3>
+          <p class="text-[0.72rem] leading-[1.8] text-muted">
+            تماس‌های ورودی بیماران یکپارچه با پلتفرم ثبت می‌شوند.
+            ضبط، ارجاع و گزارش تماس — بدون از دست رفتن هیچ لیدی.
+          </p>
+        </section>
+      </div>
+
+      <section class="rounded-xl border border-line overflow-hidden keep-together">
+        <div class="bg-navy text-white px-4 py-2.5 text-[0.78rem] font-extrabold">
+          <i class="fa-solid fa-diagram-project text-trust ml-1.5"></i>
+          جریان یکپارچه بیمار در سلام دکتر
+        </div>
+        <div class="px-4 py-3.5 bg-slate-50 flex items-center justify-between gap-1 text-[0.62rem] font-bold text-muted text-center">
+          <div class="flex-1">
+            <div class="w-8 h-8 rounded-full bg-trust text-white grid place-items-center mx-auto mb-1 text-[0.7rem]">۱</div>
+            جستجو در گوگل
+          </div>
+          <i class="fa-solid fa-arrow-left text-line text-[0.5rem]"></i>
+          <div class="flex-1">
+            <div class="w-8 h-8 rounded-full bg-trust text-white grid place-items-center mx-auto mb-1 text-[0.7rem]">۲</div>
+            ورود به لندینگ
+          </div>
+          <i class="fa-solid fa-arrow-left text-line text-[0.5rem]"></i>
+          <div class="flex-1">
+            <div class="w-8 h-8 rounded-full bg-growth text-white grid place-items-center mx-auto mb-1 text-[0.7rem]">۳</div>
+            تماس / واتساپ
+          </div>
+          <i class="fa-solid fa-arrow-left text-line text-[0.5rem]"></i>
+          <div class="flex-1">
+            <div class="w-8 h-8 rounded-full bg-growth text-white grid place-items-center mx-auto mb-1 text-[0.7rem]">۴</div>
+            ثبت در CRM
+          </div>
+          <i class="fa-solid fa-arrow-left text-line text-[0.5rem]"></i>
+          <div class="flex-1">
+            <div class="w-8 h-8 rounded-full bg-gold text-white grid place-items-center mx-auto mb-1 text-[0.7rem]">۵</div>
+            نوبت و مراجعه
+          </div>
+        </div>
+      </section>
+
+      <p class="text-[0.72rem] leading-[1.8] text-muted keep-together">
+        <i class="fa-solid fa-shield-halved text-trust ml-1"></i>
+        <strong class="text-ink">تعهد ما:</strong> در سیستم نوبت‌دهی داخلی و کار منشی شما دخالت نمی‌کنیم —
+        فقط لید می‌آوریم و ابزار مدیریت آن را در اختیارتان می‌گذاریم.
+      </p>
+    </div>
+
+    <footer class="page-footer">
+      <span>سلام دکتر · مدیریت یکپارچه</span>
+      <span>صفحه ۴ از ۶</span>
+    </footer>
+  </article>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PAGE 5 — Ambassador + Infrastructure + Why Us
+       ═══════════════════════════════════════════════════════════════ -->
+  <article class="page" aria-label="تمایز و زیرساخت">
+    <div class="px-8 pt-7 pb-4 flex-1 flex flex-col gap-3.5">
+      <header class="keep-together">
+        <p class="section-kicker mb-1">بخش ۴</p>
+        <h2 class="section-title">چرا سلام دکتر؟ تمایز، اعتماد و پایداری فنی</h2>
+      </header>
+
+      <!-- Feature 6: Ambassador -->
+      <section class="feature-card rounded-xl border-2 border-gold/40 bg-gold-soft/30 p-4 keep-together">
+        <div class="flex gap-3">
+          <div class="feature-icon-gold w-11 h-11 rounded-xl shrink-0 grid place-items-center text-gold text-lg">
+            <i class="fa-solid fa-user-shield"></i>
+          </div>
+          <div>
+            <h3 class="text-[0.92rem] font-extrabold text-navy mb-1">۶. طرح نوآورانه «سفیر ارزیابی»</h3>
+            <p class="text-[0.74rem] leading-[1.85] text-muted">
+              ویژگی منحصربه‌فرد سلام دکتر: شبکه‌ای از سفیران آموزش‌دیده برای
+              <strong class="text-ink">نظارت بر کیفیت خدمات</strong>،
+              <strong class="text-ink">ارتقای برند کلینیک</strong> و
+              <strong class="text-ink">اعتمادسازی عمیق</strong> برای بیمارانی که قبل از تصمیم‌گیری مرددند.
+              بیمار می‌داند کلینیک شما فقط تبلیغ نمی‌کند — ارزیابی شده است.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Feature 7: Infrastructure -->
+      <section class="feature-card rounded-xl border border-line bg-white p-4 keep-together">
+        <div class="flex gap-3">
+          <div class="feature-icon w-11 h-11 rounded-xl shrink-0 grid place-items-center text-trust text-lg">
+            <i class="fa-solid fa-server"></i>
+          </div>
+          <div>
+            <h3 class="text-[0.92rem] font-extrabold text-navy mb-1">۷. زیرساخت فنی ابری و امن</h3>
+            <p class="text-[0.74rem] leading-[1.85] text-muted mb-2">
+              صفحات کلینیک‌ها با سرعت و پایداری بالا سرو می‌شوند — همان چیزی که گوگل و بیمار از شما انتظار دارند.
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <span class="rounded-full bg-trust-light border border-line px-2.5 py-1 text-[0.65rem] font-bold text-navy">
+                <i class="fa-brands fa-docker text-trust ml-1"></i> Docker
+              </span>
+              <span class="rounded-full bg-trust-light border border-line px-2.5 py-1 text-[0.65rem] font-bold text-navy">
+                <i class="fa-solid fa-network-wired text-trust ml-1"></i> Nginx
+              </span>
+              <span class="rounded-full bg-trust-light border border-line px-2.5 py-1 text-[0.65rem] font-bold text-navy">
+                <i class="fa-solid fa-cloud text-trust ml-1"></i> Cloudflare
+              </span>
+              <span class="rounded-full bg-growth-light border border-line px-2.5 py-1 text-[0.65rem] font-bold text-navy">
+                <i class="fa-solid fa-lock text-growth ml-1"></i> SSL / امنیت
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Why Salam Doctor comparison -->
+      <section class="keep-together">
+        <h3 class="text-[0.9rem] font-extrabold text-navy mb-2.5">تفاوت کلیک هدفمند با تبلیغات عمومی</h3>
+        <table class="w-full text-[0.68rem] border-collapse rounded-xl overflow-hidden border border-line">
+          <thead>
+            <tr class="bg-navy text-white">
+              <th class="py-2 px-3 text-right font-bold">معیار</th>
+              <th class="py-2 px-3 text-center font-bold">تبلیغات عمومی</th>
+              <th class="py-2 px-3 text-center font-bold text-gold">سلام دکتر</th>
+            </tr>
+          </thead>
+          <tbody class="text-muted">
+            <tr class="bg-slate-50"><td class="py-2 px-3 font-semibold text-ink">نیت بیمار</td><td class="py-2 px-3 text-center">مرور محتوا</td><td class="py-2 px-3 text-center font-bold text-growth">جستجوی درمان</td></tr>
+            <tr><td class="py-2 px-3 font-semibold text-ink">قابلیت سنجش</td><td class="py-2 px-3 text-center">لایک و ویو</td><td class="py-2 px-3 text-center font-bold text-growth">کلیک، تماس، CRM</td></tr>
+            <tr class="bg-slate-50"><td class="py-2 px-3 font-semibold text-ink">هزینه به ازای لید</td><td class="py-2 px-3 text-center">نامشخص</td><td class="py-2 px-3 text-center font-bold text-growth">شفاف و گزارش‌پذیر</td></tr>
+            <tr><td class="py-2 px-3 font-semibold text-ink">صفحه اختصاصی</td><td class="py-2 px-3 text-center">ندارد</td><td class="py-2 px-3 text-center font-bold text-growth">لندینگ کامل</td></tr>
+            <tr class="bg-slate-50"><td class="py-2 px-3 font-semibold text-ink">مدیریت پس از تماس</td><td class="py-2 px-3 text-center">خارج از پلتفرم</td><td class="py-2 px-3 text-center font-bold text-growth">CRM + VOIP یکپارچه</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <div class="grid grid-cols-3 gap-2 keep-together">
+        <div class="stat-card rounded-lg border border-line bg-white p-3 text-center">
+          <p class="text-[0.95rem] font-extrabold text-navy">۱۵۰–۳۰۰</p>
+          <p class="text-[0.58rem] text-muted mt-1">بازدید پروفایل / ماه (تاپ ۱۰)</p>
+        </div>
+        <div class="stat-card rounded-lg border border-line bg-white p-3 text-center">
+          <p class="text-[0.95rem] font-extrabold text-navy">۱۵–۴۵</p>
+          <p class="text-[0.58rem] text-muted mt-1">تماس / واتساپ تخمینی</p>
+        </div>
+        <div class="stat-card rounded-lg border border-gold/30 bg-gold-soft/50 p-3 text-center">
+          <p class="text-[0.95rem] font-extrabold text-gold">رتبه ۱</p>
+          <p class="text-[0.58rem] text-muted mt-1">۴۰–۸۰ لید / ماه</p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="page-footer">
+      <span>سلام دکتر · تمایز رقابتی</span>
+      <span>صفحه ۵ از ۶</span>
+    </footer>
+  </article>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       PAGE 6 — PACKAGES + CTA
+       ═══════════════════════════════════════════════════════════════ -->
+  <article class="page" aria-label="پکیج‌ها و دعوت به اقدام">
+    <div class="px-8 pt-7 pb-3 flex-1 flex flex-col gap-3.5">
+      <header class="keep-together">
+        <p class="section-kicker mb-1">بخش ۵</p>
+        <h2 class="section-title">پکیج‌های همکاری — متناسب با ظرفیت کلینیک شما</h2>
+        <p class="text-[0.74rem] text-muted mt-1">قیمت‌ها قابل ویرایش هستند — با واحد فروش هماهنگ کنید.</p>
+      </header>
+
+      <!-- EDIT: pricing table -->
+      <table class="w-full text-[0.68rem] border-collapse rounded-xl overflow-hidden border border-line keep-together">
+        <thead>
+          <tr class="bg-navy text-white">
+            <th class="py-2 px-2.5 text-right font-bold">پکیج</th>
+            <th class="py-2 px-2.5 text-center font-bold">جایگاه</th>
+            <th class="py-2 px-2.5 text-center font-bold">مدت</th>
+            <th class="py-2 px-2.5 text-center font-bold">قیمت (تومان)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="bg-gold-soft/50">
+            <td class="py-2 px-2.5 font-extrabold text-navy">طلایی VIP</td>
+            <td class="py-2 px-2.5 text-center">۱ تا ۳</td>
+            <td class="py-2 px-2.5 text-center">۱۲ ماه</td>
+            <td class="py-2 px-2.5 text-center font-bold">۲۵۰٬۰۰۰٬۰۰۰</td>
+          </tr>
+          <tr class="bg-slate-50">
+            <td class="py-2 px-2.5 font-bold text-ink">رشد</td>
+            <td class="py-2 px-2.5 text-center">۴ تا ۶</td>
+            <td class="py-2 px-2.5 text-center">۶ ماه</td>
+            <td class="py-2 px-2.5 text-center font-bold">۹۰٬۰۰۰٬۰۰۰</td>
+          </tr>
+          <tr>
+            <td class="py-2 px-2.5 font-bold text-ink">ورود به بازار</td>
+            <td class="py-2 px-2.5 text-center">۷ تا ۱۰</td>
+            <td class="py-2 px-2.5 text-center">۶ ماه</td>
+            <td class="py-2 px-2.5 text-center font-bold">۶۰٬۰۰۰٬۰۰۰</td>
+          </tr>
+          <tr class="bg-slate-50">
+            <td class="py-2 px-2.5 font-bold text-ink">بنر صفحه اصلی</td>
+            <td class="py-2 px-2.5 text-center">۳ جایگاه</td>
+            <td class="py-2 px-2.5 text-center">ماهانه</td>
+            <td class="py-2 px-2.5 text-center font-bold">۳۰٬۰۰۰٬۰۰۰</td>
+          </tr>
+          <tr>
+            <td class="py-2 px-2.5 font-bold text-ink">بنر لندینگ تخصصی</td>
+            <td class="py-2 px-2.5 text-center">۶ جایگاه</td>
+            <td class="py-2 px-2.5 text-center">ماهانه</td>
+            <td class="py-2 px-2.5 text-center font-bold">۱۵٬۰۰۰٬۰۰۰</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <section class="rounded-xl border border-growth/25 bg-growth-light/40 px-4 py-3 keep-together">
+        <p class="text-[0.76rem] leading-[1.85] text-ink">
+          <i class="fa-solid fa-gift text-growth ml-1"></i>
+          <strong>هدیه ماه اول (پکیج طلایی):</strong>
+          تیم تولید محتوا در کلینیک شما حاضر می‌شود (عکاسی و فیلمبرداری حرفه‌ای) +
+          یک ماه نمایش رایگان بنر در صفحه اصلی پلتفرم.
+        </p>
+      </section>
+    </div>
+
+    <!-- CTA -->
+    <footer class="cta-band text-white px-8 pt-5 pb-5 relative overflow-hidden flex-shrink-0">
+      <div class="absolute inset-0 dot-grid pointer-events-none"></div>
+      <div class="relative">
+        <h2 class="text-[1.1rem] font-extrabold leading-[1.55] mb-2">
+          آماده‌اید بیماران گوگل را به پذیرش کلینیک خود تبدیل کنید؟
+        </h2>
+        <p class="text-[0.76rem] leading-[1.85] text-blue-100/90 mb-4 max-w-[36rem]">
+          ظرفیت جایگاه‌های تاپ ۱۰ در هر تخصص محدود است.
+          برای جلسه حضوری، بازدید از پلتفرم زنده و بررسی ظرفیت همکاری با واحد کلینیک‌ها تماس بگیرید.
+        </p>
+
+        <!-- EDIT: contact block -->
+        <div class="grid grid-cols-3 gap-2.5 text-[0.74rem]">
+          <div class="rounded-lg bg-white/10 border border-white/15 px-3 py-2.5">
+            <p class="text-blue-100/65 text-[0.6rem] font-semibold mb-0.5">وب‌سایت</p>
+            <p class="font-bold" dir="ltr">salam-doctor.ir</p>
+            <p class="font-bold text-blue-100/80" dir="ltr">salam-doctor.com</p>
+          </div>
+          <div class="rounded-lg bg-white/10 border border-white/15 px-3 py-2.5">
+            <p class="text-blue-100/65 text-[0.6rem] font-semibold mb-0.5">تماس / واتساپ</p>
+            <p class="font-extrabold text-[0.95rem]" dir="ltr">09007000462</p>
+            <p class="text-[0.62rem] text-blue-100/70 mt-0.5">۰۹۰۰۷۰۰۰۴۶۲</p>
+          </div>
+          <div class="rounded-lg bg-white/10 border border-white/15 px-3 py-2.5">
+            <p class="text-blue-100/65 text-[0.6rem] font-semibold mb-0.5">شهر فعال</p>
+            <p class="font-bold">شیراز</p>
+            <p class="text-[0.62rem] text-blue-100/70 mt-0.5">کلینیک‌های کاشت مو و زیبایی</p>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3.5 border-t border-white/15 flex items-center justify-between">
+          <p class="text-[0.65rem] text-blue-100/65">سلام دکتر · پلتفرم نوبت‌دهی و مدیریت پزشکی</p>
+          <div class="flex gap-3 text-blue-100/80 text-sm">
+            <i class="fa-brands fa-instagram"></i>
+            <i class="fa-brands fa-telegram"></i>
+            <i class="fa-brands fa-whatsapp"></i>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <div class="page-footer border-t-0">
+      <span>صفحه ۶ از ۶</span>
+      <span>© ۲۰۲۶ سلام دکتر</span>
+    </div>
+  </article>
+
+</body>
+</html>

@@ -1,0 +1,151 @@
+user  nginx;
+worker_processes  auto;
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    tcp_nopush      on;
+    tcp_nodelay     on;
+    keepalive_timeout  65;
+    server_tokens   off;
+
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ''      close;
+    }
+
+    gzip              on;
+    gzip_vary         on;
+    gzip_proxied      any;
+    gzip_comp_level   6;
+    gzip_min_length   256;
+    gzip_types
+        text/html
+        text/css
+        application/javascript
+        application/json
+        text/plain
+        text/xml
+        application/xml
+        image/svg+xml;
+
+    upstream backend_app {
+        server backend:3000;
+    }
+
+    # --- HTTP: ACME challenge + redirect everything to HTTPS ---
+    server {
+        listen       80;
+        server_name  salam-doctor.ir www.salam-doctor.ir;
+
+        location /.well-known/acme-challenge/ {
+            root /var/www/certbot;
+            try_files $uri =404;
+        }
+
+        location / {
+            return 301 https://salam-doctor.ir$request_uri;
+        }
+    }
+
+    # --- HTTPS: main site ---
+    server {
+        listen       443 ssl;
+        server_name  salam-doctor.ir www.salam-doctor.ir;
+        root         /usr/share/nginx/html;
+        index        index.html;
+
+        ssl_certificate     /etc/letsencrypt/live/salam-doctor.ir/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/salam-doctor.ir/privkey.pem;
+        ssl_protocols       TLSv1.2 TLSv1.3;
+        ssl_ciphers         HIGH:!aNULL:!MD5;
+        ssl_session_cache   shared:SSL:10m;
+        ssl_session_timeout 1d;
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+
+        # --- Protected leads endpoint (read-only customer data) ---
+        location = /api/leads {
+            auth_basic           "Restricted Access";
+            auth_basic_user_file /etc/nginx/certs/.htpasswd;
+            proxy_pass           http://backend_app;
+            proxy_http_version   1.1;
+            proxy_set_header     Host              $host;
+            proxy_set_header     X-Real-IP         $remote_addr;
+            proxy_set_header     X-Forwarded-For   $proxy_add_x_forwarded_for;
+            proxy_set_header     X-Forwarded-Proto $scheme;
+            proxy_set_header     Connection        "";
+        }
+
+        # --- API (consultation form + admin leads) ---
+        location /api/ {
+            proxy_pass         http://backend_app;
+            proxy_http_version 1.1;
+            proxy_set_header   Host              $host;
+            proxy_set_header   X-Real-IP         $remote_addr;
+            proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Proto $scheme;
+            proxy_set_header   Connection        "";
+        }
+
+        # --- Socket.io (live chat + client script) ---
+        location /socket.io/ {
+            proxy_pass         http://backend_app;
+            proxy_http_version 1.1;
+            proxy_set_header   Upgrade           $http_upgrade;
+            proxy_set_header   Connection        $connection_upgrade;
+            proxy_set_header   Host              $host;
+            proxy_set_header   X-Real-IP         $remote_addr;
+            proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Proto $scheme;
+            proxy_read_timeout 86400;
+            proxy_send_timeout 86400;
+        }
+
+        # --- SEO files (served as static, short cache, never blocked) ---
+        location = /robots.txt {
+            expires 1d;
+            add_header Cache-Control "public, max-age=86400";
+            try_files /robots.txt =404;
+        }
+
+        location = /sitemap.xml {
+            expires 1d;
+            add_header Cache-Control "public, max-age=86400";
+            types { } default_type application/xml;
+            try_files /sitemap.xml =404;
+        }
+
+        # --- Static assets ---
+        location ~* ^/(images|assets|fonts)/ {
+            expires 30d;
+            add_header Cache-Control "public, max-age=2592000, immutable";
+            try_files $uri =404;
+        }
+
+        # --- Block sensitive files ---
+        location ~* ^/(leads\.json|server\.js|docker-compose\.yml|Dockerfile|nginx\.conf|package\.json|package-lock\.json)$ {
+            deny all;
+            return 404;
+        }
+
+        # --- Admin panel (password protected) ---
+        location = /admin.html {
+            auth_basic           "Restricted Access";
+            auth_basic_user_file /etc/nginx/certs/.htpasswd;
+            try_files            /admin.html =404;
+        }
+
+        # --- Public pages ---
+        location / {
+            try_files $uri $uri/ =404;
+        }
+    }
+}

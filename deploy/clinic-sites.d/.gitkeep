@@ -1,0 +1,4 @@
+# Generated per-clinic nginx server blocks live here (<domain>.conf).
+# Created by scripts/add-clinic-domain.sh. Loaded via:
+#   include /etc/nginx/clinic-sites.d/*.conf;
+# This .gitkeep is ignored by the *.conf wildcard include.

@@ -1,0 +1,14 @@
+# Backend-only compose — use when nginx runs on the HOST (not in Docker).
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.backend-only.yml up -d
+#
+# Then configure host nginx with deploy/host-nginx-salam-doctor.conf
+
+services:
+  web:
+    profiles: ["never"]   # disables the docker nginx container
+
+  backend:
+    ports:
+      - "127.0.0.1:3000:3000"   # only localhost — host nginx proxies here

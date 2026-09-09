@@ -1,0 +1,69 @@
+{# Pharmacoeconomics-style transparent pricing #}
+<section id="pricing" class="py-16 md:py-20 bg-gradient-to-b from-slate-50 to-white border-y border-line">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="grid lg:grid-cols-5 gap-10 items-start">
+      <div class="lg:col-span-2">
+        <p class="text-growth font-bold text-sm mb-2">شفافیت مالی · Pharmacoeconomics</p>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-navy mb-4">بدانید دقیقاً برای چه می‌پردازید</h2>
+        <p class="text-muted leading-relaxed mb-6">{{ pricing_intro }}</p>
+        <div class="rounded-2xl bg-trust/5 border border-trust/20 p-5 text-sm leading-relaxed">
+          <p class="font-bold text-navy mb-2"><i class="fa-solid fa-scale-balanced text-trust ml-1"></i> رویکرد اقتصاد سلامت</p>
+          <p class="text-muted">هزینه‌ها به اجزای قابل‌شناسایی تفکیک شده‌اند: ویزیت، مداخله اصلی، پیگیری و مواد مصرفی — تا مقایسه گزینه‌های درمانی ممکن باشد.</p>
+        </div>
+      </div>
+
+      <div class="lg:col-span-3 space-y-5">
+        {% for pkg in pricing_packages %}
+        <article class="rounded-2xl border {% if pkg.highlight %}border-gold bg-gold/5 shadow-card ring-2 ring-gold/20{% else %}border-line bg-white shadow-card{% endif %} overflow-hidden">
+          {% if pkg.highlight %}
+          <div class="bg-gold text-navy text-center text-xs font-extrabold py-1.5">پیشنهاد پرتکرار بیماران</div>
+          {% endif %}
+          <div class="p-6">
+            <div class="flex flex-wrap items-end justify-between gap-3 mb-5">
+              <h3 class="text-xl font-extrabold text-navy">{{ pkg.name }}</h3>
+              <div class="text-left">
+                <p class="text-2xl font-extrabold text-trust">{{ pkg.total }}</p>
+                {% if pkg.per_session %}
+                <p class="text-xs text-muted mt-0.5">{{ pkg.per_session }}</p>
+                {% endif %}
+              </div>
+            </div>
+
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-muted border-b border-line">
+                  <th class="text-right py-2 font-semibold">آیتم هزینه</th>
+                  <th class="text-center py-2 font-semibold w-28">مبلغ</th>
+                  <th class="text-center py-2 font-semibold w-20">وضعیت</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in pkg.items %}
+                <tr class="border-b border-line/60 last:border-0">
+                  <td class="py-3 pr-2">
+                    <span class="font-medium text-ink">{{ item.label }}</span>
+                    {% if item.note %}<span class="block text-xs text-muted mt-0.5">{{ item.note }}</span>{% endif %}
+                  </td>
+                  <td class="py-3 text-center font-bold text-navy">{{ item.amount }}</td>
+                  <td class="py-3 text-center">
+                    {% if item.included %}
+                    <span class="inline-flex items-center gap-1 text-growth text-xs font-bold">
+                      <i class="fa-solid fa-check"></i> شامل
+                    </span>
+                    {% else %}
+                    <span class="text-muted text-xs">جدا</span>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </article>
+        {% endfor %}
+
+        <p class="text-xs text-muted leading-relaxed">{{ pricing_footnote }}</p>
+      </div>
+    </div>
+  </div>
+</section>

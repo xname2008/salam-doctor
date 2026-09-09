@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>گزارش کارهای انجام‌شده — سلام دکتر (۳۵ روز اخیر)</title>
+  <style>
+    :root {
+      --navy: #0e3571;
+      --blue: #1294e0;
+      --mint: #eef7fb;
+      --line: #d6e4ea;
+      --text: #0f172a;
+      --muted: #64748b;
+      --card: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Vazirmatn", "IRANSansXFaNum", "Tahoma", "Segoe UI", sans-serif;
+      background: #f4f7fa;
+      color: var(--text);
+      line-height: 1.85;
+      font-size: 15px;
+    }
+    .page {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+    .cover {
+      background: linear-gradient(145deg, var(--navy) 0%, #165a9c 55%, var(--blue) 100%);
+      color: #fff;
+      border-radius: 20px;
+      padding: 36px 32px;
+      margin-bottom: 28px;
+      box-shadow: 0 16px 40px rgba(14, 53, 113, .28);
+    }
+    .cover h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      line-height: 1.5;
+      font-weight: 800;
+    }
+    .cover .meta {
+      opacity: .92;
+      font-size: .98rem;
+    }
+    .cover .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .chip {
+      background: rgba(255,255,255,.16);
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: .85rem;
+      font-weight: 700;
+    }
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+    .toolbar button {
+      font: inherit;
+      font-weight: 700;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--navy);
+      border-radius: 12px;
+      padding: 10px 16px;
+      cursor: pointer;
+    }
+    .toolbar button.primary {
+      background: var(--navy);
+      color: #fff;
+      border-color: var(--navy);
+    }
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px 22px 18px;
+      margin-bottom: 16px;
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.2rem;
+      color: var(--navy);
+      font-weight: 800;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--mint);
+    }
+    h3 {
+      margin: 18px 0 8px;
+      font-size: 1.02rem;
+      color: #1e3a5f;
+      font-weight: 800;
+    }
+    p, li { color: #1e293b; }
+    .muted { color: var(--muted); font-size: .92rem; }
+    ul { margin: 8px 0 12px; padding-right: 22px; }
+    li { margin-bottom: 6px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 6px;
+      font-size: .93rem;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: right;
+      vertical-align: top;
+    }
+    th {
+      background: var(--mint);
+      color: var(--navy);
+      font-weight: 800;
+    }
+    tr:nth-child(even) td { background: #fafcfd; }
+    .note {
+      background: #fff8e8;
+      border: 1px solid #fde68a;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-top: 10px;
+      font-size: .92rem;
+    }
+    .footer-note {
+      text-align: center;
+      color: var(--muted);
+      font-size: .88rem;
+      margin-top: 28px;
+    }
+    @media print {
+      body { background: #fff; font-size: 12.5px; }
+      .page { max-width: none; padding: 0; }
+      .toolbar { display: none !important; }
+      .cover {
+        box-shadow: none;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      section {
+        break-inside: avoid;
+        box-shadow: none;
+      }
+      h2 { break-after: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="toolbar">
+      <button class="primary" type="button" onclick="window.print()">چاپ / ذخیره به‌صورت PDF</button>
+      <button type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">بازگشت به بالا</button>
+    </div>
+
+    <header class="cover">
+      <h1>گزارش کارهای انجام‌شده پروژه سلام دکتر</h1>
+      <p class="meta">بازه تقریبی: ۲۲ خرداد تا ۵ مرداد ۱۴۰۵ (حدود ۳۵ روز اخیر)</p>
+      <p class="meta">مخاطب: همکاران تیم فنی و اجرایی | هدف: ارائه خلاصه تغییرات و قابلیت‌های جدید</p>
+      <div class="chips">
+        <span class="chip">بک‌اند و API</span>
+        <span class="chip">فرانت‌اند</span>
+        <span class="chip">UI/UX</span>
+        <span class="chip">سئو و رشد</span>
+        <span class="chip">زیرساخت</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>۱. خلاصه مدیریتی</h2>
+      <p>
+        در این بازه، پلتفرم سلام دکتر از یک کاتالوگ نسبتاً استاتیک به یک سامانه ترکیبی پیشرفته‌تر تبدیل شد:
+        بک‌اند Node، ذخیره‌سازی SQLite برای پروفایل کلینیک‌ها، PostgreSQL با Prisma،
+        داکر و Nginx، صفحات سئوی برنامه‌ای (<code>/shiraz/*</code>)، لندینگ خدمات
+        (<code>/services/:slug</code>)، سیستم مقاله/بلاگ، مونتایزیشن دسته‌بندی (تاپ ۱۰ و اسلایدر)،
+        و پروفایل کلینیک + پنل ادمین غنی‌تر.
+      </p>
+      <p>
+        تمرکز هفته‌های پایانی بیشتر روی کیفیت پروفایل کلینیک نهال (شناسه ۱۱۴)، نقشه، گالری،
+        دپارتمان‌ها، روبیکا/بله، و اصلاح CTAهای صفحه اصلی بوده است.
+      </p>
+    </section>
+
+    <section>
+      <h2>۲. بک‌اند / API / دیتابیس</h2>
+
+      <h3>دیتابیس و ORM</h3>
+      <ul>
+        <li>طراحی اسکیمای Prisma + PostgreSQL برای دایرکتوری پزشکی (کلینیک، منطقه، دستگاه، خدمت، قرارداد و …).</li>
+        <li>اعمال و رفع مشکلات مایگریشن‌ها روی سرور (شروع اولیه، مقالات، دپارتمان‌ها، لینک روبیکا/بله).</li>
+        <li>رفع مشکلات اتصال دیتابیس (localhost در برابر host.docker.internal)، دسترسی و هم‌ترازی مایگریشن‌ها.</li>
+      </ul>
+
+      <h3>هسته سرور (<code>server.js</code>)</h3>
+      <ul>
+        <li>API پروفایل کلینیک: دریافت عمومی و مدیریت در ادمین (ایجاد/ویرایش/حذف).</li>
+        <li>آبجکت <strong>contact_info</strong>: اینستاگرام، واتساپ، تلگرام، روبیکا، بله، تلفن، آدرس و شماره‌های مشاوره.</li>
+        <li>فیلدهای دپارتمان: عنوان/تلفن/واتساپ بخش اول و دوم + همگام‌سازی با Postgres.</li>
+        <li>فیلدهای روبیکا/بله: عنوان و لینک جداگانه برای هر کدام.</li>
+        <li>مدیریت معرفی ساخت‌یافته کلینیک (فایل <code>clinic-intros</code>) تا ویرایشگر Quill قالب غنی را خراب نکند.</li>
+        <li>پروکسی تایل نقشه برای دسترسی بهتر به OSM در ایران.</li>
+        <li>آپلود تصویر (Multer) برای مقالات و TinyMCE.</li>
+        <li>APIهای سلامت سرویس، سرنخ/مشاوره، ویژه، تبلیغات، تاپ ۱۰ و اسلایدر دسته‌بندی.</li>
+      </ul>
+
+      <h3>سئو و کشف محتوا</h3>
+      <ul>
+        <li>هاب‌های برنامه‌ای <code>/shiraz/:service_slug</code> با Repository سئو.</li>
+        <li>تزریق متای دینامیک برای پروفایل، دسته و خدمت.</li>
+        <li>تکمیل <code>sitemap.xml</code> (خدمات/برندها و هاب‌ها).</li>
+        <li>بهبود <code>robots.txt</code> و رفتار بات‌ها روی APIهای کلیک (کاهش نویز Search Console).</li>
+        <li>Schema.org: FAQ، بردکرامب، Searchbox سایت، اصلاح خطاهای Review Snippet.</li>
+        <li>پیکربندی کلمات کلیدی دم‌بلند (کاشت مو، لیزر، هایفو و …).</li>
+        <li>داده نمونه/سید برای جلوگیری از صفحات خالی هاب در گوگل.</li>
+      </ul>
+
+      <h3>لندینگ خدمات</h3>
+      <ul>
+        <li>ماژول <code>serviceLanding.js</code> و مسیر <code>GET /services/:slug</code> (+ API JSON).</li>
+        <li>تطبیق کلینیک‌ها بر اساس اسلاگ خدمت (کاتالوگ + لایه SQLite).</li>
+        <li>فیلتر تگ‌ها: فقط خدمات مرتبط با همان صفحه؛ تگ‌ها غیرقابل‌کلیک.</li>
+        <li>بخش FAQ و جابه‌جایی دکمه «مشاهده مراکز معتبر» به زیر FAQ.</li>
+      </ul>
+
+      <h3>بلاگ / مقالات</h3>
+      <ul>
+        <li>جدول مقالات در Postgres + CRUD ادمین.</li>
+        <li>TinyMCE و مسیر آپلود تصویر.</li>
+        <li>قالب‌های لیست/پست با تمرکز E-E-A-T.</li>
+      </ul>
+
+      <h3>مونتایزیشن</h3>
+      <ul>
+        <li>تاپ ۱۰ دسته‌بندی (به‌جای تاپ ۵) + اسلایدر اختصاصی هر دسته.</li>
+        <li>تبلیغات با تصویر جدا برای دسکتاپ و موبایل.</li>
+        <li>گزارش‌گیری مراکز ویژه و بنرها.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>۳. فرانت‌اند (صفحات و منطق کلاینت)</h2>
+
+      <h3>صفحه اصلی</h3>
+      <ul>
+        <li>ریبرند هیرو: «سلام دکتر، همراه سلامتی شما».</li>
+        <li>حذف تاپ ۵/اسلایدر سراسری؛ افزودن بخش «دسته‌بندی‌های برتر» (۶ کاشی).</li>
+        <li>تمرکز CTA روی ثبت کلینیک / پشتیبانی سایت به‌جای مشاوره عمومی.</li>
+        <li>هدر: جایگزینی «ثبت کلینیک» با «پشتیبانی سایت»؛ دکمه «درباره ما» در هیرو.</li>
+        <li>اصلاح اعتبارسنجی شماره تلفن فرم برای پیش‌شماره +۹۸ و ۰۰۹۸.</li>
+      </ul>
+
+      <h3>دسته و لندینگ‌ها</h3>
+      <ul>
+        <li>صفحه پویای <code>category.html</code> بر اساس پارامتر type.</li>
+        <li>نمایش تاپ ۱۰ و اسلایدر روی صفحات دسته و خدمات.</li>
+        <li>پارک موقت صفحات کم‌اولویت (ویزیت منزل، آزمایشگاه، تجهیزات).</li>
+      </ul>
+
+      <h3>پروفایل کلینیک</h3>
+      <ul>
+        <li>نام، تلفن، آدرس و خدمات دینامیک از API و کاتالوگ.</li>
+        <li>نوار اکشن زیر تصویر اصلی (تماس، واتساپ، اینستاگرام، مسیر، روبیکا، بله).</li>
+        <li>عناوین دپارتمان‌ها و کاشی‌های مشاوره زیر بخش‌های ۱ و ۲.</li>
+        <li>نقشه Leaflet با OpenStreetMap و پروکسی تایل.</li>
+        <li>گالری‌ها با اسکرول‌اسنپ بومی (RTL و سوایپ موبایل/دسکتاپ).</li>
+        <li>ترجیح HTML ساخت‌یافته ذخیره‌شده در دیتابیس نسبت به فایل استاتیک قدیمی Nginx.</li>
+        <li>حذف پسوند خودکار «در شیراز» از عنوان H1 کلینیک‌ها.</li>
+        <li>فوتر چسبان موبایل: تماس تلفنی و واتساپ خود کلینیک.</li>
+        <li>مسیریابی: گوگل / نشان / بلد + اسنپ.</li>
+        <li>لایت‌باکس تصویر هیرو تمام‌صفحه؛ کلیک روی هر نقطه برای بستن.</li>
+        <li>حذف بنر تبلیغاتی داخل صفحه پروفایل.</li>
+        <li>ماسک نام کلینیک‌های نمونه (به‌جز نهال).</li>
+      </ul>
+
+      <h3>پنل ادمین</h3>
+      <ul>
+        <li>ویرایش پروفایل: تماس، مختصات، خدمات، دپارتمان‌ها، معرفی.</li>
+        <li>حالت HTML خام برای معرفی ساخت‌یافته (مثل نهال) و Quill برای بقیه.</li>
+        <li>ویرایشگر مقاله TinyMCE + آپلود.</li>
+        <li>مدیریت تاپ ۱۰، اسلایدر و تبلیغات دسته‌بندی.</li>
+        <li>فیلدهای عنوان/لینک روبیکا و بله.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>۴. UI / UX</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>بخش</th>
+            <th>تغییرات انجام‌شده</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>صفحه اصلی</td>
+            <td>کاشی‌های جذاب دسته‌بندی، هیرو واضح‌تر، CTA تمیزتر در هدر</td>
+          </tr>
+          <tr>
+            <td>پروفایل</td>
+            <td>نوار اکشن تبدیل‌محور، کاشی مشاوره دپارتمان، فوتر موبایل تماس/واتساپ، دکمه اسنپ</td>
+          </tr>
+          <tr>
+            <td>رسانه پروفایل</td>
+            <td>رفع لایت‌باکس (قبلاً زیر فوتر می‌رفت)، سوایپ گالری RTL</td>
+          </tr>
+          <tr>
+            <td>نقشه</td>
+            <td>از نقشه خالی به Leaflet + OSM / پروکسی</td>
+          </tr>
+          <tr>
+            <td>صفحات خدمت</td>
+            <td>FAQ، دکمه مشاهده مراکز زیر FAQ، تگ‌های فیلترشده غیرکلیک</td>
+          </tr>
+          <tr>
+            <td>برندینگ</td>
+            <td>پیام پشتیبانی سایت به‌جای «مشاوره» عمومی؛ عنوان ثابت برند</td>
+          </tr>
+          <tr>
+            <td>تبلیغات و بلاگ</td>
+            <td>بنر ریسپانسیو؛ ظاهر ژورنالی برای مقالات</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>۵. سئو و رشد</h2>
+      <ul>
+        <li>هاب‌های برنامه‌ای <code>/shiraz/*</code> با overrideهای دم‌بلند.</li>
+        <li>تزریق متا سمت سرور بدون نیاز به موتور قالب کامل.</li>
+        <li>کامل‌کردن سایت‌مپ (خدمات و هاب‌ها).</li>
+        <li>پاکسازی Search Console: URLهای کلیک API، صفحات خالی هاب، ریدایرکت/کنونیکال، خطای اسکیما.</li>
+        <li>بهبود Core Web Vitals: preload فونت/هیرو، lazy تصویر، کش و Gzip در Nginx.</li>
+        <li>Schema جعبه‌جستجوی Sitelinks و بردکرامب.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>۶. محتوا و کلینیک نهال</h2>
+      <ul>
+        <li>قالب معرفی ساخت‌یافته <code>clinic-intros/114.html</code>.</li>
+        <li>حالت HTML در ادمین تا Quill چیدمان غنی را تخت نکند.</li>
+        <li>اتصال رسانه پوشه <code>/clinics/114</code> (هیرو، لوگو، ویدیو، گالری، قبل/بعد).</li>
+        <li>ماسک نام نمونه‌ها؛ حفظ نام واقعی نهال.</li>
+        <li>اتصال تگ خدمات نهال به لندینگ‌های <code>/services/{slug}</code>.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>۷. زیرساخت و DevOps</h2>
+      <ul>
+        <li>Docker Compose: بک‌اند + Nginx + Certbot.</li>
+        <li>تنظیمات Nginx: فشرده‌سازی، کش، پروکسی API و <code>/services/</code>.</li>
+        <li>مانت ولوم برای فایل‌های حیاتی (از جمله <code>clinic-intros</code>).</li>
+        <li>رفع خطای native ماژول <code>better-sqlite3</code>، خطای ۵۰۲ بعد از دیپلوی، ریلود Nginx داخل داکر.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>۸. جدول زمانی کلی</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>بازه</th>
+            <th>تمرکز کارها</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>اواخر خرداد تا اوایل تیر</td>
+            <td>اسکیمای Prisma، هاب سئو، Repository، Docker/Nginx، سید داده، رفع مشکلات GSC</td>
+          </tr>
+          <tr>
+            <td>اواسط تیر</td>
+            <td>گالری نهال، اتصال رسانه، ماسک نام کلینیک‌ها، انتقال تاپ ۵/اسلایدر به صفحات دسته</td>
+          </tr>
+          <tr>
+            <td>نیمه دوم تیر</td>
+            <td>بازطراحی کاشی‌های صفحه اصلی، تاپ ۱۰، تبلیغات ریسپانسیو، contact_info، لندینگ خدمات، بازیابی دیپلوی</td>
+          </tr>
+          <tr>
+            <td>اواخر تیر</td>
+            <td>سئوی کامل، سایت‌مپ، CWV، بلاگ + TinyMCE، نوار اکشن پروفایل، نقشه/گالری</td>
+          </tr>
+          <tr>
+            <td>۲۳ تا ۲۷ تیر / اوایل مرداد</td>
+            <td>دپارتمان و مشاوره، باگ ذخیره ادمین، حذف «در شیراز»، CTA صفحه اصلی، فوتر موبایل، اسنپ، FAQ خدمات، روبیکا/بله، لایت‌باکس</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>۹. باگ‌های مهم که برطرف شد</h2>
+      <ul>
+        <li>خطای ۵۰۰ هنگام ذخیره نهال در ادمین (تابع گم‌شده مربوط به فایل معرفی استاتیک).</li>
+        <li>«ذخیره موفق» بدون تغییر ظاهری (اختلاف دیتابیس با فایل استاتیک Nginx).</li>
+        <li>نقشه خالی Leaflet / مسدود بودن OSM → پروکسی تایل + مقداردهی ناهمزمان.</li>
+        <li>مشکلات سوایپ گالری → اسکرول‌اسنپ بومی CSS.</li>
+        <li>تخت‌شدن معرفی ساخت‌یافته نهال توسط Quill.</li>
+        <li>۵۰۲ دیپلوی / ماژول گم‌شده / خطای native مربوط به better-sqlite3.</li>
+        <li>خطاهای GSC روی کلیک featured/ads، صفحات خالی هاب، اسکیما Review.</li>
+        <li>رد شدن شماره تلفن با پیش‌شماره +۹۸ / ۰۰۹۸ در فرم.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>۱۰. فایل‌ها و پوشه‌های کلیدی</h2>
+      <h3>بک‌اند</h3>
+      <p class="muted">
+        server.js ، serviceLanding.js ، seoRouter.js ، seoInfra.js ، seo-config.js ،
+        DirectoryRepository.js ، categoryMonetize.js ، blogArticles.js ، articleTemplate.js ،
+        siteSettings.js ، uploadApp.js ، prisma/schema.prisma و مایگریشن‌ها
+      </p>
+      <h3>فرانت‌اند</h3>
+      <p class="muted">
+        index.html ، profile.html ، admin.html ، category.html ، صفحات لندینگ خدمات،
+        views/service-template.html ، blog-*.html ، data.js / data.min.js ،
+        assets/js/* ، assets/css/* ، clinic-intros/114.html
+      </p>
+      <h3>زیرساخت</h3>
+      <p class="muted">docker-compose.yml ، nginx.conf ، nginx-site-locations.conf</p>
+    </section>
+
+    <section>
+      <h2>۱۱. نکات عملیاتی پیشنهادی برای ادامه کار</h2>
+      <ul>
+        <li>بعد از هر مایگریشن جدید حتماً <code>npx prisma migrate deploy</code> اجرا شود.</li>
+        <li>بک‌اند را با ولوم <code>clinic-intros</code> دوباره بالا بیاورید تا فایل معرفی و Nginx هم‌خوان بماند.</li>
+        <li>بعد از دیپلوی، ادمین و پروفایل را Hard Refresh کنید.</li>
+        <li>سایت اختصاصی کلینیک‌ها / سیستم نوبت‌دهی در طراحی اولیه آمده ولی فعلاً نسبت به سئو اولویت پایین‌تری داشته است.</li>
+        <li>در برخی صفحات، منوی موبایل هنوز ممکن است لینک قدیمی «ثبت کلینیک و ارتقای جایگاه» را نشان دهد (هدر دسکتاپ صفحه اصلی به‌روز شده است).</li>
+      </ul>
+      <div class="note">
+        <strong>نکته منبع گزارش:</strong>
+        این سند بر اساس تاریخچه گفت‌وگوها و کارهای انجام‌شده در محیط Cursor همین پروژه تهیه شده است.
+        در پوشه پروژه تاریخچه Git در دسترس نبود؛ بنابراین تاریخ‌ها تقریبی و بر اساس لاگ جلسات هستند.
+      </div>
+    </section>
+
+    <p class="footer-note">
+      سلام دکتر — گزارش پیشرفت فنی | قابل ارائه به تیم داخلی<br>
+      برای خروجی PDF: دکمه «چاپ / ذخیره به‌صورت PDF» را بزنید و Destination را Save as PDF انتخاب کنید.
+    </p>
+  </div>
+</body>
+</html>

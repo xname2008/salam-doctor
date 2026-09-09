@@ -1,0 +1,3 @@
+# m h  dom mon dow   command
+30 3 * * * /home/xname2008/Documents/nginx/html/backup-db.sh >> /home/xname2008/Documents/nginx/html/backups/backup.log 2>&1
+xname2008@hamid-lubuntu:~/Documents/nginx/html$ 

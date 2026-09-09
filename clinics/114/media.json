@@ -1,0 +1,23 @@
+{
+  "logo": "logo-3.webp",
+  "hero": "Hero.webp",
+  "gallery": [
+    { "src": "gallery/01.webp", "ratio": "4/3", "caption": "فضای کلینیک نهال" },
+    { "src": "gallery/02.webp", "ratio": "4/3", "caption": "اتاق درمان و زیبایی" },
+    { "src": "gallery/03.webp", "ratio": "4/3", "caption": "محیط آرامش‌بخش مرکز" },
+    { "src": "gallery/04.webp", "ratio": "4/3", "caption": "تجهیزات و فضای کلینیک" }
+  ],
+  "beforeAfter": [
+    { "before": "BeforeAfter/1.webp", "after": "BeforeAfter/2.webp", "caption": "نمونه کاشت مو — مورد ۱" },
+    { "before": "BeforeAfter/3.webp", "after": "BeforeAfter/4.webp", "caption": "نمونه کاشت مو — مورد ۲" },
+    { "before": "BeforeAfter/5.webp", "after": "BeforeAfter/6.webp", "caption": "نمونه کاشت مو — مورد ۳" },
+    { "before": "BeforeAfter/7.webp", "after": "BeforeAfter/8.webp", "caption": "نمونه کاشت مو — مورد ۴" },
+    { "before": "BeforeAfter/9.webp", "after": "BeforeAfter/10.webp", "caption": "نمونه کاشت مو — مورد ۵" }
+  ],
+  "video": {
+    "src": "video/cilinc nahal teaser.mp4",
+    "poster": "video/video-cover.webp",
+    "title": "تیزر معرفی کلینیک نهال",
+    "type": "video/mp4"
+  }
+}

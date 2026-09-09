@@ -1,0 +1,41 @@
+<%
+  // ========================================================================
+  // _cta-hub-widget — reusable in-article conversion widget.
+  // Funnels informational readers to the money/directory hub page and passes
+  // link equity via a keyword-rich dofollow anchor.
+  //
+  // Required locals:
+  //   hub_page_url      e.g. "https://salam-doctor.com/shiraz/cosmetic-surgery"
+  //   hub_page_keyword  e.g. "بهترین کلینیک جراحی زیبایی شیراز"
+  // Optional:
+  //   variant           "inline" (mid-article, default) | "final" (post-article)
+  //
+  // Usage (from a parent template):
+  //   include('_cta-hub-widget', { hub_page_url: hub.url,
+  //       hub_page_keyword: hub.keyword, variant: 'inline' })
+  // ========================================================================
+  var variant = (typeof variant !== 'undefined' && variant) || 'inline';
+  var isFinal = variant === 'final';
+%>
+<aside class="cta-hub<%= isFinal ? ' cta-hub--final' : '' %>" aria-label="مشاوره و رزرو">
+  <div class="cta-hub__glow" aria-hidden="true"></div>
+  <div class="cta-hub__body">
+    <span class="cta-hub__eyebrow">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-7-4.9-9.5-9A5.6 5.6 0 0 1 12 6a5.6 5.6 0 0 1 9.5 6c-2.5 4.1-9.5 9-9.5 9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      پیشنهاد سلام دکتر
+    </span>
+    <p class="cta-hub__title">
+      <%= isFinal ? 'آماده‌اید قدم بعدی را بردارید؟' : 'به دنبال مرکز مطمئن و تأییدشده هستید؟' %>
+    </p>
+    <p class="cta-hub__text">
+      لیست مقایسه‌ای مراکز دارای دستگاه اصل، امتیاز واقعی بیماران و مشاوره رایگان — همه در یک صفحه:
+    </p>
+    <div class="cta-hub__actions">
+      <a class="cta-hub__btn" href="<%= hub_page_url %>" rel="dofollow" title="<%= hub_page_keyword %>">
+        <%= hub_page_keyword %>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a class="cta-hub__call" href="tel:+989007000462">مشاوره تلفنی رایگان</a>
+    </div>
+  </div>
+</aside>

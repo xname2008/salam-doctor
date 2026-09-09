@@ -1,0 +1,46 @@
+{
+  "name": "salam-doctor-intranet",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Lightweight intranet server for consultation leads",
+  "scripts": {
+    "start": "node server.js",
+    "sync:leads": "node syncWorker.js",
+    "slugs:backfill": "node scripts/backfill-clinic-slugs.js",
+    "slugs:rewrite-links": "node scripts/rewrite-legacy-profile-links.js",
+    "seed:local-hub-seo": "node scripts/seed-local-hub-seo.js",
+    "seed:mock": "node prisma/seed-mock-clinics.js",
+    "sitemap:generate": "node scripts/generate-sitemap.js",
+    "sitemap:articles": "node scripts/update-sitemap-articles.js",
+    "articles:sync": "node scripts/sync-article-catalog.js",
+    "sitemap": "node scripts/generate-sitemap.js && node scripts/update-sitemap-articles.js && node scripts/sync-article-catalog.js",
+    "audit:gtm": "node scripts/audit-gtm.js",
+    "audit:gtm:fix": "node scripts/audit-gtm.js --fix",
+    "gallery:dev": "vite",
+    "gallery:build": "vite build --mode lib",
+    "vendor:leaflet": "mkdir -p assets/vendor/leaflet/images && cp node_modules/leaflet/dist/leaflet.css node_modules/leaflet/dist/leaflet.js assets/vendor/leaflet/ && cp node_modules/leaflet/dist/images/* assets/vendor/leaflet/images/",
+    "postinstall": "npm run vendor:leaflet"
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3",
+    "better-sqlite3": "^12.10.0",
+    "date-object": "^2.1.6",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "leaflet": "^1.9.4",
+    "multer": "^2.2.0",
+    "node-cron": "^3.0.3",
+    "ogl": "^1.0.11",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-multi-date-picker": "^4.5.2",
+    "sanitize-html": "^2.17.5",
+    "slugify": "^1.6.9",
+    "socket.io": "^4.8.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.0.3",
+    "prisma": "6.19.3",
+    "vite": "^8.1.4"
+  }
+}

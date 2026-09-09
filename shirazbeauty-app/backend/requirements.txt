@@ -1,0 +1,31 @@
+# --- Web framework -----------------------------------------------------------
+fastapi==0.141.1
+uvicorn[standard]==0.52.4
+python-multipart==0.0.32
+
+# --- Configuration / validation ----------------------------------------------
+pydantic==2.13.5
+pydantic-settings==2.15.0
+
+# --- Database ----------------------------------------------------------------
+SQLAlchemy==2.0.52
+# Async driver, used by the application at request time.
+asyncpg==0.31.0
+# Blocking driver, used only by Alembic migrations.
+psycopg2-binary==2.9.12
+alembic==1.19.1
+
+# --- Auth --------------------------------------------------------------------
+python-jose[cryptography]==3.5.0
+passlib[bcrypt]==1.7.4
+# passlib 1.7.4 predates bcrypt 4.1's removal of `__about__`, which makes it log
+# a spurious "error reading bcrypt version" on every hash. Pin below that.
+bcrypt==4.0.1
+
+# --- Data import (one-off seed scripts) --------------------------------------
+pandas==2.3.2
+openpyxl==3.1.5
+
+# --- Outbound calls (SMS gateway, Iranian holidays API) ----------------------
+httpx==0.28.1
+requests==2.32.5

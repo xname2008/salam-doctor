@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>گزارش کامل پروژه سلام دکتر — از روز اول تا امروز (هر ۳۰ روز)</title>
+  <style>
+    :root{
+      --navy:#0e3571; --blue:#1294e0; --mint:#eef7fb; --line:#d6e4ea;
+      --text:#0f172a; --muted:#64748b; --soft:#f8fafc;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:"Vazirmatn","IRANSansXFaNum","Tahoma","Segoe UI",sans-serif;
+      background:#edf2f7; color:var(--text); line-height:1.85; font-size:15px;
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:28px 18px 72px}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+    .toolbar button{
+      font:inherit;font-weight:700;border:1px solid var(--line);background:#fff;
+      color:var(--navy);border-radius:12px;padding:10px 16px;cursor:pointer
+    }
+    .toolbar .primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+    .cover{
+      background:linear-gradient(145deg,#041f45 0%,#0e3571 45%,#1294e0 100%);
+      color:#fff;border-radius:22px;padding:34px 28px;margin-bottom:22px;
+      box-shadow:0 18px 40px rgba(4,31,69,.28)
+    }
+    .cover h1{margin:0 0 12px;font-size:clamp(1.45rem,3vw,2rem);font-weight:800;line-height:1.55}
+    .cover p{margin:6px 0;opacity:.93}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+    .chip{
+      background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);
+      border-radius:999px;padding:5px 12px;font-size:.82rem;font-weight:700
+    }
+    .toc,.period,.section{
+      background:#fff;border:1px solid var(--line);border-radius:16px;
+      padding:20px 20px 16px;margin-bottom:14px
+    }
+    .toc a{color:var(--blue);text-decoration:none;font-weight:700}
+    .toc li{margin:6px 0}
+    h2{
+      margin:0 0 12px;font-size:1.22rem;color:var(--navy);font-weight:800;
+      border-bottom:2px solid var(--mint);padding-bottom:10px
+    }
+    h3{margin:18px 0 8px;font-size:1.02rem;color:#163a66;font-weight:800}
+    .period-head{
+      display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+      margin-bottom:8px
+    }
+    .badge{
+      background:var(--mint);color:var(--navy);border:1px solid #cfe3ef;
+      border-radius:999px;padding:5px 12px;font-size:.8rem;font-weight:800
+    }
+    ul{margin:8px 0 12px;padding-right:22px}
+    li{margin-bottom:6px}
+    table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.92rem}
+    th,td{border:1px solid var(--line);padding:10px 12px;text-align:right;vertical-align:top}
+    th{background:var(--mint);color:var(--navy);font-weight:800}
+    tr:nth-child(even) td{background:var(--soft)}
+    .role{
+      border:1px solid var(--line);border-radius:14px;padding:14px 14px 8px;
+      margin:12px 0;background:linear-gradient(180deg,#fbfdff,#fff)
+    }
+    .role h3{margin-top:0}
+    .note{
+      background:#fff8e8;border:1px solid #fde68a;border-radius:12px;
+      padding:12px 14px;margin-top:12px;font-size:.92rem
+    }
+    .muted{color:var(--muted);font-size:.92rem}
+    .foot{text-align:center;color:var(--muted);font-size:.88rem;margin-top:26px}
+    @media print{
+      body{background:#fff;font-size:12.2px}
+      .toolbar{display:none!important}
+      .wrap{max-width:none;padding:0}
+      .cover,.period,.section,.toc{-webkit-print-color-adjust:exact;print-color-adjust:exact;box-shadow:none}
+      .role,.period{break-inside:avoid}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="toolbar">
+      <button class="primary" type="button" onclick="window.print()">چاپ / ذخیره PDF</button>
+      <button type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">بازگشت به بالا</button>
+    </div>
+
+    <header class="cover">
+      <h1>گزارش کامل پروژه سلام دکتر<br>از روز اول تا امروز — تفکیک هر ۳۰ روز و هر تخصص</h1>
+      <p>بازه پروژه: ۲ اردیبهشت ۱۴۰۵ تا ۵ مرداد ۱۴۰۵ (۲ مه تا ۲۷ ژوئیه ۲۰۲۶)</p>
+      <p>مخاطب: همکاران ایرانی تیم فنی / محصول / عملیات</p>
+      <p>ساختار گزارش: ۳ دورهٔ تقریباً ۳۰ روزه + جمع‌بندی و فایل‌های کلیدی</p>
+      <div class="chips">
+        <span class="chip">بک‌اند</span>
+        <span class="chip">فرانت‌اند</span>
+        <span class="chip">UI/UX</span>
+        <span class="chip">سئو</span>
+        <span class="chip">DevOps</span>
+        <span class="chip">محتوا / محصول</span>
+      </div>
+    </header>
+
+    <nav class="toc">
+      <h2>فهرست</h2>
+      <ol>
+        <li><a href="#summary">خلاصه کل پروژه</a></li>
+        <li><a href="#p1">دوره ۱ — روز ۱ تا ۳۰ (مه ۲۰۲۶)</a></li>
+        <li><a href="#p2">دوره ۲ — روز ۳۱ تا ۶۰ (ژوئن ۲۰۲۶)</a></li>
+        <li><a href="#p3">دوره ۳ — روز ۶۱ تا ۸۷ (ژوئیه ۲۰۲۶)</a></li>
+        <li><a href="#matrix">ماتریس تخصص‌ها در کل پروژه</a></li>
+        <li><a href="#ops">نکات عملیاتی و ادامه کار</a></li>
+      </ol>
+    </nav>
+
+    <section class="section" id="summary">
+      <h2>۱. خلاصه کل پروژه</h2>
+      <p>
+        پروژه سلام دکتر از یک لندینگ HTML ساده شروع شد و طی حدود سه ماه به یک پلتفرم دایرکتوری
+        کلینیک‌های زیبایی/درمانی شیراز تبدیل شد: صفحه اصلی و پروفایل کلینیک، پنل ادمین،
+        بک‌اند Node، دیتابیس SQLite و PostgreSQL، Docker/Nginx/HTTPS، سئوی برنامه‌ای،
+        لندینگ خدمات برند/دستگاه، مونتایزیشن (تاپ ۱۰ و تبلیغات)، بلاگ، و پروفایل غنی نهال.
+      </p>
+      <table>
+        <thead>
+          <tr><th>دوره</th><th>تاریخ تقریبی</th><th>تم اصلی</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>دوره ۱</td>
+            <td>۲ مه تا ۳۱ مه ۲۰۲۶</td>
+            <td>راه‌اندازی فرانت، طراحی صفحه اصلی، اسلایدر، فونت محلی، چت شناور، شروع امنیت و HTTPS</td>
+          </tr>
+          <tr>
+            <td>دوره ۲</td>
+            <td>۱ ژوئن تا ۳۰ ژوئن ۲۰۲۶</td>
+            <td>داده پویا، SQLite/لیدها، مونتایزیشن، ادمین، بکاپ، سئوی پایه، پایداری سرور</td>
+          </tr>
+          <tr>
+            <td>دوره ۳</td>
+            <td>۱ ژوئیه تا ۲۷ ژوئیه ۲۰۲۶</td>
+            <td>Prisma/SEO hubs، خدمات دینامیک، بلاگ، پروفایل نهال، نقشه/گالری، دپارتمان، روبیکا/بله</td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="muted">
+        منبع: تاریخچه گفت‌وگوهای Cursor روی همین پروژه. تاریخ‌ها تقریبی‌اند (برخی پیام‌ها بدون timestamp بوده‌اند و بر اساس ترتیب کار به دوره مرتبط نسبت داده شده‌اند).
+      </p>
+    </section>
+
+    <!-- PERIOD 1 -->
+    <section class="period" id="p1">
+      <div class="period-head">
+        <h2>۲. دوره ۱ — روز ۱ تا ۳۰</h2>
+        <span class="badge">۲ مه – ۳۱ مه ۲۰۲۶</span>
+      </div>
+      <p><strong>هدف دوره:</strong> ساخت اسکلت سایت، ظاهر حرفه‌ای، تجربه موبایل، و آماده‌سازی انتشار آنلاین اولیه.</p>
+
+      <div class="role">
+        <h3>فرانت‌اند</h3>
+        <ul>
+          <li>ایجاد پروژه و فایل اولیه <code>index.html</code>.</li>
+          <li>بخش‌های هیرو، خدمات، معرفی مراکز، نظرات، فوتر و ناوبری موبایل پایین صفحه.</li>
+          <li>الهام از سایت‌های مشابه شیراز و ساخت لندینگ کامل.</li>
+          <li>تبدیل بخش پزشکان/نظرات به اسلایدر؛ نسخه‌گذاری فایل‌های index.</li>
+          <li>شروع اتصال داده از <code>data.js</code> برای بخش کلینیک‌ها.</li>
+          <li>ایجاد صفحات پایه مثل پروفایل/دسته در ادامه همین خط کار.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>UI / UX</h3>
+        <ul>
+          <li>چیدمان ریسپانسیو (موبایل / تبلت / دسکتاپ) و رفع به‌هم‌ریختگی کاشی‌ها.</li>
+          <li>اسپلش‌اسکرین لوگو با انیمیشن ضربان قلب و محو شدن.</li>
+          <li>ویجت چت شناور سفارشی (جایگزین Gapify).</li>
+          <li>فونت محلی IRANSans و حذف وابستگی به CDN فونت.</li>
+          <li>رفع مشکلات نمایش اسلایدر روی Windows/Chrome و iPad.</li>
+          <li>تصاویر محلی به‌جای وابستگی به اینترنت.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>بک‌اند / امنیت اولیه</h3>
+        <ul>
+          <li>شروع محافظت API لیدها با Basic Auth در Nginx.</li>
+          <li>آماده‌سازی مسیر لیدها و جلوگیری از دسترسی عمومی به داده‌های مشتری.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>DevOps / زیرساخت</h3>
+        <ul>
+          <li>راه‌اندازی HTTPS با Let's Encrypt برای salam-doctor.ir.</li>
+          <li>تغییر تمدید گواهی از standalone به webroot (بدون قطع سرویس).</li>
+          <li>زمان‌بندی cron برای renew گواهی و ریلود Nginx.</li>
+          <li>ایجاد <code>robots.txt</code> اولیه (اجازه خزش + بلاک ادمین/لیدها).</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>سئو (شروع)</h3>
+        <ul>
+          <li>آماده‌سازی robots و پایه ایندکس‌پذیری صفحات عمومی.</li>
+          <li>استخراج CSS/فونت مشترک برای کاهش تکرار و بهبود نگهداری صفحات.</li>
+        </ul>
+      </div>
+
+      <p class="muted"><strong>خروجی دوره ۱:</strong> یک لندینگ قابل انتشار با ظاهر برند، فونت محلی، چت، و زیرساخت HTTPS.</p>
+    </section>
+
+    <!-- PERIOD 2 -->
+    <section class="period" id="p2">
+      <div class="period-head">
+        <h2>۳. دوره ۲ — روز ۳۱ تا ۶۰</h2>
+        <span class="badge">۱ ژوئن – ۳۰ ژوئن ۲۰۲۶</span>
+      </div>
+      <p><strong>هدف دوره:</strong> تبدیل سایت استاتیک به سامانه واقعی با داده، درآمدزایی، ادمین، بکاپ و پایداری سرور.</p>
+
+      <div class="role">
+        <h3>بک‌اند</h3>
+        <ul>
+          <li>انتقال لیدها از JSON به SQLite (<code>leads.db</code>) برای جلوگیری از فساد داده.</li>
+          <li>APIهای مونتایزیشن: جایگاه ویژه کلینیک‌ها، تبلیغات چرخشی، ردیابی کلیک/درآمد.</li>
+          <li>شروع CMS مقاله روی SQLite + رندر سمت سرور.</li>
+          <li>چت لحظه‌ای Intranet با Socket.IO بین کاربر و ادمین.</li>
+          <li>حذف URLهای هاردکد <code>localhost:3000</code> برای کار روی سرور واقعی.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>فرانت‌اند</h3>
+        <ul>
+          <li>منوهای واقعی به‌جای <code>href="#"</code> برای ایندکس گوگل و ناوبری.</li>
+          <li>UI کاربر و ادمین برای تاپ کلینیک‌ها و بنر تبلیغاتی.</li>
+          <li>تب مدیریت مقالات در ادمین با ادیتور WYSIWYG و آپلود تصویر.</li>
+          <li>صفحه لیست مقالات و رندر عمومی مقاله.</li>
+          <li>بهبود فرم مشاوره و تبدیل ارقام فارسی/انگلیسی.</li>
+          <li>Dropdown منوی خدمات در هدر و همگام‌سازی پروفایل/دسته.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>UI / UX</h3>
+        <ul>
+          <li>کوتاه‌کردن زمان اسپلش و نمایش فقط یک‌بار در هر نشست (<code>sessionStorage</code>).</li>
+          <li>طبیعی‌سازی نظرات کاربران (آواتار و امتیاز واقعی‌تر).</li>
+          <li>مرتب‌سازی عناصر شناور موبایل (بله / چت / ناوبری پایین) برای جلوگیری از هم‌پوشانی.</li>
+          <li>لوگوی هدر و فاویکون حرفه‌ای.</li>
+          <li>اختصاص تصویر به اسلایدها و پروفایل‌ها بر اساس نام کلینیک.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>سئو</h3>
+        <ul>
+          <li>عنوان دینامیک برای category/profile.</li>
+          <li>Open Graph و Structured Data اولیه برای پیش‌نمایش شبکه‌های اجتماعی و ریچ‌ریزالت.</li>
+          <li>بهبود sitemap و آمادگی Search Console.</li>
+          <li>بهینه‌سازی سرعت بارگذاری صفحات اصلی.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>DevOps / امنیت / عملیات</h3>
+        <ul>
+          <li>Basic Auth برای <code>admin.html</code> با htpasswd.</li>
+          <li>اسکریپت بکاپ محلی و آف‌سایت برای <code>leads.db</code>.</li>
+          <li>رفع داون‌تایم بعد از تغییرات Nginx/Compose و بازیابی اضطراری.</li>
+          <li>تثبیت ارتباط ادمین با بک‌اند داخل Docker.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>سایر (خارج از وب اصلی)</h3>
+        <ul>
+          <li>شروع اپ اندروید Contact Shield (مسدودسازی تماس/لاگ) به‌عنوان کار جانبی.</li>
+        </ul>
+      </div>
+
+      <p class="muted"><strong>خروجی دوره ۲:</strong> سایت آنلاین پایدارتر با درآمدزایی اولیه، ادمین عملیاتی، بکاپ، و پایه سئو.</p>
+    </section>
+
+    <!-- PERIOD 3 -->
+    <section class="period" id="p3">
+      <div class="period-head">
+        <h2>۴. دوره ۳ — روز ۶۱ تا ۸۷</h2>
+        <span class="badge">۱ ژوئیه – ۲۷ ژوئیه ۲۰۲۶</span>
+      </div>
+      <p><strong>هدف دوره:</strong> رشد سئوی برنامه‌ای، زیرساخت دیتابیس حرفه‌ای، پروفایل کلینیک سطح بالا (نهال)، و تکمیل مسیر درآمد/محتوا.</p>
+
+      <div class="role">
+        <h3>بک‌اند</h3>
+        <ul>
+          <li>طراحی کامل اسکیمای Prisma/PostgreSQL برای دایرکتوری پزشکی.</li>
+          <li>DirectoryRepository و هاب‌های دینامیک <code>/shiraz/:service_slug</code>.</li>
+          <li>لندینگ خدمات برند/دستگاه: <code>/services/:slug</code> (DEKA، CANDELA، Fotona، FIT و …).</li>
+          <li>مدل <code>contact_info</code> و فیلدهای دپارتمان (عنوان/تلفن/واتساپ).</li>
+          <li>فیلدهای روبیکا/بله: عنوان + لینک؛ همگام‌سازی با Postgres.</li>
+          <li>معرفی ساخت‌یافته کلینیک (<code>clinic-intros</code>) و جلوگیری از خراب شدن قالب توسط Quill.</li>
+          <li>پروکسی تایل نقشه برای دسترسی بهتر OSM در ایران.</li>
+          <li>سیستم مقالات روی Postgres + TinyMCE + آپلود.</li>
+          <li>تاپ ۱۰ دسته‌بندی، اسلایدر اختصاصی، تبلیغات دسکتاپ/موبایل.</li>
+          <li>رفع باگ‌های ذخیره ادمین نهال (۵۰۰ و «ذخیره بدون تغییر ظاهری»).</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>فرانت‌اند</h3>
+        <ul>
+          <li>بازطراحی صفحه اصلی: حذف اسلایدر سراسری، افزودن ۶ کاشی Top Categories.</li>
+          <li>انتقال تاپ کلینیک/اسلایدر به صفحات دسته و لندینگ خدمات.</li>
+          <li>پروفایل کلینیک کاملاً دینامیک (تلفن، آدرس، خدمات لینک‌دار، اکشن‌بار).</li>
+          <li>گالری‌های قبل/بعد و تصاویر با سوایپ RTL.</li>
+          <li>نقشه Leaflet + مسیریابی گوگل/نشان/بلد/اسنپ.</li>
+          <li>کاشی‌های مشاوره واتساپ/تلفن زیر بخش‌های ۱ و ۲ معرفی.</li>
+          <li>فوتر موبایل پروفایل: تماس و واتساپ خود کلینیک.</li>
+          <li>لندینگ خدمت با FAQ و دکمه «مشاهده مراکز معتبر» زیر FAQ.</li>
+          <li>ماسک نام کلینیک‌های نمونه (به‌جز نهال).</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>UI / UX</h3>
+        <ul>
+          <li>هیرو برند: «سلام دکتر، همراه سلامتی شما».</li>
+          <li>CTA هدر: «پشتیبانی سایت»؛ افزودن «درباره ما» در هیرو.</li>
+          <li>کاشی‌های رنگی/تصویری دسته‌بندی روی صفحه اصلی.</li>
+          <li>اکشن‌بار زیر تصویر هیرو با رنگ برند (تماس، واتساپ، اینستا، مسیر، روبیکا، بله).</li>
+          <li>لایت‌باکس تمام‌صفحه برای تصویر اصلی (رفع قرارگیری زیر فوتر).</li>
+          <li>حذف بنر تبلیغاتی داخل پروفایل؛ حذف پسوند «در شیراز» از عنوان کلینیک‌ها.</li>
+          <li>استانداردسازی کانتینر تصویر/ویدیو و نسبت تصویر هیرو.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>سئو و رشد</h3>
+        <ul>
+          <li>زیرساخت سئوی دینامیک: Title/Description/Canonical/JSON-LD.</li>
+          <li>تکمیل sitemap برای هاب‌ها و صفحات خدمت/برند.</li>
+          <li>رفع مشکلات GSC: redirect، صفحه خالی هاب، خطای 5xx روی API کلیک، اسکیما Review.</li>
+          <li>Searchbox Schema و Breadcrumb Schema.</li>
+          <li>کلمات کلیدی دم‌بلند شیراز (کاشت مو اقساطی، کندلا، هایفو و …).</li>
+          <li>بهبود Core Web Vitals: preload، lazy، کش/Gzip Nginx.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>DevOps</h3>
+        <ul>
+          <li>استراتژی Docker Compose + Nginx برای روتینگ و سایت اختصاصی کلینیک‌ها.</li>
+          <li>رفع اتصال Prisma به دیتابیس (localhost در برابر host.docker.internal).</li>
+          <li>مانت ولوم‌های حیاتی (از جمله clinic-intros).</li>
+          <li>رفع 502، unhealthy بودن بک‌اند، و rebuild ماژول native sqlite.</li>
+        </ul>
+      </div>
+
+      <div class="role">
+        <h3>محتوا / محصول / کلینیک نهال</h3>
+        <ul>
+          <li>اتصال کامل رسانه نهال از پوشه <code>clinics/114</code>.</li>
+          <li>قالب معرفی ساخت‌یافته HTML برای نهال.</li>
+          <li>ادیت ادمین برای عناوین دپارتمان و پیام‌رسان‌ها.</li>
+          <li>تبدیل مسیر محصول از «مشاوره عمومی» به «ثبت کلینیک / پشتیبانی سایت».</li>
+        </ul>
+      </div>
+
+      <p class="muted"><strong>خروجی دوره ۳:</strong> پلتفرم آماده رشد گوگل + پروفایل کلینیک قابل فروش/ویرایش + مسیر درآمد و محتوا.</p>
+    </section>
+
+    <section class="section" id="matrix">
+      <h2>۵. ماتریس تخصص‌ها در کل پروژه</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>تخصص</th>
+            <th>دوره ۱</th>
+            <th>دوره ۲</th>
+            <th>دوره ۳</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>بک‌اند</strong></td>
+            <td>شروع API امن لید</td>
+            <td>SQLite، مونتایزیشن، مقاله، Socket.IO</td>
+            <td>Prisma، هاب سئو، خدمات، دپارتمان، روبیکا/بله، نقشه پروکسی</td>
+          </tr>
+          <tr>
+            <td><strong>فرانت‌اند</strong></td>
+            <td>لندینگ و صفحات پایه</td>
+            <td>ادمین، فرم، منو، مقالات عمومی</td>
+            <td>پروفایل پیشرفته، لندینگ خدمت، کاشی دسته، گالری</td>
+          </tr>
+          <tr>
+            <td><strong>UI/UX</strong></td>
+            <td>اسپلش، اسلایدر، موبایل‌بار، فونت</td>
+            <td>شناور موبایل، نظرات واقعی، لوگو</td>
+            <td>اکشن‌بار، لایت‌باکس، CTA برند، نقشه/گالری</td>
+          </tr>
+          <tr>
+            <td><strong>سئو</strong></td>
+            <td>robots اولیه</td>
+            <td>title دینامیک، OG، sitemap</td>
+            <td>هاب برنامه‌ای، schema، GSC، CWV</td>
+          </tr>
+          <tr>
+            <td><strong>DevOps</strong></td>
+            <td>HTTPS / Certbot</td>
+            <td>Auth ادمین، بکاپ، پایداری Docker</td>
+            <td>Compose پیشرفته، مایگریشن، دیپلوی پایدار</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section" id="ops">
+      <h2>۶. نکات عملیاتی و ادامه کار</h2>
+      <ul>
+        <li>بعد از هر مایگریشن: <code>npx prisma migrate deploy</code> و در صورت نیاز <code>npx prisma generate</code>.</li>
+        <li>بعد از تغییر بک‌اند: ریستارت/ری‌کرییت کانتینر و Hard Refresh مرورگر.</li>
+        <li>ولوم <code>clinic-intros</code> باید بین بک‌اند و فایل‌های استاتیک Nginx همگام باشد.</li>
+        <li>اولویت اولیه سئو بود؛ نوبت‌دهی آنلاین و سایت اختصاصی کلینیک‌ها در نقشه راه بعدی است.</li>
+        <li>برای ارائه به تیم: همین فایل را با دکمه چاپ به PDF تبدیل کنید.</li>
+      </ul>
+      <div class="note">
+        <strong>فایل گزارش قبلی (۳۵ روز اخیر):</strong>
+        <code>docs/salam-doctor-35day-report-fa.html</code><br>
+        <strong>این گزارش کامل:</strong>
+        <code>docs/salam-doctor-full-report-by-30days-fa.html</code>
+      </div>
+    </section>
+
+    <p class="foot">
+      سلام دکتر — گزارش پیشرفت کامل از روز اول<br>
+      مناسب ارائه داخلی به همکاران ایرانی | خروجی PDF از طریق Print → Save as PDF
+    </p>
+  </div>
+</body>
+</html>

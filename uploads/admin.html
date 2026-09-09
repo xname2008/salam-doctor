@@ -1,0 +1,2743 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>پنل مدیریت | سلام دکتر</title>
+  <link rel="stylesheet" href="assets/css/shared.css?v=20260619e">
+  <link rel="stylesheet" href="assets/vendor/quill/quill.core.css">
+  <link rel="stylesheet" href="assets/vendor/quill/quill.snow.css">
+  <style>
+    /* Shared base/:root/fonts live in assets/css/shared.css. Admin uses a
+       slightly smaller body type and no bottom-nav padding. */
+    body{
+      min-height:100vh;
+      font-size:15px;
+      line-height:1.7;
+      padding-bottom:0;
+    }
+
+    .admin-header{
+      background:var(--navy);
+      color:#fff;
+      padding:18px 24px;
+      box-shadow:0 4px 20px rgba(4,31,69,.25);
+    }
+    .admin-header-inner{
+      width:min(1280px,96%);
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .admin-header h1{
+      margin:0;
+      font-size:1.15rem;
+      font-weight:700;
+      letter-spacing:-.01em;
+    }
+    .header-meta{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-size:.85rem;
+      color:#b7c8e4;
+    }
+    .live-dot{
+      width:8px;height:8px;border-radius:50%;
+      background:#4ade80;
+      box-shadow:0 0 0 3px rgba(74,222,128,.35);
+      animation:pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse{
+      0%,100%{opacity:1}
+      50%{opacity:.5}
+    }
+
+    .admin-main{
+      width:min(1280px,96%);
+      margin:0 auto;
+      padding:24px 0 40px;
+    }
+
+    .summary-row{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+      gap:16px;
+      margin-bottom:24px;
+    }
+    .summary-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:18px 20px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      box-shadow:0 2px 8px rgba(19,35,60,.04);
+    }
+    .summary-card.primary{
+      border-color:#a7d4ef;
+      background:linear-gradient(135deg,#fff 0%,#e8f4fd 100%);
+    }
+    .summary-label{
+      font-size:.82rem;
+      color:var(--muted);
+      font-weight:600;
+    }
+    .summary-value{
+      font-size:1.6rem;
+      font-weight:800;
+      color:var(--navy);
+      font-variant-numeric:tabular-nums;
+    }
+    .summary-card.primary .summary-value{color:var(--blue)}
+
+    .table-panel{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 4px 24px rgba(19,35,60,.06);
+    }
+    .table-panel-head{
+      padding:16px 20px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .table-panel-head h2{
+      margin:0;
+      font-size:1rem;
+      font-weight:700;
+      color:var(--navy);
+    }
+    .refresh-note{
+      font-size:.8rem;
+      color:var(--muted);
+    }
+
+    .table-wrap{overflow-x:auto}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      min-width:900px;
+    }
+    thead{
+      background:var(--navy);
+      color:#fff;
+    }
+    th{
+      padding:14px 16px;
+      text-align:right;
+      font-size:.82rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    td{
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      vertical-align:top;
+      font-size:.88rem;
+    }
+    tbody tr:hover{background:var(--mint)}
+    tbody tr:last-child td{border-bottom:none}
+    tbody tr.row-new{
+      animation:highlight 2.5s ease-out;
+    }
+    @keyframes highlight{
+      0%{background:#d4edfc}
+      100%{background:transparent}
+    }
+
+    .col-index{
+      width:48px;
+      text-align:center;
+      color:var(--muted);
+      font-weight:700;
+    }
+    .col-phone a{
+      color:var(--blue);
+      font-weight:700;
+      text-decoration:none;
+      direction:ltr;
+      display:inline-block;
+      unicode-bidi:embed;
+    }
+    .col-phone a:hover{text-decoration:underline}
+    .col-desc{
+      max-width:220px;
+      color:var(--muted);
+      line-height:1.55;
+    }
+    .col-time{
+      white-space:nowrap;
+      font-size:.82rem;
+      color:var(--muted);
+    }
+
+    .status-badge{
+      display:inline-block;
+      padding:4px 12px;
+      border-radius:999px;
+      font-size:.75rem;
+      font-weight:700;
+      background:#dcfce7;
+      color:var(--green);
+    }
+
+    .empty-state,.error-state,.loading-state{
+      padding:48px 24px;
+      text-align:center;
+      color:var(--muted);
+      font-weight:600;
+    }
+    .error-state{color:#b91c1c}
+
+    .admin-panels{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(320px,380px);
+      gap:24px;
+      align-items:start;
+    }
+
+    .chat-panel{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow:0 4px 24px rgba(19,35,60,.06);
+      display:flex;
+      flex-direction:column;
+      min-height:560px;
+      max-height:calc(100vh - 220px);
+      position:sticky;
+      top:16px;
+    }
+    .chat-panel-head{
+      padding:16px 20px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .chat-panel-head h2{
+      margin:0;
+      font-size:1rem;
+      font-weight:700;
+      color:var(--navy);
+    }
+    .chat-count{
+      font-size:.78rem;
+      font-weight:700;
+      color:var(--blue);
+      background:#e8f4fd;
+      border-radius:999px;
+      padding:4px 10px;
+    }
+    .chat-sessions{
+      border-bottom:1px solid var(--line);
+      max-height:180px;
+      overflow:auto;
+      background:#fafbfc;
+    }
+    .chat-session-item{
+      width:100%;
+      border:none;
+      border-bottom:1px solid var(--line);
+      background:transparent;
+      text-align:right;
+      padding:12px 16px;
+      cursor:pointer;
+      font-family:inherit;
+      transition:background .2s;
+    }
+    .chat-session-item:hover{background:var(--mint)}
+    .chat-session-item.active{
+      background:#e8f4fd;
+      border-right:3px solid var(--blue);
+    }
+    .chat-session-item:last-child{border-bottom:none}
+    .chat-session-title{
+      display:block;
+      font-size:.86rem;
+      font-weight:700;
+      color:var(--text);
+      margin-bottom:4px;
+    }
+    .chat-session-preview{
+      display:block;
+      font-size:.78rem;
+      color:var(--muted);
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .chat-session-meta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      margin-top:6px;
+      font-size:.72rem;
+      color:var(--muted);
+    }
+    .chat-unread-badge{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width:20px;
+      height:20px;
+      padding:0 6px;
+      border-radius:999px;
+      background:var(--amber);
+      color:#fff;
+      font-size:.7rem;
+      font-weight:700;
+    }
+    .chat-thread{
+      flex:1;
+      min-height:220px;
+      overflow:auto;
+      padding:14px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      background:var(--bg);
+    }
+    .chat-thread-empty{
+      margin:auto;
+      text-align:center;
+      color:var(--muted);
+      font-size:.88rem;
+      font-weight:600;
+      padding:24px 12px;
+    }
+    .chat-thread-bubble{
+      max-width:85%;
+      padding:9px 11px;
+      border-radius:12px;
+      font-size:.84rem;
+      line-height:1.7;
+    }
+    .chat-thread-bubble.user{
+      align-self:flex-start;
+      background:#fff;
+      border:1px solid var(--line);
+      color:var(--text);
+      border-bottom-left-radius:4px;
+    }
+    .chat-thread-bubble.admin{
+      align-self:flex-end;
+      background:var(--blue);
+      color:#fff;
+      border-bottom-right-radius:4px;
+    }
+    .chat-reply-box{
+      border-top:1px solid var(--line);
+      padding:12px;
+      display:flex;
+      gap:8px;
+      background:#fff;
+    }
+    .chat-reply-box input{
+      flex:1;
+      border:1px solid var(--line);
+      border-radius:10px;
+      padding:10px 12px;
+      font-family:inherit;
+      font-size:.88rem;
+    }
+    .chat-reply-box button{
+      border:none;
+      border-radius:10px;
+      background:var(--blue);
+      color:#fff;
+      font-family:inherit;
+      font-size:.88rem;
+      font-weight:700;
+      padding:0 16px;
+      cursor:pointer;
+    }
+    .chat-reply-box button:disabled{
+      opacity:.45;
+      cursor:not-allowed;
+    }
+    .chat-connection{
+      font-size:.78rem;
+      color:var(--muted);
+    }
+    .chat-connection.is-online{color:var(--green);font-weight:700}
+
+    @media (max-width:1100px){
+      .admin-panels{grid-template-columns:1fr}
+      .chat-panel{
+        position:static;
+        max-height:none;
+      }
+    }
+
+    @media (max-width:640px){
+      .admin-header h1{font-size:1rem}
+      .summary-value{font-size:1.35rem}
+    }
+
+    .admin-tabs{
+      display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap;
+    }
+    .admin-tab{
+      border:1px solid var(--line); background:#fff; border-radius:10px;
+      padding:10px 18px; font-family:inherit; font-weight:700; cursor:pointer;
+      color:var(--muted); transition:background .2s, color .2s, border-color .2s;
+    }
+    .admin-tab:hover{ border-color:#a7d4ef; color:var(--blue); }
+    .admin-tab.active{
+      background:var(--blue); color:#fff; border-color:var(--blue);
+    }
+    .admin-tab-panel{ display:none; }
+    .admin-tab-panel.active{ display:block; }
+
+    .monetize-layout{
+      display:grid; grid-template-columns:minmax(280px,360px) 1fr;
+      gap:20px; align-items:start;
+    }
+    .monetize-form-panel{
+      background:#fff; border:1px solid var(--line); border-radius:16px;
+      padding:18px 20px; box-shadow:0 4px 24px rgba(19,35,60,.06);
+      position:sticky; top:16px;
+    }
+    .monetize-form-panel h2{
+      margin:0 0 14px; font-size:1rem; font-weight:700; color:var(--navy);
+    }
+    .monetize-form{
+      display:grid; gap:10px;
+    }
+    .monetize-form label{
+      display:grid; gap:4px; font-size:.82rem; font-weight:700; color:var(--text);
+    }
+    .monetize-form input,
+    .monetize-form select,
+    .monetize-form textarea{
+      width:100%; border:1px solid var(--line); border-radius:10px;
+      padding:9px 11px; font-family:inherit; font-size:.88rem;
+    }
+    .monetize-form .field-hint{
+      font-size:.75rem; font-weight:500; color:var(--muted); margin-top:2px;
+    }
+    .monetize-form .check-row{
+      display:flex; align-items:center; gap:8px; font-size:.88rem; font-weight:600;
+    }
+    .monetize-form .check-row input{ width:auto; }
+    .monetize-actions{
+      display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;
+    }
+    .monetize-actions .btn-secondary{
+      background:#fff; color:var(--text); border:1px solid var(--line);
+      border-radius:10px; padding:9px 14px; font-family:inherit;
+      font-weight:700; cursor:pointer;
+    }
+    .monetize-msg{
+      margin-top:10px; padding:10px 12px; border-radius:10px;
+      font-size:.84rem; font-weight:600; display:none;
+    }
+    .monetize-msg.ok{
+      display:block; background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;
+    }
+    .monetize-msg.err{
+      display:block; background:#fef2f2; color:#b91c1c; border:1px solid #fecaca;
+    }
+    .col-clicks{ font-weight:800; color:var(--blue); font-variant-numeric:tabular-nums; }
+    .col-ctr{ font-weight:700; color:var(--green); }
+    .btn-row{ display:flex; gap:6px; flex-wrap:wrap; }
+    .btn-mini{
+      border:none; border-radius:8px; padding:6px 10px; font-family:inherit;
+      font-size:.78rem; font-weight:700; cursor:pointer;
+    }
+    .btn-mini.edit{ background:#e8f4fd; color:var(--blue); }
+    .btn-mini.del{ background:#fef2f2; color:#b91c1c; }
+    .badge-active{
+      display:inline-block; padding:3px 10px; border-radius:999px;
+      font-size:.72rem; font-weight:700; background:#dcfce7; color:var(--green);
+    }
+    .badge-inactive{
+      display:inline-block; padding:3px 10px; border-radius:999px;
+      font-size:.72rem; font-weight:700; background:#f1f5f9; color:var(--muted);
+    }
+    @media(max-width:900px){
+      .monetize-layout{ grid-template-columns:1fr; }
+      .monetize-form-panel{ position:static; }
+    }
+
+    .articles-toolbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; flex-wrap:wrap; margin-bottom:16px;
+    }
+    .articles-toolbar h2{ margin:0; font-size:1rem; font-weight:700; color:var(--navy); }
+    .articles-editor-panel{
+      background:#fff; border:1px solid var(--line); border-radius:16px;
+      padding:20px; box-shadow:0 4px 24px rgba(19,35,60,.06); margin-top:16px;
+    }
+    .articles-editor-panel[hidden]{ display:none !important; }
+    .articles-form{ display:grid; gap:12px; }
+    .articles-form label{
+      display:grid; gap:4px; font-size:.82rem; font-weight:700; color:var(--text);
+    }
+    .articles-form input,
+    .articles-form textarea,
+    .articles-form select{
+      width:100%; border:1px solid var(--line); border-radius:10px;
+      padding:9px 11px; font-family:inherit; font-size:.88rem;
+    }
+    .articles-form textarea{ min-height:72px; resize:vertical; }
+    .articles-form .field-hint{
+      font-size:.75rem; font-weight:500; color:var(--muted);
+    }
+    .summary-counter{ font-size:.75rem; color:var(--muted); text-align:left; }
+    .summary-counter.warn{ color:#b45309; font-weight:700; }
+    .status-row{ display:flex; gap:16px; flex-wrap:wrap; }
+    .status-row label{ display:flex; align-items:center; gap:6px; font-weight:600; }
+    .status-row input{ width:auto; }
+    .cover-upload-row{ display:flex; gap:12px; align-items:flex-start; flex-wrap:wrap; }
+    .cover-preview{
+      width:120px; height:72px; border-radius:10px; border:1px solid var(--line);
+      object-fit:cover; background:var(--mint); display:none;
+    }
+    .cover-preview.visible{ display:block; }
+    #editor,
+    #clinic-profile-editor{
+      min-height:280px; background:#fff; direction:rtl; text-align:right;
+    }
+    #clinic-profile-editor .ql-editor{
+      min-height:220px;
+      cursor:text;
+    }
+    .ql-toolbar.ql-snow{ direction:rtl; border-radius:10px 10px 0 0; }
+    .ql-container.ql-snow{ border-radius:0 0 10px 10px; min-height:240px; }
+    .ql-editor{ direction:rtl; text-align:right; font-family:inherit; line-height:1.9; }
+    .badge-draft{
+      display:inline-block; padding:3px 10px; border-radius:999px;
+      font-size:.72rem; font-weight:700; background:#fef3c7; color:#92400e;
+    }
+    .col-views{ font-weight:700; color:var(--blue); font-variant-numeric:tabular-nums; }
+
+    .reports-section{ margin-bottom:28px; }
+    .reports-section h2{
+      margin:0 0 12px; font-size:1rem; font-weight:700; color:var(--navy);
+    }
+    .report-row-expiring{ background:#fffbeb !important; }
+    .chip-expiring{
+      display:inline-block; padding:2px 8px; border-radius:999px;
+      font-size:.7rem; font-weight:700; background:#fef3c7; color:#92400e;
+      margin-right:6px;
+    }
+    .btn-copy-report{
+      border:none; background:#e8f4fd; color:var(--blue);
+      padding:4px 10px; border-radius:8px; font-size:.75rem;
+      font-weight:700; cursor:pointer; font-family:inherit;
+    }
+    .btn-copy-report:hover{ background:#dbeafe; }
+  </style>
+</head>
+<body>
+
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <h1>پنل مدیریت سرنخ‌ها و مشاوره فوری - سلام دکتر</h1>
+      <div class="header-meta">
+        <span class="live-dot" aria-hidden="true"></span>
+        <span id="last-sync">در حال اتصال…</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <nav class="admin-tabs" aria-label="بخش‌های پنل">
+      <button type="button" class="admin-tab active" data-tab="leads">درخواست‌ها</button>
+      <button type="button" class="admin-tab" data-tab="featured">مراکز برتر</button>
+      <button type="button" class="admin-tab" data-tab="ads">تبلیغات</button>
+      <button type="button" class="admin-tab" data-tab="clinic-profiles">پروفایل مراکز</button>
+      <button type="button" class="admin-tab" data-tab="articles">مقالات</button>
+      <button type="button" class="admin-tab" data-tab="reports">گزارش‌ها</button>
+    </nav>
+
+    <div id="tab-leads" class="admin-tab-panel active">
+    <section class="summary-row" aria-label="خلاصه آمار">
+      <article class="summary-card primary">
+        <span class="summary-label">تعداد کل درخواست‌ها</span>
+        <span class="summary-value" id="total-count">—</span>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">آخرین به‌روزرسانی</span>
+        <span class="summary-value" id="last-update" style="font-size:1rem">—</span>
+      </article>
+      <article class="summary-card">
+        <span class="summary-label">بازخوانی خودکار</span>
+        <span class="summary-value" style="font-size:1rem">هر ۱۰ ثانیه</span>
+      </article>
+    </section>
+
+    <section class="admin-panels">
+      <section class="table-panel" aria-label="لیست سرنخ‌ها">
+        <div class="table-panel-head">
+          <h2>درخواست‌های مشاوره فوری</h2>
+          <span class="refresh-note">لیست به‌صورت خودکار به‌روز می‌شود</span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ردیف</th>
+                <th>نام مراجع</th>
+                <th>شماره تماس</th>
+                <th>نوع خدمت</th>
+                <th>توضیحات</th>
+                <th>زمان ثبت</th>
+                <th>وضعیت</th>
+              </tr>
+            </thead>
+            <tbody id="leads-tbody">
+              <tr>
+                <td colspan="7" class="loading-state">در حال بارگذاری…</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="chat-panel" aria-label="گفتگوی زنده">
+        <div class="chat-panel-head">
+          <div>
+            <h2>گفتگوی زنده</h2>
+            <span class="chat-connection" id="chat-connection">در حال اتصال…</span>
+          </div>
+          <span class="chat-count" id="chat-session-count">۰ گفتگو</span>
+        </div>
+        <div class="chat-sessions" id="chat-sessions">
+          <div class="chat-thread-empty">هنوز گفتگوی فعالی وجود ندارد.</div>
+        </div>
+        <div class="chat-thread" id="chat-thread">
+          <div class="chat-thread-empty">یک گفتگو را از لیست انتخاب کنید.</div>
+        </div>
+        <form class="chat-reply-box" id="chat-reply-form">
+          <input id="chat-reply-input" type="text" placeholder="پاسخ خود را بنویسید..." autocomplete="off" disabled>
+          <button id="chat-reply-send" type="submit" disabled>ارسال</button>
+        </form>
+      </section>
+    </section>
+    </div>
+
+    <div id="tab-featured" class="admin-tab-panel">
+      <div class="monetize-layout">
+        <section class="monetize-form-panel">
+          <h2 id="featured-form-title">افزودن مرکز برتر</h2>
+          <form class="monetize-form" id="featured-form">
+            <input type="hidden" id="featured-id" name="id" value="">
+            <label>رتبه (۱ تا ۵)
+              <select id="featured-rank" name="rank" required>
+                <option value="1">۱</option>
+                <option value="2">۲</option>
+                <option value="3">۳</option>
+                <option value="4">۴</option>
+                <option value="5">۵</option>
+              </select>
+            </label>
+            <label>نام مرکز
+              <input id="featured-name" name="name" required>
+            </label>
+            <label>توضیح کوتاه
+              <input id="featured-tagline" name="tagline">
+            </label>
+            <label>تلفن
+              <input id="featured-phone" name="phone" type="tel">
+            </label>
+            <label>آدرس
+              <input id="featured-address" name="address">
+            </label>
+            <label>تصویر (مسیر یا URL)
+              <input id="featured-image" name="image" placeholder="images/featured/clinic.webp">
+              <span class="field-hint">فایل را در پوشه images/ سرور آپلود کنید و مسیر را وارد کنید.</span>
+            </label>
+            <label>لینک مقصد
+              <input id="featured-link" name="link" placeholder="/doctor/nahal-clinic">
+              <span class="field-hint">مسیر نسبی صفحه پروفایل — نه آدرس api/featured/click</span>
+            </label>
+            <label>برچسب
+              <input id="featured-badge" name="badge" placeholder="ویژه">
+            </label>
+            <label class="check-row">
+              <input type="checkbox" id="featured-active" name="active" checked>
+              فعال
+            </label>
+            <label>شروع نمایش
+              <input id="featured-starts" name="starts_at" type="date">
+            </label>
+            <label>پایان نمایش
+              <input id="featured-ends" name="ends_at" type="date">
+            </label>
+            <div class="monetize-actions">
+              <button type="submit" class="btn btn-main" id="featured-submit">ذخیره</button>
+              <button type="button" class="btn-secondary" id="featured-reset">پاک کردن فرم</button>
+            </div>
+            <div class="monetize-msg" id="featured-msg"></div>
+          </form>
+        </section>
+        <section class="table-panel">
+          <div class="table-panel-head">
+            <h2>مراکز برتر (پولی)</h2>
+            <span class="refresh-note">کلیک‌ها برای گزارش به مشتری</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>رتبه</th>
+                  <th>نام</th>
+                  <th>برچسب</th>
+                  <th>فعال</th>
+                  <th>کلیک</th>
+                  <th>پایان</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody id="featured-tbody">
+                <tr><td colspan="7" class="loading-state">در حال بارگذاری…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="tab-ads" class="admin-tab-panel">
+      <div class="monetize-layout">
+        <section class="monetize-form-panel">
+          <h2 id="ads-form-title">افزودن بنر تبلیغاتی</h2>
+          <form class="monetize-form" id="ads-form">
+            <input type="hidden" id="ads-id" name="id" value="">
+            <label>جایگاه
+              <select id="ads-slot" name="slot" required>
+                <option value="home">صفحه اصلی</option>
+                <option value="category">دسته‌بندی</option>
+                <option value="profile">پروفایل</option>
+                <option value="global">سراسری</option>
+              </select>
+            </label>
+            <label>عنوان (اختیاری)
+              <input id="ads-title" name="title">
+            </label>
+            <label>تصویر بنر
+              <input id="ads-image" name="image" required placeholder="images/Nahal-banner.webp">
+              <span class="field-hint">فایل را در پوشه <strong>images/</strong> سرور آپلود کنید. مسیر کامل بنویسید، مثلاً <code>images/Nahal-banner.webp</code> — فقط نام فایل کافی نیست.</span>
+            </label>
+            <label>لینک مقصد
+              <input id="ads-link" name="link" required placeholder="https://salam-doctor.ir/">
+            </label>
+            <label>وزن چرخش
+              <input id="ads-weight" name="weight" type="number" min="1" value="1">
+            </label>
+            <label class="check-row">
+              <input type="checkbox" id="ads-active" name="active" checked>
+              فعال
+            </label>
+            <label>شروع نمایش
+              <input id="ads-starts" name="starts_at" type="date">
+            </label>
+            <label>پایان نمایش
+              <input id="ads-ends" name="ends_at" type="date">
+            </label>
+            <div class="monetize-actions">
+              <button type="submit" class="btn btn-main" id="ads-submit">ذخیره</button>
+              <button type="button" class="btn-secondary" id="ads-reset">پاک کردن فرم</button>
+            </div>
+            <div class="monetize-msg" id="ads-msg"></div>
+          </form>
+        </section>
+        <section class="table-panel">
+          <div class="table-panel-head">
+            <h2>بنرهای تبلیغاتی</h2>
+            <span class="refresh-note">نمایش، کلیک و CTR</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>جایگاه</th>
+                  <th>عنوان</th>
+                  <th>وزن</th>
+                  <th>فعال</th>
+                  <th>نمایش</th>
+                  <th>کلیک</th>
+                  <th>CTR</th>
+                  <th>پایان</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody id="ads-tbody">
+                <tr><td colspan="9" class="loading-state">در حال بارگذاری…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="tab-clinic-profiles" class="admin-tab-panel">
+      <div class="monetize-layout">
+        <section class="monetize-form-panel">
+          <h2 id="clinic-profile-form-title">متن اختصاصی پروفایل مرکز</h2>
+          <form class="monetize-form" id="clinic-profile-form">
+            <label>مرکز درمانی
+              <select id="clinic-profile-clinic-id" name="clinic_id" required>
+                <option value="">انتخاب مرکز...</option>
+              </select>
+              <span class="field-hint">شناسه مرکز از فایل data.min.js — مثلاً کلینیک نهال شناسه ۱۱۴ دارد.</span>
+            </label>
+            <label>متن معرفی
+              <div id="clinic-profile-editor"></div>
+              <span class="field-hint">در صفحه <code>/doctor/:slug</code> زیر اطلاعات تماس نمایش داده می‌شود.</span>
+            </label>
+            <div class="monetize-actions">
+              <button type="submit" class="btn btn-main" id="clinic-profile-submit">ذخیره</button>
+              <button type="button" class="btn-secondary" id="clinic-profile-reset">پاک کردن فرم</button>
+            </div>
+            <div class="monetize-msg" id="clinic-profile-msg"></div>
+          </form>
+        </section>
+        <section class="table-panel">
+          <div class="table-panel-head">
+            <h2>متن‌های اختصاصی ثبت‌شده</h2>
+            <span class="refresh-note">فقط مراکزی که متن دارند</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>شناسه</th>
+                  <th>نام مرکز</th>
+                  <th>آخرین ویرایش</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody id="clinic-profiles-tbody">
+                <tr><td colspan="4" class="loading-state">در حال بارگذاری…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="tab-articles" class="admin-tab-panel">
+      <div id="articles-list-view">
+        <div class="articles-toolbar">
+          <h2>مدیریت مقالات</h2>
+          <button type="button" class="btn btn-main" id="articles-new-btn">مقاله جدید</button>
+        </div>
+        <section class="table-panel">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>عنوان</th>
+                  <th>دسته</th>
+                  <th>وضعیت</th>
+                  <th>بازدید</th>
+                  <th>به‌روزرسانی</th>
+                  <th>عملیات</th>
+                </tr>
+              </thead>
+              <tbody id="articles-tbody">
+                <tr><td colspan="6" class="loading-state">در حال بارگذاری…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <div id="articles-editor-view" class="articles-editor-panel" hidden>
+        <h2 id="articles-editor-title" style="margin:0 0 14px;font-size:1rem;font-weight:700;color:var(--navy)">مقاله جدید</h2>
+        <form class="articles-form" id="articles-form">
+          <input type="hidden" id="article-id" value="">
+          <label>عنوان
+            <input id="article-title" required>
+          </label>
+          <label>نامک (slug) — اختیاری
+            <input id="article-slug" placeholder="مثال: راهنمای-پوست">
+            <span class="field-hint">خالی بگذارید تا خودکار ساخته شود</span>
+          </label>
+          <label>خلاصه (توضیح گوگل)
+            <textarea id="article-summary" maxlength="160" rows="3"></textarea>
+            <span class="field-hint">این متن در نتایج گوگل و کارت مقاله نمایش داده می‌شود.</span>
+            <span class="summary-counter" id="summary-counter">۰ / ۱۶۰</span>
+          </label>
+          <label>دسته‌بندی
+            <select id="article-category">
+              <option value="">انتخاب...</option>
+              <option value="پوست">پوست</option>
+              <option value="مو">مو</option>
+              <option value="لیزر">لیزر</option>
+              <option value="سلامت">سلامت</option>
+              <option value="زیبایی">زیبایی</option>
+            </select>
+          </label>
+          <label>لینک صفحه هاب (باکس تبدیل داخل مقاله) — اختیاری
+            <input id="article-hub-url" list="hub-url-options" dir="ltr" placeholder="/shiraz/hair-transplant">
+            <datalist id="hub-url-options">
+              <option value="/shiraz/hair-transplant">کاشت مو</option>
+              <option value="/shiraz/eyebrow-transplant">کاشت ابرو</option>
+              <option value="/shiraz/skin-rejuvenation">جوانسازی پوست</option>
+              <option value="/shiraz/laser-hair-removal">لیزر موهای زائد</option>
+              <option value="/shiraz/cosmetic-surgery">جراحی زیبایی</option>
+              <option value="/shiraz/slimming">لاغری و پیکرتراشی</option>
+              <option value="/shiraz/botox">بوتاکس</option>
+              <option value="/shiraz/fillers">فیلر و ژل</option>
+              <option value="/shiraz/dentistry">دندانپزشکی</option>
+              <option value="/shiraz/dermatology">پوست و مو</option>
+            </datalist>
+            <span class="field-hint">خالی بگذارید تا بر اساس موضوع مقاله خودکار انتخاب شود.</span>
+          </label>
+          <label>متن لینک هاب (کلمه کلیدی) — اختیاری
+            <input id="article-hub-keyword" placeholder="مثال: بهترین کلینیک کاشت مو شیراز">
+            <span class="field-hint">متن دکمه/لینک باکس تبدیل؛ خالی بگذارید تا خودکار ساخته شود.</span>
+          </label>
+          <label>تصویر کاور
+            <div class="cover-upload-row">
+              <input type="file" id="article-cover-file" accept="image/jpeg,image/png,image/webp">
+              <img id="article-cover-preview" class="cover-preview" alt="">
+            </div>
+            <input type="hidden" id="article-cover-image" value="">
+            <span class="field-hint">حداکثر ۳ مگابایت — jpeg، png یا webp</span>
+          </label>
+          <label>متن مقاله
+            <div id="editor"></div>
+          </label>
+          <div class="status-row">
+            <span style="font-weight:700;font-size:.82rem">وضعیت:</span>
+            <label><input type="radio" name="article-status" value="draft" checked> پیش‌نویس</label>
+            <label><input type="radio" name="article-status" value="published"> منتشر شده</label>
+          </div>
+          <div class="monetize-actions">
+            <button type="submit" class="btn btn-main" id="article-save-btn">ذخیره</button>
+            <button type="button" class="btn-secondary" id="article-cancel-btn">انصراف</button>
+          </div>
+          <div class="monetize-msg" id="articles-msg"></div>
+        </form>
+      </div>
+    </div>
+
+    <div id="tab-reports" class="admin-tab-panel">
+      <section class="summary-row" aria-label="خلاصه گزارش‌ها" id="reports-summary-row">
+        <article class="summary-card primary">
+          <span class="summary-label">کل کلیک مراکز برتر</span>
+          <span class="summary-value" id="report-featured-clicks">—</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">کل نمایش تبلیغات</span>
+          <span class="summary-value" id="report-ad-impressions">—</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">کل کلیک تبلیغات</span>
+          <span class="summary-value" id="report-ad-clicks">—</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">نرخ کلیک کلی</span>
+          <span class="summary-value" id="report-overall-ctr">—</span>
+        </article>
+        <article class="summary-card">
+          <span class="summary-label">سرنخ‌های ۳۰ روز اخیر</span>
+          <span class="summary-value" id="report-leads-30">—</span>
+        </article>
+      </section>
+
+      <div class="monetize-msg" id="reports-msg"></div>
+
+      <section class="reports-section">
+        <h2>گزارش مراکز برتر (فروش / تمدید)</h2>
+        <section class="table-panel">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>رتبه</th>
+                  <th>نام</th>
+                  <th>نشان</th>
+                  <th>فعال</th>
+                  <th>کل کلیک</th>
+                  <th>کلیک/روز</th>
+                  <th>پایان</th>
+                  <th>وضعیت</th>
+                  <th>گزارش</th>
+                </tr>
+              </thead>
+              <tbody id="reports-featured-tbody">
+                <tr><td colspan="9" class="loading-state">در حال بارگذاری…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section class="reports-section">
+        <h2>گزارش تبلیغات</h2>
+        <section class="table-panel">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>جایگاه</th>
+                  <th>عنوان</th>
+                  <th>وزن</th>
+                  <th>فعال</th>
+                  <th>نمایش</th>
+                  <th>کلیک</th>
+                  <th>CTR</th>
+                  <th>پایان</th>
+                  <th>وضعیت</th>
+                </tr>
+              </thead>
+              <tbody id="reports-ads-tbody">
+                <tr><td colspan="9" class="loading-state">در حال بارگذاری…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <script src="assets/js/socket.io.min.js"></script>
+  <script src="assets/vendor/quill/quill.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+    (function () {
+      'use strict';
+
+      var POLL_INTERVAL_MS = 10000;
+      var previousCount = 0;
+      var hasInitialized = false;
+      var knownIds = new Set();
+
+      var tbody = document.getElementById('leads-tbody');
+      var totalCountEl = document.getElementById('total-count');
+      var lastUpdateEl = document.getElementById('last-update');
+      var lastSyncEl = document.getElementById('last-sync');
+
+      function escapeHtml(str) {
+        if (str == null) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function formatTimestamp(iso) {
+        if (!iso) return '—';
+        var date = new Date(iso);
+        if (isNaN(date.getTime())) return iso;
+        try {
+          return new Intl.DateTimeFormat('fa-IR', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).format(date);
+        } catch (e) {
+          return date.toLocaleString('fa-IR');
+        }
+      }
+
+      function formatNow() {
+        try {
+          return new Intl.DateTimeFormat('fa-IR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+          }).format(new Date());
+        } catch (e) {
+          return new Date().toLocaleTimeString('fa-IR');
+        }
+      }
+
+      function playAlertBeep() {
+        try {
+          var AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          var ctx = new AudioCtx();
+          function tone(freq, start, duration) {
+            var osc = ctx.createOscillator();
+            var gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(0.0001, start);
+            gain.gain.exponentialRampToValueAtTime(0.12, start + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + duration + 0.05);
+          }
+          var t = ctx.currentTime;
+          tone(660, t, 0.12);
+          tone(880, t + 0.14, 0.18);
+          setTimeout(function () { ctx.close(); }, 600);
+        } catch (err) { /* audio unavailable */ }
+      }
+
+      function renderLeads(leads) {
+        if (!Array.isArray(leads) || leads.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="7" class="empty-state">هنوز درخواستی ثبت نشده است.</td></tr>';
+          return;
+        }
+
+        var sorted = leads.slice().sort(function (a, b) {
+          return new Date(b.timestamp) - new Date(a.timestamp);
+        });
+
+        var rows = sorted.map(function (lead, index) {
+          var isNew = lead.id && !knownIds.has(lead.id) && hasInitialized;
+          var rowClass = isNew ? ' class="row-new"' : '';
+          var phone = escapeHtml(lead.phone || '—');
+          var phoneCell = lead.phone
+            ? '<a href="tel:' + escapeHtml(lead.phone) + '">' + phone + '</a>'
+            : '—';
+          var desc = escapeHtml(lead.desc || '—');
+          if (desc === '') desc = '—';
+
+          return (
+            '<tr' + rowClass + ' data-id="' + escapeHtml(lead.id || '') + '">' +
+              '<td class="col-index">' + (index + 1) + '</td>' +
+              '<td>' + escapeHtml(lead.name || '—') + '</td>' +
+              '<td class="col-phone">' + phoneCell + '</td>' +
+              '<td>' + escapeHtml(lead.service || '—') + '</td>' +
+              '<td class="col-desc">' + desc + '</td>' +
+              '<td class="col-time">' + formatTimestamp(lead.timestamp) + '</td>' +
+              '<td><span class="status-badge">جدید</span></td>' +
+            '</tr>'
+          );
+        });
+
+        tbody.innerHTML = rows.join('');
+
+        sorted.forEach(function (lead) {
+          if (lead.id) knownIds.add(lead.id);
+        });
+      }
+
+      function showError(message) {
+        tbody.innerHTML =
+          '<tr><td colspan="7" class="error-state">' + escapeHtml(message) + '</td></tr>';
+        lastSyncEl.textContent = 'خطا در اتصال';
+      }
+
+      function fetchLeads() {
+        return fetch('/api/leads', {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          cache: 'no-store',
+          credentials: 'same-origin'
+        })
+          .then(function (res) {
+            if (!res.ok) throw new Error('خطا در دریافت داده‌ها (' + res.status + ')');
+            return res.json();
+          })
+          .then(function (leads) {
+            if (!Array.isArray(leads)) throw new Error('فرمت پاسخ سرور نامعتبر است');
+
+            if (hasInitialized && leads.length > previousCount) {
+              playAlertBeep();
+            }
+
+            previousCount = leads.length;
+            hasInitialized = true;
+
+            totalCountEl.textContent = String(leads.length);
+            lastUpdateEl.textContent = formatNow();
+            lastSyncEl.textContent = 'آخرین همگام‌سازی: ' + formatNow();
+
+            renderLeads(leads);
+          })
+          .catch(function (err) {
+            console.error('fetchLeads:', err);
+            var hint = '';
+            if (window.location.protocol === 'file:') {
+              hint = ' — این صفحه را از طریق سرور وب باز کنید (مثلاً /admin.html).';
+            } else {
+              hint = ' — بررسی کنید: docker compose ps && curl http://localhost/api/health';
+            }
+            showError((err.message || 'خطا در بارگذاری لیست') + hint);
+          });
+      }
+
+      fetchLeads();
+      setInterval(fetchLeads, POLL_INTERVAL_MS);
+    })();
+
+    (function initAdminLiveChat() {
+      'use strict';
+
+      if (typeof io !== 'function') {
+        if (connectionEl) {
+          connectionEl.textContent = 'خطا: socket.io بارگذاری نشد';
+        }
+        return;
+      }
+
+      var sessionsEl = document.getElementById('chat-sessions');
+      var threadEl = document.getElementById('chat-thread');
+      var replyForm = document.getElementById('chat-reply-form');
+      var replyInput = document.getElementById('chat-reply-input');
+      var replySend = document.getElementById('chat-reply-send');
+      var sessionCountEl = document.getElementById('chat-session-count');
+      var connectionEl = document.getElementById('chat-connection');
+      if (!sessionsEl || !threadEl || !replyForm || !replyInput || !replySend) return;
+
+      var sessions = new Map();
+      var activeSessionId = null;
+
+      function escapeHtml(str) {
+        if (str == null) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function formatSessionTime(iso) {
+        if (!iso) return '—';
+        var date = new Date(iso);
+        if (isNaN(date.getTime())) return '—';
+        try {
+          return new Intl.DateTimeFormat('fa-IR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+          }).format(date);
+        } catch (e) {
+          return date.toLocaleTimeString('fa-IR');
+        }
+      }
+
+      function setConnectionState(connected) {
+        if (!connectionEl) return;
+        connectionEl.textContent = connected ? 'متصل به سرور چت' : 'اتصال قطع شد';
+        connectionEl.classList.toggle('is-online', connected);
+      }
+
+      function updateReplyControls() {
+        var enabled = Boolean(activeSessionId);
+        replyInput.disabled = !enabled;
+        replySend.disabled = !enabled;
+        replyInput.placeholder = enabled
+          ? 'پاسخ خود را بنویسید...'
+          : 'ابتدا یک گفتگو را انتخاب کنید';
+      }
+
+      function renderThread(session) {
+        if (!session || !Array.isArray(session.messages) || !session.messages.length) {
+          threadEl.innerHTML = '<div class="chat-thread-empty">هنوز پیامی در این گفتگو ثبت نشده است.</div>';
+          return;
+        }
+
+        threadEl.innerHTML = session.messages.map(function (message) {
+          var roleClass = message.from === 'admin' ? 'admin' : 'user';
+          return '<div class="chat-thread-bubble ' + roleClass + '">' + escapeHtml(message.text) + '</div>';
+        }).join('');
+        threadEl.scrollTop = threadEl.scrollHeight;
+      }
+
+      function renderSessions() {
+        var list = Array.from(sessions.values()).sort(function (a, b) {
+          return new Date(b.connectedAt) - new Date(a.connectedAt);
+        });
+
+        sessionCountEl.textContent = list.length + ' گفتگو';
+
+        if (!list.length) {
+          sessionsEl.innerHTML = '<div class="chat-thread-empty">هنوز گفتگوی فعالی وجود ندارد.</div>';
+          threadEl.innerHTML = '<div class="chat-thread-empty">یک گفتگو را از لیست انتخاب کنید.</div>';
+          activeSessionId = null;
+          updateReplyControls();
+          return;
+        }
+
+        sessionsEl.innerHTML = list.map(function (session, index) {
+          var activeClass = session.id === activeSessionId ? ' active' : '';
+          var preview = session.lastMessage || 'بدون پیام';
+          var unreadBadge = session.unread > 0
+            ? '<span class="chat-unread-badge">' + session.unread + '</span>'
+            : '';
+          return (
+            '<button type="button" class="chat-session-item' + activeClass + '" data-session-id="' + escapeHtml(session.id) + '">' +
+              '<span class="chat-session-title">بازدیدکننده #' + (index + 1) + '</span>' +
+              '<span class="chat-session-preview">' + escapeHtml(preview) + '</span>' +
+              '<span class="chat-session-meta">' +
+                '<span>' + formatSessionTime(session.connectedAt) + '</span>' +
+                unreadBadge +
+              '</span>' +
+            '</button>'
+          );
+        }).join('');
+      }
+
+      function upsertSession(session) {
+        if (!session || !session.id) return;
+        var existing = sessions.get(session.id) || {};
+        sessions.set(session.id, Object.assign({}, existing, session));
+        renderSessions();
+        if (activeSessionId === session.id) {
+          renderThread(sessions.get(session.id));
+        }
+      }
+
+      var socket = io();
+
+      function selectSession(sessionId) {
+        if (!sessions.has(sessionId)) return;
+        activeSessionId = sessionId;
+        socket.emit('admin:join-session', sessionId);
+        renderSessions();
+        renderThread(sessions.get(sessionId));
+        updateReplyControls();
+        replyInput.focus();
+      }
+
+      socket.on('connect', function () {
+        setConnectionState(true);
+      });
+
+      socket.on('disconnect', function () {
+        setConnectionState(false);
+      });
+
+      socket.on('session:list', function (list) {
+        sessions.clear();
+        if (Array.isArray(list)) {
+          list.forEach(function (session) {
+            sessions.set(session.id, session);
+          });
+        }
+        renderSessions();
+      });
+
+      socket.on('session:new', function (session) {
+        upsertSession(session);
+        try {
+          var AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            var ctx = new AudioCtx();
+            var osc = ctx.createOscillator();
+            var gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.value = 740;
+            gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.1, ctx.currentTime + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(ctx.currentTime);
+            osc.stop(ctx.currentTime + 0.22);
+            setTimeout(function () { ctx.close(); }, 400);
+          }
+        } catch (e) { /* audio unavailable */ }
+      });
+
+      socket.on('session:update', function (session) {
+        upsertSession(session);
+      });
+
+      socket.on('session:remove', function (payload) {
+        var sessionId = payload && payload.sessionId;
+        if (!sessionId) return;
+        sessions.delete(sessionId);
+        if (activeSessionId === sessionId) {
+          activeSessionId = null;
+          threadEl.innerHTML = '<div class="chat-thread-empty">این گفتگو پایان یافت.</div>';
+        }
+        renderSessions();
+        updateReplyControls();
+      });
+
+      socket.on('session:history', function (session) {
+        upsertSession(session);
+        if (session && session.id) {
+          activeSessionId = session.id;
+          renderSessions();
+          renderThread(session);
+          updateReplyControls();
+        }
+      });
+
+      socket.on('chat:user-message', function (payload) {
+        if (!payload || !payload.sessionId) return;
+        var session = sessions.get(payload.sessionId);
+        if (!session) return;
+        if (!Array.isArray(session.messages)) session.messages = [];
+        if (payload.message) session.messages.push(payload.message);
+        session.lastMessage = payload.message ? payload.message.text : session.lastMessage;
+        if (activeSessionId !== payload.sessionId) {
+          session.unread = (session.unread || 0) + 1;
+        }
+        upsertSession(session);
+      });
+
+      sessionsEl.addEventListener('click', function (event) {
+        var button = event.target.closest('[data-session-id]');
+        if (!button) return;
+        selectSession(button.getAttribute('data-session-id'));
+      });
+
+      replyForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!activeSessionId) return;
+        var text = replyInput.value.trim();
+        if (!text) return;
+
+        socket.emit('admin:reply', {
+          sessionId: activeSessionId,
+          text: text,
+        });
+
+        var session = sessions.get(activeSessionId);
+        if (session) {
+          if (!Array.isArray(session.messages)) session.messages = [];
+          session.messages.push({
+            from: 'admin',
+            text: text,
+            timestamp: new Date().toISOString(),
+          });
+          session.lastMessage = text;
+          upsertSession(session);
+        }
+
+        replyInput.value = '';
+      });
+
+      updateReplyControls();
+    })();
+
+    (function initAdminTabs() {
+      var tabs = document.querySelectorAll('.admin-tab');
+      var panels = document.querySelectorAll('.admin-tab-panel');
+      var featuredLoaded = false;
+      var adsLoaded = false;
+      var clinicProfilesLoaded = false;
+      var articlesLoaded = false;
+      var reportsLoaded = false;
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var name = tab.getAttribute('data-tab');
+          tabs.forEach(function (t) { t.classList.toggle('active', t === tab); });
+          panels.forEach(function (p) {
+            p.classList.toggle('active', p.id === 'tab-' + name);
+          });
+          if (name === 'featured' && !featuredLoaded) {
+            featuredLoaded = true;
+            window.__loadFeaturedAdmin && window.__loadFeaturedAdmin();
+          }
+          if (name === 'ads' && !adsLoaded) {
+            adsLoaded = true;
+            window.__loadAdsAdmin && window.__loadAdsAdmin();
+          }
+          if (name === 'clinic-profiles' && !clinicProfilesLoaded) {
+            clinicProfilesLoaded = true;
+            window.__loadClinicProfilesAdmin && window.__loadClinicProfilesAdmin();
+          }
+          if (name === 'clinic-profiles') {
+            requestAnimationFrame(function () {
+              window.__initClinicProfileQuill && window.__initClinicProfileQuill();
+            });
+          }
+          if (name === 'articles' && !articlesLoaded) {
+            articlesLoaded = true;
+            window.__loadArticlesAdmin && window.__loadArticlesAdmin();
+          }
+          if (name === 'reports' && !reportsLoaded) {
+            reportsLoaded = true;
+            window.__loadReportsAdmin && window.__loadReportsAdmin();
+          }
+        });
+      });
+    })();
+
+    (function initMonetizationAdmin() {
+      'use strict';
+
+      var AUTH_MSG = 'دسترسی شما منقضی شده، صفحه را رفرش کنید.';
+
+      function escapeHtml(str) {
+        if (str == null) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function adminFetch(url, opts) {
+        opts = opts || {};
+        opts.credentials = 'same-origin';
+        if (opts.body && typeof opts.body === 'object') {
+          opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+          opts.body = JSON.stringify(opts.body);
+        }
+        return fetch(url, opts).then(function (res) {
+          if (res.status === 401) throw new Error('auth_expired');
+          if (!res.ok) {
+            return res.json().catch(function () { return {}; }).then(function (data) {
+              throw new Error(data.error || data.warning || ('خطا ' + res.status));
+            });
+          }
+          return res.json();
+        });
+      }
+
+      function showMsg(el, text, ok) {
+        if (!el) return;
+        el.className = 'monetize-msg ' + (ok ? 'ok' : 'err');
+        el.textContent = text;
+      }
+
+      function clearMsg(el) {
+        if (!el) return;
+        el.className = 'monetize-msg';
+        el.textContent = '';
+      }
+
+      function dateToInput(iso) {
+        if (!iso) return '';
+        return String(iso).slice(0, 10);
+      }
+
+      function inputToIso(val) {
+        var v = (val || '').trim();
+        return v ? v + 'T00:00:00.000Z' : null;
+      }
+
+      function formatTimestamp(iso) {
+        if (!iso) return '—';
+        var date = new Date(iso);
+        if (isNaN(date.getTime())) return iso;
+        try {
+          return new Intl.DateTimeFormat('fa-IR', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false,
+          }).format(date);
+        } catch (e) {
+          return date.toLocaleString('fa-IR');
+        }
+      }
+
+      function handleAdminError(err, msgEl, tbody, cols) {
+        var text = err && err.message === 'auth_expired'
+          ? AUTH_MSG
+          : ((err && err.message) || 'خطا در ارتباط با سرور');
+        if (msgEl) showMsg(msgEl, text, false);
+        if (tbody) {
+          tbody.innerHTML = '<tr><td colspan="' + cols + '" class="error-state">' + escapeHtml(text) + '</td></tr>';
+        }
+      }
+
+      /* --- Featured clinics --- */
+      var featuredForm = document.getElementById('featured-form');
+      var featuredTbody = document.getElementById('featured-tbody');
+      var featuredMsg = document.getElementById('featured-msg');
+      var featuredReset = document.getElementById('featured-reset');
+      var featuredFormTitle = document.getElementById('featured-form-title');
+
+      function resetFeaturedForm() {
+        if (!featuredForm) return;
+        featuredForm.reset();
+        document.getElementById('featured-id').value = '';
+        document.getElementById('featured-active').checked = true;
+        if (featuredFormTitle) featuredFormTitle.textContent = 'افزودن مرکز برتر';
+        clearMsg(featuredMsg);
+      }
+
+      function normalizeFeaturedLinkClient(link) {
+        if (!link) return '';
+        var s = String(link).trim();
+        if (/\/api\/featured\/click/i.test(s)) return '';
+        s = s.replace(/^https?:\/\/[^/]+/i, '');
+        if (s.charAt(0) === '/') s = s.slice(1);
+        return s;
+      }
+
+      function fillFeaturedForm(row) {
+        document.getElementById('featured-id').value = row.id || '';
+        document.getElementById('featured-rank').value = String(row.rank || 1);
+        document.getElementById('featured-name').value = row.name || '';
+        document.getElementById('featured-tagline').value = row.tagline || '';
+        document.getElementById('featured-phone').value = row.phone || '';
+        document.getElementById('featured-address').value = row.address || '';
+        document.getElementById('featured-image').value = row.image || '';
+        document.getElementById('featured-link').value = normalizeFeaturedLinkClient(row.link);
+        document.getElementById('featured-badge').value = row.badge || '';
+        document.getElementById('featured-active').checked = row.active !== 0;
+        document.getElementById('featured-starts').value = dateToInput(row.starts_at);
+        document.getElementById('featured-ends').value = dateToInput(row.ends_at);
+        if (featuredFormTitle) featuredFormTitle.textContent = 'ویرایش مرکز برتر';
+        clearMsg(featuredMsg);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function renderFeaturedTable(rows) {
+        if (!featuredTbody) return;
+        if (!rows.length) {
+          featuredTbody.innerHTML = '<tr><td colspan="7" class="empty-state">هنوز مرکز برتری ثبت نشده است.</td></tr>';
+          return;
+        }
+        featuredTbody.innerHTML = rows.map(function (row) {
+          var activeBadge = row.active
+            ? '<span class="badge-active">فعال</span>'
+            : '<span class="badge-inactive">غیرفعال</span>';
+          return (
+            '<tr data-id="' + escapeHtml(row.id) + '">' +
+              '<td>' + escapeHtml(row.rank) + '</td>' +
+              '<td>' + escapeHtml(row.name) + '</td>' +
+              '<td>' + escapeHtml(row.badge || '—') + '</td>' +
+              '<td>' + activeBadge + '</td>' +
+              '<td class="col-clicks">' + escapeHtml(row.clicks || 0) + '</td>' +
+              '<td class="col-time">' + escapeHtml(dateToInput(row.ends_at) || '—') + '</td>' +
+              '<td><div class="btn-row">' +
+                '<button type="button" class="btn-mini edit" data-action="edit-featured">ویرایش</button>' +
+                '<button type="button" class="btn-mini del" data-action="del-featured">حذف</button>' +
+              '</div></td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+
+      function loadFeaturedAdmin() {
+        if (!featuredTbody) return;
+        featuredTbody.innerHTML = '<tr><td colspan="7" class="loading-state">در حال بارگذاری…</td></tr>';
+        adminFetch('/api/admin/featured')
+          .then(function (rows) {
+            renderFeaturedTable(Array.isArray(rows) ? rows : []);
+          })
+          .catch(function (err) {
+            handleAdminError(err, featuredMsg, featuredTbody, 7);
+          });
+      }
+      window.__loadFeaturedAdmin = loadFeaturedAdmin;
+
+      if (featuredForm) {
+        featuredForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          clearMsg(featuredMsg);
+          var payload = {
+            id: document.getElementById('featured-id').value.trim() || undefined,
+            rank: parseInt(document.getElementById('featured-rank').value, 10),
+            name: document.getElementById('featured-name').value.trim(),
+            tagline: document.getElementById('featured-tagline').value.trim(),
+            phone: document.getElementById('featured-phone').value.trim(),
+            address: document.getElementById('featured-address').value.trim(),
+            image: document.getElementById('featured-image').value.trim(),
+            link: normalizeFeaturedLinkClient(document.getElementById('featured-link').value.trim()) || undefined,
+            badge: document.getElementById('featured-badge').value.trim(),
+            active: document.getElementById('featured-active').checked ? 1 : 0,
+            starts_at: inputToIso(document.getElementById('featured-starts').value),
+            ends_at: inputToIso(document.getElementById('featured-ends').value),
+          };
+          adminFetch('/api/admin/featured', { method: 'POST', body: payload })
+            .then(function (res) {
+              var note = res.warning ? ' (' + res.warning + ')' : '';
+              showMsg(featuredMsg, 'مرکز برتر ذخیره شد.' + note, true);
+              resetFeaturedForm();
+              loadFeaturedAdmin();
+            })
+            .catch(function (err) {
+              handleAdminError(err, featuredMsg, null, 0);
+            });
+        });
+      }
+
+      if (featuredReset) featuredReset.addEventListener('click', resetFeaturedForm);
+
+      if (featuredTbody) {
+        featuredTbody.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          var tr = btn.closest('tr');
+          var id = tr && tr.getAttribute('data-id');
+          if (!id) return;
+          if (btn.getAttribute('data-action') === 'del-featured') {
+            if (!confirm('این مرکز برتر حذف شود؟')) return;
+            adminFetch('/api/admin/featured?id=' + encodeURIComponent(id), { method: 'DELETE' })
+              .then(function () {
+                showMsg(featuredMsg, 'حذف شد.', true);
+                loadFeaturedAdmin();
+              })
+              .catch(function (err) { handleAdminError(err, featuredMsg, null, 0); });
+            return;
+          }
+          if (btn.getAttribute('data-action') === 'edit-featured') {
+            adminFetch('/api/admin/featured')
+              .then(function (rows) {
+                var row = (rows || []).find(function (r) { return r.id === id; });
+                if (row) fillFeaturedForm(row);
+              })
+              .catch(function (err) { handleAdminError(err, featuredMsg, null, 0); });
+          }
+        });
+      }
+
+      /* --- Ads --- */
+      var adsForm = document.getElementById('ads-form');
+      var adsTbody = document.getElementById('ads-tbody');
+      var adsMsg = document.getElementById('ads-msg');
+      var adsReset = document.getElementById('ads-reset');
+      var adsFormTitle = document.getElementById('ads-form-title');
+
+      function resetAdsForm() {
+        if (!adsForm) return;
+        adsForm.reset();
+        document.getElementById('ads-id').value = '';
+        document.getElementById('ads-weight').value = '1';
+        document.getElementById('ads-active').checked = true;
+        if (adsFormTitle) adsFormTitle.textContent = 'افزودن بنر تبلیغاتی';
+        clearMsg(adsMsg);
+      }
+
+      function fillAdsForm(row) {
+        document.getElementById('ads-id').value = row.id || '';
+        document.getElementById('ads-slot').value = row.slot || 'global';
+        document.getElementById('ads-title').value = row.title || '';
+        document.getElementById('ads-image').value = row.image || '';
+        document.getElementById('ads-link').value = row.link || '';
+        document.getElementById('ads-weight').value = String(row.weight || 1);
+        document.getElementById('ads-active').checked = row.active !== 0;
+        document.getElementById('ads-starts').value = dateToInput(row.starts_at);
+        document.getElementById('ads-ends').value = dateToInput(row.ends_at);
+        if (adsFormTitle) adsFormTitle.textContent = 'ویرایش بنر تبلیغاتی';
+        clearMsg(adsMsg);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function calcCtr(clicks, impressions) {
+        if (!impressions) return '—';
+        return ((clicks / impressions) * 100).toFixed(1) + '%';
+      }
+
+      function renderAdsTable(rows) {
+        if (!adsTbody) return;
+        if (!rows.length) {
+          adsTbody.innerHTML = '<tr><td colspan="9" class="empty-state">هنوز بنری ثبت نشده است.</td></tr>';
+          return;
+        }
+        adsTbody.innerHTML = rows.map(function (row) {
+          var activeBadge = row.active
+            ? '<span class="badge-active">فعال</span>'
+            : '<span class="badge-inactive">غیرفعال</span>';
+          return (
+            '<tr data-id="' + escapeHtml(row.id) + '">' +
+              '<td>' + escapeHtml(row.slot) + '</td>' +
+              '<td>' + escapeHtml(row.title || '—') + '</td>' +
+              '<td>' + escapeHtml(row.weight || 1) + '</td>' +
+              '<td>' + activeBadge + '</td>' +
+              '<td class="col-clicks">' + escapeHtml(row.impressions || 0) + '</td>' +
+              '<td class="col-clicks">' + escapeHtml(row.clicks || 0) + '</td>' +
+              '<td class="col-ctr">' + calcCtr(row.clicks || 0, row.impressions || 0) + '</td>' +
+              '<td class="col-time">' + escapeHtml(dateToInput(row.ends_at) || '—') + '</td>' +
+              '<td><div class="btn-row">' +
+                '<button type="button" class="btn-mini edit" data-action="edit-ad">ویرایش</button>' +
+                '<button type="button" class="btn-mini del" data-action="del-ad">حذف</button>' +
+              '</div></td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+
+      function loadAdsAdmin() {
+        if (!adsTbody) return;
+        adsTbody.innerHTML = '<tr><td colspan="9" class="loading-state">در حال بارگذاری…</td></tr>';
+        adminFetch('/api/admin/ads')
+          .then(function (rows) {
+            renderAdsTable(Array.isArray(rows) ? rows : []);
+          })
+          .catch(function (err) {
+            handleAdminError(err, adsMsg, adsTbody, 9);
+          });
+      }
+      window.__loadAdsAdmin = loadAdsAdmin;
+
+      if (adsForm) {
+        adsForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          clearMsg(adsMsg);
+          var payload = {
+            id: document.getElementById('ads-id').value.trim() || undefined,
+            slot: document.getElementById('ads-slot').value,
+            title: document.getElementById('ads-title').value.trim(),
+            image: document.getElementById('ads-image').value.trim(),
+            link: document.getElementById('ads-link').value.trim(),
+            weight: parseInt(document.getElementById('ads-weight').value, 10) || 1,
+            active: document.getElementById('ads-active').checked ? 1 : 0,
+            starts_at: inputToIso(document.getElementById('ads-starts').value),
+            ends_at: inputToIso(document.getElementById('ads-ends').value),
+          };
+          adminFetch('/api/admin/ads', { method: 'POST', body: payload })
+            .then(function () {
+              showMsg(adsMsg, 'بنر ذخیره شد.', true);
+              resetAdsForm();
+              loadAdsAdmin();
+            })
+            .catch(function (err) {
+              handleAdminError(err, adsMsg, null, 0);
+            });
+        });
+      }
+
+      if (adsReset) adsReset.addEventListener('click', resetAdsForm);
+
+      if (adsTbody) {
+        adsTbody.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          var tr = btn.closest('tr');
+          var id = tr && tr.getAttribute('data-id');
+          if (!id) return;
+          if (btn.getAttribute('data-action') === 'del-ad') {
+            if (!confirm('این بنر حذف شود؟')) return;
+            adminFetch('/api/admin/ads?id=' + encodeURIComponent(id), { method: 'DELETE' })
+              .then(function () {
+                showMsg(adsMsg, 'حذف شد.', true);
+                loadAdsAdmin();
+              })
+              .catch(function (err) { handleAdminError(err, adsMsg, null, 0); });
+            return;
+          }
+          if (btn.getAttribute('data-action') === 'edit-ad') {
+            adminFetch('/api/admin/ads')
+              .then(function (rows) {
+                var row = (rows || []).find(function (r) { return r.id === id; });
+                if (row) fillAdsForm(row);
+              })
+              .catch(function (err) { handleAdminError(err, adsMsg, null, 0); });
+          }
+        });
+      }
+
+      /* --- Clinic profile intros --- */
+      var clinicProfileForm = document.getElementById('clinic-profile-form');
+      var clinicProfilesTbody = document.getElementById('clinic-profiles-tbody');
+      var clinicProfileMsg = document.getElementById('clinic-profile-msg');
+      var clinicProfileReset = document.getElementById('clinic-profile-reset');
+      var clinicProfileFormTitle = document.getElementById('clinic-profile-form-title');
+      var clinicProfileSelect = document.getElementById('clinic-profile-clinic-id');
+      var clinicProfileQuill = null;
+      var clinicProfileQuillReady = false;
+      var clinicProfilesCache = [];
+
+      function initClinicProfileQuill() {
+        if (clinicProfileQuillReady || typeof Quill !== 'function') return;
+        clinicProfileQuill = new Quill('#clinic-profile-editor', {
+          theme: 'snow',
+          direction: 'rtl',
+          modules: {
+            toolbar: [
+              [{ header: [3, 4, false] }],
+              ['bold', 'italic'],
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              ['link'],
+              ['clean'],
+            ],
+          },
+        });
+        clinicProfileQuillReady = true;
+      }
+
+      function resetClinicProfileForm() {
+        if (!clinicProfileForm) return;
+        clinicProfileForm.reset();
+        initClinicProfileQuill();
+        if (clinicProfileQuill) clinicProfileQuill.setText('');
+        if (clinicProfileFormTitle) clinicProfileFormTitle.textContent = 'متن اختصاصی پروفایل مرکز';
+        clearMsg(clinicProfileMsg);
+      }
+
+      function fillClinicProfileForm(row) {
+        initClinicProfileQuill();
+        if (clinicProfileSelect) clinicProfileSelect.value = String(row.clinicId || row.clinic_id || '');
+        if (clinicProfileQuill) {
+          clinicProfileQuill.setText('');
+          if (row.intro) clinicProfileQuill.clipboard.dangerouslyPasteHTML(row.intro);
+        }
+        if (clinicProfileFormTitle) clinicProfileFormTitle.textContent = 'ویرایش متن پروفایل';
+        clearMsg(clinicProfileMsg);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function populateClinicProfileSelect(catalog) {
+        if (!clinicProfileSelect) return;
+        var current = clinicProfileSelect.value;
+        clinicProfileSelect.innerHTML = '<option value="">انتخاب مرکز...</option>' +
+          (catalog || []).map(function (c) {
+            return '<option value="' + escapeHtml(String(c.id)) + '">' +
+              escapeHtml(String(c.id)) + ' — ' + escapeHtml(c.name || '') +
+              '</option>';
+          }).join('');
+        if (current) clinicProfileSelect.value = current;
+      }
+
+      function renderClinicProfilesTable(rows) {
+        if (!clinicProfilesTbody) return;
+        if (!rows.length) {
+          clinicProfilesTbody.innerHTML =
+            '<tr><td colspan="4" class="empty-state">هنوز متن اختصاصی ثبت نشده است.</td></tr>';
+          return;
+        }
+        clinicProfilesTbody.innerHTML = rows.map(function (row) {
+          var id = row.clinicId || row.clinic_id;
+          return '<tr data-clinic-id="' + escapeHtml(String(id)) + '">' +
+            '<td>' + escapeHtml(String(id)) + '</td>' +
+            '<td>' + escapeHtml(row.name || ('مرکز ' + id)) + '</td>' +
+            '<td>' + escapeHtml(formatTimestamp(row.updatedAt || row.updated_at)) + '</td>' +
+            '<td>' +
+              '<button type="button" class="btn-mini edit" data-action="edit-clinic-profile">ویرایش</button>' +
+              '<button type="button" class="btn-mini del" data-action="del-clinic-profile">حذف</button>' +
+            '</td>' +
+          '</tr>';
+        }).join('');
+      }
+
+      function loadClinicProfilesAdmin() {
+        if (!clinicProfilesTbody) return;
+        clinicProfilesTbody.innerHTML =
+          '<tr><td colspan="4" class="loading-state">در حال بارگذاری…</td></tr>';
+        Promise.all([
+          adminFetch('/api/admin/clinics-catalog'),
+          adminFetch('/api/admin/clinic-profiles'),
+        ])
+          .then(function (results) {
+            var catalog = Array.isArray(results[0]) ? results[0] : [];
+            clinicProfilesCache = Array.isArray(results[1]) ? results[1] : [];
+            populateClinicProfileSelect(catalog);
+            renderClinicProfilesTable(clinicProfilesCache);
+            requestAnimationFrame(function () { initClinicProfileQuill(); });
+          })
+          .catch(function (err) {
+            handleAdminError(err, clinicProfileMsg, clinicProfilesTbody, 4);
+          });
+      }
+      window.__loadClinicProfilesAdmin = loadClinicProfilesAdmin;
+      window.__initClinicProfileQuill = initClinicProfileQuill;
+
+      if (clinicProfileForm) {
+        clinicProfileForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          clearMsg(clinicProfileMsg);
+          initClinicProfileQuill();
+          var clinicId = parseInt(clinicProfileSelect && clinicProfileSelect.value, 10);
+          var intro = clinicProfileQuill ? clinicProfileQuill.root.innerHTML : '';
+          if (!clinicId) {
+            showMsg(clinicProfileMsg, 'لطفاً مرکز را انتخاب کنید.', false);
+            return;
+          }
+          if (!intro || intro === '<p><br></p>') {
+            showMsg(clinicProfileMsg, 'متن معرفی را وارد کنید.', false);
+            return;
+          }
+          adminFetch('/api/admin/clinic-profiles', {
+            method: 'POST',
+            body: { clinic_id: clinicId, intro: intro },
+          })
+            .then(function () {
+              showMsg(clinicProfileMsg, 'متن پروفایل ذخیره شد.', true);
+              loadClinicProfilesAdmin();
+            })
+            .catch(function (err) {
+              handleAdminError(err, clinicProfileMsg, null, 0);
+            });
+        });
+      }
+
+      if (clinicProfileReset) clinicProfileReset.addEventListener('click', resetClinicProfileForm);
+
+      if (clinicProfilesTbody) {
+        clinicProfilesTbody.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          var tr = btn.closest('tr');
+          var clinicId = tr && tr.getAttribute('data-clinic-id');
+          if (!clinicId) return;
+          if (btn.getAttribute('data-action') === 'del-clinic-profile') {
+            if (!confirm('متن اختصاصی این مرکز حذف شود؟')) return;
+            adminFetch('/api/admin/clinic-profiles?clinic_id=' + encodeURIComponent(clinicId), {
+              method: 'DELETE',
+            })
+              .then(function () {
+                showMsg(clinicProfileMsg, 'حذف شد.', true);
+                loadClinicProfilesAdmin();
+              })
+              .catch(function (err) { handleAdminError(err, clinicProfileMsg, null, 0); });
+            return;
+          }
+          if (btn.getAttribute('data-action') === 'edit-clinic-profile') {
+            var row = clinicProfilesCache.find(function (r) {
+              return String(r.clinicId || r.clinic_id) === String(clinicId);
+            });
+            if (row) fillClinicProfileForm(row);
+          }
+        });
+      }
+    })();
+
+    (function initArticlesAdmin() {
+      'use strict';
+
+      var AUTH_MSG = 'دسترسی شما منقضی شده، صفحه را رفرش کنید.';
+      var MAX_IMAGE_BYTES = 3 * 1024 * 1024;
+      var quill = null;
+      var quillReady = false;
+
+      var listView = document.getElementById('articles-list-view');
+      var editorView = document.getElementById('articles-editor-view');
+      var tbody = document.getElementById('articles-tbody');
+      var form = document.getElementById('articles-form');
+      var msgEl = document.getElementById('articles-msg');
+      var editorTitle = document.getElementById('articles-editor-title');
+      var summaryEl = document.getElementById('article-summary');
+      var summaryCounter = document.getElementById('summary-counter');
+      var coverFile = document.getElementById('article-cover-file');
+      var coverPreview = document.getElementById('article-cover-preview');
+      var coverHidden = document.getElementById('article-cover-image');
+
+      function escapeHtml(str) {
+        if (str == null) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function toPersianNum(n) {
+        return String(n).replace(/[0-9]/g, function (d) {
+          return String.fromCharCode(0x06f0 + Number(d));
+        });
+      }
+
+      function formatTimestamp(iso) {
+        if (!iso) return '—';
+        var date = new Date(iso);
+        if (isNaN(date.getTime())) return '—';
+        try {
+          return new Intl.DateTimeFormat('fa-IR', {
+            year: 'numeric', month: 'short', day: 'numeric',
+            hour: '2-digit', minute: '2-digit', hour12: false,
+          }).format(date);
+        } catch (e) {
+          return date.toLocaleString('fa-IR');
+        }
+      }
+
+      function adminFetch(url, opts) {
+        opts = opts || {};
+        opts.credentials = 'same-origin';
+        if (opts.body && typeof opts.body === 'object') {
+          opts.headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+          opts.body = JSON.stringify(opts.body);
+        }
+        return fetch(url, opts).then(function (res) {
+          if (res.status === 401) throw new Error('auth_expired');
+          if (!res.ok) {
+            return res.json().catch(function () { return {}; }).then(function (data) {
+              throw new Error(data.error || ('خطا ' + res.status));
+            });
+          }
+          return res.json();
+        });
+      }
+
+      function showMsg(text, ok) {
+        if (!msgEl) return;
+        msgEl.className = 'monetize-msg ' + (ok ? 'ok' : 'err');
+        msgEl.textContent = text;
+      }
+
+      function clearMsg() {
+        if (!msgEl) return;
+        msgEl.className = 'monetize-msg';
+        msgEl.textContent = '';
+      }
+
+      function handleError(err) {
+        var text = err && err.message === 'auth_expired'
+          ? AUTH_MSG
+          : ((err && err.message) || 'خطا در ارتباط با سرور');
+        showMsg(text, false);
+      }
+
+      function updateSummaryCounter() {
+        if (!summaryEl || !summaryCounter) return;
+        var len = (summaryEl.value || '').length;
+        summaryCounter.textContent = toPersianNum(len) + ' / ۱۶۰';
+        summaryCounter.classList.toggle('warn', len > 150);
+      }
+
+      function initQuill() {
+        if (quillReady || typeof Quill !== 'function') return;
+        quill = new Quill('#editor', {
+          theme: 'snow',
+          modules: {
+            toolbar: [
+              [{ header: [2, 3, 4, false] }],
+              ['bold', 'italic', 'underline'],
+              [{ list: 'ordered' }, { list: 'bullet' }],
+              ['blockquote', 'link', 'image'],
+            ],
+          },
+        });
+        var toolbar = quill.getModule('toolbar');
+        toolbar.addHandler('image', function () {
+          var input = document.createElement('input');
+          input.type = 'file';
+          input.accept = 'image/jpeg,image/png,image/webp';
+          input.onchange = function () {
+            var file = input.files && input.files[0];
+            if (!file) return;
+            uploadImageFile(file).then(function (url) {
+              var range = quill.getSelection(true);
+              quill.insertEmbed(range.index, 'image', url);
+              quill.setSelection(range.index + 1);
+            }).catch(handleError);
+          };
+          input.click();
+        });
+        quillReady = true;
+      }
+
+      function uploadImageFile(file) {
+        if (!file) return Promise.reject(new Error('فایلی انتخاب نشده'));
+        if (file.size > MAX_IMAGE_BYTES) {
+          return Promise.reject(new Error('حداکثر حجم تصویر ۳ مگابایت است'));
+        }
+        if (!/^image\/(jpeg|png|webp)$/i.test(file.type)) {
+          return Promise.reject(new Error('فقط jpeg، png و webp مجاز است'));
+        }
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.onload = function () {
+            var dataUrl = String(reader.result || '');
+            var base64 = dataUrl.indexOf(',') >= 0 ? dataUrl.split(',')[1] : dataUrl;
+            adminFetch('/api/admin/upload', {
+              method: 'POST',
+              body: { dataBase64: base64, filename: file.name },
+            }).then(function (res) {
+              if (!res.url) throw new Error('آپلود ناموفق');
+              resolve(res.url);
+            }).catch(reject);
+          };
+          reader.onerror = function () { reject(new Error('خطا در خواندن فایل')); };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function setCoverPreview(url) {
+        if (!coverPreview || !coverHidden) return;
+        if (url) {
+          coverHidden.value = url;
+          coverPreview.src = url;
+          coverPreview.classList.add('visible');
+        } else {
+          coverHidden.value = '';
+          coverPreview.removeAttribute('src');
+          coverPreview.classList.remove('visible');
+        }
+      }
+
+      function showEditor(isEdit) {
+        initQuill();
+        if (listView) listView.hidden = true;
+        if (editorView) editorView.hidden = false;
+        if (editorTitle) {
+          editorTitle.textContent = isEdit ? 'ویرایش مقاله' : 'مقاله جدید';
+        }
+        clearMsg();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function hideEditor() {
+        if (listView) listView.hidden = false;
+        if (editorView) editorView.hidden = true;
+        clearMsg();
+      }
+
+      function resetForm() {
+        if (!form) return;
+        form.reset();
+        document.getElementById('article-id').value = '';
+        setCoverPreview('');
+        if (coverFile) coverFile.value = '';
+        if (quill) {
+          quill.setText('');
+        }
+        updateSummaryCounter();
+        var draftRadio = form.querySelector('input[name="article-status"][value="draft"]');
+        if (draftRadio) draftRadio.checked = true;
+      }
+
+      function fillForm(article) {
+        document.getElementById('article-id').value = article.id || '';
+        document.getElementById('article-title').value = article.title || '';
+        document.getElementById('article-slug').value = article.slug || '';
+        summaryEl.value = article.summary || '';
+        document.getElementById('article-category').value = article.category || '';
+        document.getElementById('article-hub-url').value = article.hub_url || '';
+        document.getElementById('article-hub-keyword').value = article.hub_keyword || '';
+        setCoverPreview(article.cover_image || '');
+        var status = article.status === 'published' ? 'published' : 'draft';
+        var statusRadio = form.querySelector('input[name="article-status"][value="' + status + '"]');
+        if (statusRadio) statusRadio.checked = true;
+        updateSummaryCounter();
+        initQuill();
+        if (quill) {
+          quill.setText('');
+          if (article.body_html) {
+            quill.clipboard.dangerouslyPasteHTML(article.body_html);
+          }
+        }
+      }
+
+      function renderTable(rows) {
+        if (!tbody) return;
+        if (!rows.length) {
+          tbody.innerHTML = '<tr><td colspan="6" class="empty-state">هنوز مقاله‌ای ثبت نشده است.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = rows.map(function (row) {
+          var statusBadge = row.status === 'published'
+            ? '<span class="badge-active">منتشر شده</span>'
+            : '<span class="badge-draft">پیش‌نویس</span>';
+          var publishLabel = row.status === 'published' ? 'پیش‌نویس' : 'انتشار';
+          var publishStatus = row.status === 'published' ? 'draft' : 'published';
+          return (
+            '<tr data-id="' + escapeHtml(row.id) + '">' +
+              '<td>' + escapeHtml(row.title) + '</td>' +
+              '<td>' + escapeHtml(row.category || '—') + '</td>' +
+              '<td>' + statusBadge + '</td>' +
+              '<td class="col-views">' + escapeHtml(row.views || 0) + '</td>' +
+              '<td class="col-time">' + escapeHtml(formatTimestamp(row.updated_at)) + '</td>' +
+              '<td><div class="btn-row">' +
+                '<button type="button" class="btn-mini edit" data-action="edit-article">ویرایش</button>' +
+                '<button type="button" class="btn-mini edit" data-action="toggle-article" data-status="' + publishStatus + '">' + publishLabel + '</button>' +
+                '<button type="button" class="btn-mini del" data-action="del-article">حذف</button>' +
+              '</div></td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+
+      function loadArticlesAdmin() {
+        if (!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="6" class="loading-state">در حال بارگذاری…</td></tr>';
+        adminFetch('/api/admin/articles')
+          .then(function (rows) {
+            renderTable(Array.isArray(rows) ? rows : []);
+          })
+          .catch(function (err) {
+            var text = err && err.message === 'auth_expired' ? AUTH_MSG : (err.message || 'خطا');
+            tbody.innerHTML = '<tr><td colspan="6" class="error-state">' + escapeHtml(text) + '</td></tr>';
+          });
+      }
+      window.__loadArticlesAdmin = loadArticlesAdmin;
+
+      if (summaryEl) {
+        summaryEl.addEventListener('input', updateSummaryCounter);
+        updateSummaryCounter();
+      }
+
+      if (coverFile) {
+        coverFile.addEventListener('change', function () {
+          var file = coverFile.files && coverFile.files[0];
+          if (!file) return;
+          uploadImageFile(file).then(function (url) {
+            setCoverPreview(url);
+          }).catch(handleError);
+        });
+      }
+
+      var newBtn = document.getElementById('articles-new-btn');
+      if (newBtn) {
+        newBtn.addEventListener('click', function () {
+          resetForm();
+          showEditor(false);
+        });
+      }
+
+      var cancelBtn = document.getElementById('article-cancel-btn');
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', function () {
+          hideEditor();
+          resetForm();
+        });
+      }
+
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          clearMsg();
+          initQuill();
+          var title = document.getElementById('article-title').value.trim();
+          if (!title) {
+            showMsg('عنوان الزامی است.', false);
+            return;
+          }
+          var bodyHtml = quill ? quill.root.innerHTML : '';
+          if (!bodyHtml || bodyHtml === '<p><br></p>') {
+            showMsg('متن مقاله الزامی است.', false);
+            return;
+          }
+          var statusRadio = form.querySelector('input[name="article-status"]:checked');
+          var payload = {
+            id: document.getElementById('article-id').value.trim() || undefined,
+            title: title,
+            slug: document.getElementById('article-slug').value.trim() || undefined,
+            summary: summaryEl.value.trim(),
+            category: document.getElementById('article-category').value,
+            hub_url: document.getElementById('article-hub-url').value.trim() || undefined,
+            hub_keyword: document.getElementById('article-hub-keyword').value.trim() || undefined,
+            cover_image: coverHidden.value.trim() || undefined,
+            body_html: bodyHtml,
+            status: statusRadio ? statusRadio.value : 'draft',
+          };
+          adminFetch('/api/admin/articles', { method: 'POST', body: payload })
+            .then(function () {
+              showMsg('ذخیره شد.', true);
+              loadArticlesAdmin();
+              setTimeout(function () {
+                hideEditor();
+                resetForm();
+              }, 600);
+            })
+            .catch(handleError);
+        });
+      }
+
+      if (tbody) {
+        tbody.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-action]');
+          if (!btn) return;
+          var tr = btn.closest('tr');
+          var id = tr && tr.getAttribute('data-id');
+          if (!id) return;
+
+          if (btn.getAttribute('data-action') === 'del-article') {
+            if (!confirm('این مقاله حذف شود؟')) return;
+            adminFetch('/api/admin/articles?id=' + encodeURIComponent(id), { method: 'DELETE' })
+              .then(function () {
+                showMsg('حذف شد.', true);
+                loadArticlesAdmin();
+              })
+              .catch(handleError);
+            return;
+          }
+
+          if (btn.getAttribute('data-action') === 'toggle-article') {
+            var newStatus = btn.getAttribute('data-status');
+            adminFetch('/api/admin/articles?id=' + encodeURIComponent(id))
+              .then(function (article) {
+                return adminFetch('/api/admin/articles', {
+                  method: 'POST',
+                  body: {
+                    id: article.id,
+                    title: article.title,
+                    body_html: article.body_html,
+                    summary: article.summary,
+                    category: article.category,
+                    cover_image: article.cover_image,
+                    slug: article.slug,
+                    author: article.author,
+                    hub_url: article.hub_url,
+                    hub_keyword: article.hub_keyword,
+                    status: newStatus,
+                  },
+                });
+              })
+              .then(function () {
+                loadArticlesAdmin();
+              })
+              .catch(handleError);
+            return;
+          }
+
+          if (btn.getAttribute('data-action') === 'edit-article') {
+            adminFetch('/api/admin/articles?id=' + encodeURIComponent(id))
+              .then(function (article) {
+                resetForm();
+                fillForm(article);
+                showEditor(true);
+              })
+              .catch(handleError);
+          }
+        });
+      }
+    })();
+
+    (function initReportsAdmin() {
+      'use strict';
+
+      var AUTH_MSG = 'نشست شما منقضی شده، صفحه را رفرش کنید.';
+      var featuredTbody = document.getElementById('reports-featured-tbody');
+      var adsTbody = document.getElementById('reports-ads-tbody');
+      var msgEl = document.getElementById('reports-msg');
+
+      function escapeHtml(str) {
+        if (str == null) return '';
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      function toPersianNum(n, opts) {
+        opts = opts || {};
+        var num = Number(n);
+        if (!Number.isFinite(num)) return '—';
+        try {
+          var formatted = new Intl.NumberFormat('fa-IR', {
+            maximumFractionDigits: opts.decimals != null ? opts.decimals : 0,
+            minimumFractionDigits: opts.decimals != null ? opts.decimals : 0,
+          }).format(num);
+          return formatted;
+        } catch (e) {
+          return String(n).replace(/[0-9]/g, function (d) {
+            return String.fromCharCode(0x06f0 + Number(d));
+          });
+        }
+      }
+
+      function formatPersianDate(iso) {
+        if (!iso) return '—';
+        var date = new Date(iso);
+        if (isNaN(date.getTime())) return '—';
+        try {
+          return new Intl.DateTimeFormat('fa-IR', {
+            year: 'numeric', month: 'short', day: 'numeric',
+          }).format(date);
+        } catch (e) {
+          return date.toLocaleDateString('fa-IR');
+        }
+      }
+
+      function formatCtr(impressions, ctr) {
+        if (!impressions) return '—';
+        return toPersianNum(ctr * 100, { decimals: 1 }) + '٪';
+      }
+
+      function adminFetch(url) {
+        return fetch(url, { credentials: 'same-origin' }).then(function (res) {
+          if (res.status === 401) throw new Error('auth_expired');
+          if (res.status === 404) {
+            var err404 = new Error('reports_not_found');
+            err404.status = 404;
+            throw err404;
+          }
+          if (!res.ok) {
+            return res.json().catch(function () { return {}; }).then(function (data) {
+              throw new Error(data.error || ('خطا ' + res.status));
+            });
+          }
+          return res.json();
+        });
+      }
+
+      function isExpiringSoonClient(endsAt) {
+        if (!endsAt) return false;
+        var end = Date.parse(endsAt);
+        if (isNaN(end)) return false;
+        var now = Date.now();
+        return end > now && end <= now + 7 * 24 * 60 * 60 * 1000;
+      }
+
+      function daysActiveClient(row) {
+        var startRaw = row.starts_at || row.created_at;
+        if (!startRaw) return 1;
+        var start = Date.parse(startRaw);
+        if (isNaN(start)) return 1;
+        var end = Date.now();
+        if (row.ends_at) {
+          var ends = Date.parse(row.ends_at);
+          if (!isNaN(ends) && ends < end) end = ends;
+        }
+        return Math.max(1, Math.ceil((end - start) / (24 * 60 * 60 * 1000)));
+      }
+
+      function buildSummaryFromLists(featuredRows, adRows, leadsRows) {
+        var featuredActive = 0;
+        var featuredInactive = 0;
+        var featuredClicks = 0;
+        featuredRows.forEach(function (row) {
+          if (row.active) featuredActive += 1;
+          else featuredInactive += 1;
+          featuredClicks += row.clicks || 0;
+        });
+        var adsActive = 0;
+        var adsInactive = 0;
+        var adImpressions = 0;
+        var adClicks = 0;
+        adRows.forEach(function (row) {
+          if (row.active) adsActive += 1;
+          else adsInactive += 1;
+          adImpressions += row.impressions || 0;
+          adClicks += row.clicks || 0;
+        });
+        var cutoff = Date.now() - 30 * 24 * 60 * 60 * 1000;
+        var leads30 = (leadsRows || []).filter(function (lead) {
+          return lead.timestamp && Date.parse(lead.timestamp) >= cutoff;
+        }).length;
+        return {
+          featured: { totalClicks: featuredClicks },
+          ads: {
+            totalImpressions: adImpressions,
+            totalClicks: adClicks,
+            overallCtr: adImpressions > 0 ? adClicks / adImpressions : 0,
+          },
+          leads: { last30Days: leads30 },
+        };
+      }
+
+      function enrichFeaturedRows(rows) {
+        return rows.slice().sort(function (a, b) {
+          return (b.clicks || 0) - (a.clicks || 0);
+        }).map(function (row) {
+          var daysActive = daysActiveClient(row);
+          var clicks = row.clicks || 0;
+          return Object.assign({}, row, {
+            daysActive: daysActive,
+            clicksPerDay: clicks / daysActive,
+            expiringSoon: isExpiringSoonClient(row.ends_at),
+          });
+        });
+      }
+
+      function enrichAdRows(rows) {
+        return rows.slice().sort(function (a, b) {
+          return (b.clicks || 0) - (a.clicks || 0);
+        }).map(function (row) {
+          var impressions = row.impressions || 0;
+          var clicks = row.clicks || 0;
+          return Object.assign({}, row, {
+            ctr: impressions > 0 ? clicks / impressions : 0,
+            expiringSoon: isExpiringSoonClient(row.ends_at),
+          });
+        });
+      }
+
+      function loadReportsFallback() {
+        function fetchAdmin(url) {
+          return fetch(url, { credentials: 'same-origin' }).then(function (res) {
+            if (res.status === 401) throw new Error('auth_expired');
+            if (!res.ok) {
+              return res.json().catch(function () { return {}; }).then(function (data) {
+                throw new Error(data.error || ('خطا ' + res.status));
+              });
+            }
+            return res.json();
+          });
+        }
+        return Promise.all([
+          fetchAdmin('/api/admin/featured'),
+          fetchAdmin('/api/admin/ads'),
+          fetchAdmin('/api/leads'),
+        ]).then(function (results) {
+          var featuredRows = Array.isArray(results[0]) ? results[0] : [];
+          var adRows = Array.isArray(results[1]) ? results[1] : [];
+          var leadsRows = Array.isArray(results[2]) ? results[2] : [];
+          return [
+            buildSummaryFromLists(featuredRows, adRows, leadsRows),
+            enrichFeaturedRows(featuredRows),
+            enrichAdRows(adRows),
+          ];
+        });
+      }
+
+      function showMsg(text, ok) {
+        if (!msgEl) return;
+        msgEl.className = 'monetize-msg ' + (ok ? 'ok' : 'err');
+        msgEl.textContent = text;
+      }
+
+      function clearMsg() {
+        if (!msgEl) return;
+        msgEl.className = 'monetize-msg';
+        msgEl.textContent = '';
+      }
+
+      function handleError(err) {
+        var text = err && err.message === 'auth_expired'
+          ? AUTH_MSG
+          : ((err && err.message) || 'خطا در بارگذاری گزارش');
+        showMsg(text, false);
+      }
+
+      function activeBadge(active) {
+        return active
+          ? '<span class="badge-active">فعال</span>'
+          : '<span class="badge-inactive">غیرفعال</span>';
+      }
+
+      function statusCell(expiringSoon) {
+        if (expiringSoon) {
+          return '<span class="chip-expiring">در حال انقضا</span>';
+        }
+        return '—';
+      }
+
+      function buildFeaturedReportText(row) {
+        return 'گزارش عملکرد ' + (row.name || '') +
+          ' — تعداد کلیک: ' + Math.round(row.clicks || 0) +
+          ' — میانگین روزانه: ' + (row.clicksPerDay || 0).toFixed(2) +
+          ' — تاریخ پایان: ' + formatPersianDate(row.ends_at);
+      }
+
+      function renderSummary(data) {
+        var featuredClicks = document.getElementById('report-featured-clicks');
+        var adImpressions = document.getElementById('report-ad-impressions');
+        var adClicks = document.getElementById('report-ad-clicks');
+        var overallCtr = document.getElementById('report-overall-ctr');
+        var leads30 = document.getElementById('report-leads-30');
+        if (featuredClicks) featuredClicks.textContent = toPersianNum(data.featured.totalClicks);
+        if (adImpressions) adImpressions.textContent = toPersianNum(data.ads.totalImpressions);
+        if (adClicks) adClicks.textContent = toPersianNum(data.ads.totalClicks);
+        if (overallCtr) {
+          overallCtr.textContent = data.ads.totalImpressions
+            ? toPersianNum(data.ads.overallCtr * 100, { decimals: 1 }) + '٪'
+            : '—';
+        }
+        if (leads30) leads30.textContent = toPersianNum(data.leads.last30Days);
+      }
+
+      function renderFeaturedTable(rows) {
+        if (!featuredTbody) return;
+        if (!rows.length) {
+          featuredTbody.innerHTML = '<tr><td colspan="9" class="empty-state">داده‌ای برای نمایش نیست</td></tr>';
+          return;
+        }
+        featuredTbody.innerHTML = rows.map(function (row) {
+          var expClass = row.expiringSoon ? ' class="report-row-expiring"' : '';
+          return (
+            '<tr' + expClass + ' data-id="' + escapeHtml(row.id) + '">' +
+              '<td>' + escapeHtml(toPersianNum(row.rank)) + '</td>' +
+              '<td>' + escapeHtml(row.name) + '</td>' +
+              '<td>' + escapeHtml(row.badge || '—') + '</td>' +
+              '<td>' + activeBadge(row.active) + '</td>' +
+              '<td>' + escapeHtml(toPersianNum(row.clicks || 0)) + '</td>' +
+              '<td>' + escapeHtml(toPersianNum(row.clicksPerDay || 0, { decimals: 2 })) + '</td>' +
+              '<td class="col-time">' + escapeHtml(formatPersianDate(row.ends_at)) + '</td>' +
+              '<td>' + statusCell(row.expiringSoon) + '</td>' +
+              '<td><button type="button" class="btn-copy-report" data-action="copy-featured-report">کپی گزارش</button></td>' +
+            '</tr>'
+          );
+        }).join('');
+        window.__reportsFeaturedRows = rows;
+      }
+
+      function renderAdsTable(rows) {
+        if (!adsTbody) return;
+        if (!rows.length) {
+          adsTbody.innerHTML = '<tr><td colspan="9" class="empty-state">داده‌ای برای نمایش نیست</td></tr>';
+          return;
+        }
+        adsTbody.innerHTML = rows.map(function (row) {
+          var expClass = row.expiringSoon ? ' class="report-row-expiring"' : '';
+          return (
+            '<tr' + expClass + '>' +
+              '<td>' + escapeHtml(row.slot || '—') + '</td>' +
+              '<td>' + escapeHtml(row.title || '—') + '</td>' +
+              '<td>' + escapeHtml(toPersianNum(row.weight || 1)) + '</td>' +
+              '<td>' + activeBadge(row.active) + '</td>' +
+              '<td>' + escapeHtml(toPersianNum(row.impressions || 0)) + '</td>' +
+              '<td>' + escapeHtml(toPersianNum(row.clicks || 0)) + '</td>' +
+              '<td>' + escapeHtml(formatCtr(row.impressions, row.ctr)) + '</td>' +
+              '<td class="col-time">' + escapeHtml(formatPersianDate(row.ends_at)) + '</td>' +
+              '<td>' + statusCell(row.expiringSoon) + '</td>' +
+            '</tr>'
+          );
+        }).join('');
+      }
+
+      function loadReportsAdmin() {
+        clearMsg();
+        if (featuredTbody) {
+          featuredTbody.innerHTML = '<tr><td colspan="9" class="loading-state">در حال بارگذاری…</td></tr>';
+        }
+        if (adsTbody) {
+          adsTbody.innerHTML = '<tr><td colspan="9" class="loading-state">در حال بارگذاری…</td></tr>';
+        }
+        Promise.all([
+          adminFetch('/api/admin/reports/summary'),
+          adminFetch('/api/admin/reports/featured'),
+          adminFetch('/api/admin/reports/ads'),
+        ]).then(function (results) {
+          renderSummary(results[0]);
+          renderFeaturedTable(Array.isArray(results[1]) ? results[1] : []);
+          renderAdsTable(Array.isArray(results[2]) ? results[2] : []);
+        }).catch(function (err) {
+          if (err && err.message === 'reports_not_found') {
+            return loadReportsFallback().then(function (results) {
+              renderSummary(results[0]);
+              renderFeaturedTable(results[1]);
+              renderAdsTable(results[2]);
+              showMsg('گزارش از API موجود ساخته شد. برای API اختصاصی گزارش‌ها سرور را به‌روز کنید: docker compose build backend && docker compose up -d', true);
+            });
+          }
+          handleError(err);
+          if (featuredTbody) {
+            featuredTbody.innerHTML = '<tr><td colspan="9" class="error-state">' +
+              escapeHtml(err.message === 'auth_expired' ? AUTH_MSG : err.message) + '</td></tr>';
+          }
+          if (adsTbody) {
+            adsTbody.innerHTML = '<tr><td colspan="9" class="error-state">' +
+              escapeHtml(err.message === 'auth_expired' ? AUTH_MSG : err.message) + '</td></tr>';
+          }
+        }).catch(function (err) {
+          handleError(err);
+        });
+      }
+      window.__loadReportsAdmin = loadReportsAdmin;
+
+      if (featuredTbody) {
+        featuredTbody.addEventListener('click', function (e) {
+          var btn = e.target.closest('[data-action="copy-featured-report"]');
+          if (!btn) return;
+          var tr = btn.closest('tr');
+          var id = tr && tr.getAttribute('data-id');
+          var rows = window.__reportsFeaturedRows || [];
+          var row = rows.find(function (r) { return String(r.id) === String(id); });
+          if (!row) return;
+          var text = buildFeaturedReportText(row);
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(function () {
+              showMsg('گزارش در کلیپ‌بورد کپی شد.', true);
+            }).catch(function () {
+              showMsg('کپی ناموفق بود.', false);
+            });
+          } else {
+            showMsg('مرورگر از کپی پشتیبانی نمی‌کند.', false);
+          }
+        });
+      }
+    })();
+    });
+  </script>
+</body>
+</html>

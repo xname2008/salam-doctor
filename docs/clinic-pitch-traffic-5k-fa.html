@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>سلام دکتر | فرض ترافیک ۵٬۰۰۰ بازدید ماهانه</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            navy: '#041f45',
+            'navy-soft': '#0e3571',
+            trust: '#1294e0',
+            gold: '#c9a227',
+            ink: '#13233c',
+            muted: '#5f6f86',
+            line: '#dbe4ee'
+          },
+          fontFamily: { vazir: ['Vazirmatn', 'Tahoma', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    html, body { margin: 0; padding: 0; background: #e8eef5; font-family: 'Vazirmatn', Tahoma, sans-serif; }
+    @page { size: A4; margin: 0; }
+    .page {
+      width: 210mm; height: 297mm; margin: 24px auto; background: #fff;
+      box-shadow: 0 20px 50px rgba(4, 31, 69, 0.14); overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    @media screen { body { padding: 0 16px 40px; } }
+    @media print {
+      html, body { background: #fff !important; width: 210mm; height: 297mm; margin: 0 !important; padding: 0 !important; }
+      .page { margin: 0 !important; box-shadow: none !important; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print max-w-[210mm] mx-auto pt-6 pb-2 text-center text-sm text-muted">
+    برای خروجی PDF: Print → Save as PDF · Paper size: A4 · Margins: None
+  </div>
+
+  <article class="page" aria-label="برگه اعداد ترافیک سلام دکتر">
+    <header class="text-white px-8 pt-7 pb-5" style="background: linear-gradient(165deg, #041f45 0%, #0a2d5c 48%, #0e4578 100%);">
+      <p class="text-[0.7rem] font-semibold text-gold mb-2">پیوست ارائه به کلینیک · فرض برنامه‌ریزی</p>
+      <h1 class="text-[1.45rem] font-extrabold leading-snug mb-2">ترافیک پلتفرم: ۵٬۰۰۰ بازدید در ماه</h1>
+      <p class="text-[0.78rem] leading-[1.85] text-blue-100/90 max-w-[36rem]">
+        نسخه قبلی این برگه روی فرض ۱٬۰۰۰ بازدید ماهانه تنظیم شده بود.
+        اعداد زیر همان مدل را با ضریب ۵ به‌روز می‌کند — بدون قیمت‌گذاری.
+      </p>
+    </header>
+
+    <div class="flex-1 px-8 pt-5 pb-4 flex flex-col gap-4">
+      <section>
+        <h2 class="text-[0.95rem] font-extrabold text-navy mb-2">فرض پایه</h2>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="rounded-xl border border-line bg-slate-50 p-3.5">
+            <p class="text-[0.62rem] font-bold text-muted mb-1">فرض قبلی</p>
+            <p class="text-[1.35rem] font-extrabold text-ink leading-none">۱٬۰۰۰</p>
+            <p class="text-[0.7rem] text-muted mt-1">بازدید ماهانه کل سایت</p>
+          </div>
+          <div class="rounded-xl p-3.5 text-white" style="background: linear-gradient(160deg, #041f45 0%, #0e4578 100%);">
+            <p class="text-[0.62rem] font-bold text-blue-100/80 mb-1">فرض فعلی</p>
+            <p class="text-[1.35rem] font-extrabold leading-none">۵٬۰۰۰</p>
+            <p class="text-[0.7rem] text-blue-50 mt-1">بازدید ماهانه کل سایت</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-[0.95rem] font-extrabold text-navy mb-2">تخمین اثر برای یک کلینیک تاپ ۱۰</h2>
+        <p class="text-[0.72rem] text-muted leading-[1.75] mb-2">
+          مدل محافظه‌کارانه: حدود ۷۰٪ بازدیدکنندگان لیست تاپ ۱۰ را می‌بینند؛
+          میانگین کلیک روی یک جایگاه تاپ ۱۰ حدود ۶٪؛ نرخ تماس از پروفایل حدود ۱۵٪.
+        </p>
+        <table class="w-full text-[0.74rem] border-collapse">
+          <thead>
+            <tr class="bg-sky-50 text-navy">
+              <th class="border border-line p-2 text-right font-extrabold">شاخص ماهانه</th>
+              <th class="border border-line p-2 text-center font-extrabold">فرض ۱٬۰۰۰</th>
+              <th class="border border-line p-2 text-center font-extrabold">فرض ۵٬۰۰۰</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-line p-2">بازدید کل پلتفرم</td>
+              <td class="border border-line p-2 text-center">۱٬۰۰۰</td>
+              <td class="border border-line p-2 text-center font-extrabold text-navy">۵٬۰۰۰</td>
+            </tr>
+            <tr class="bg-slate-50">
+              <td class="border border-line p-2">بازدیدکنندگانی که تاپ ۱۰ را می‌بینند</td>
+              <td class="border border-line p-2 text-center">≈ ۷۰۰</td>
+              <td class="border border-line p-2 text-center font-extrabold text-navy">≈ ۳٬۵۰۰</td>
+            </tr>
+            <tr>
+              <td class="border border-line p-2">بازدید پروفایل (میانگین تاپ ۱۰)</td>
+              <td class="border border-line p-2 text-center">≈ ۴۰–۵۰</td>
+              <td class="border border-line p-2 text-center font-extrabold text-navy">≈ ۱۵۰–۳۰۰</td>
+            </tr>
+            <tr class="bg-slate-50">
+              <td class="border border-line p-2">تماس / واتساپ تخمینی</td>
+              <td class="border border-line p-2 text-center">≈ ۶–۱۰</td>
+              <td class="border border-line p-2 text-center font-extrabold text-navy">≈ ۱۵–۴۵</td>
+            </tr>
+            <tr>
+              <td class="border border-line p-2">رتبه ۱ (سهم بالاتر از میانگین)</td>
+              <td class="border border-line p-2 text-center">≈ ۱۲–۲۰ لید</td>
+              <td class="border border-line p-2 text-center font-extrabold text-navy">≈ ۴۰–۸۰ لید</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="rounded-xl border border-line p-3.5" style="background: linear-gradient(135deg, rgba(18,148,224,.06), rgba(13,148,136,.05));">
+        <h2 class="text-[0.9rem] font-extrabold text-navy mb-1.5">نکته ارائه</h2>
+        <p class="text-[0.74rem] leading-[1.8] text-muted m-0">
+          این‌ها فرض برنامه‌ریزی برای کمپین جذب کلینیک هستند، نه آمار زنده گوگل آنالیتیکس.
+          بعد از رسیدن ترافیک واقعی، گزارش کلیک و تماس جایگزین این تخمین می‌شود.
+          قیمت و پلن در این برگه نیامده است.
+        </p>
+      </section>
+    </div>
+
+    <footer class="mt-auto px-8 py-4 text-white text-[0.72rem] flex items-center justify-between" style="background: linear-gradient(120deg, #041f45 0%, #0e3571 55%, #1294e0 140%);">
+      <span>سلام دکتر · salam-doctor.com</span>
+      <span dir="ltr">+98 900 700 0462</span>
+    </footer>
+  </article>
+</body>
+</html>

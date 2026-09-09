@@ -1,0 +1,21 @@
+{
+  "name": "salam-doctor-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Docs/helpers for Salam-Doctor DB — Prisma lives in ../prisma",
+  "scripts": {
+    "prisma:generate": "prisma generate --schema=../prisma/schema.prisma",
+    "prisma:migrate": "prisma migrate dev --schema=../prisma/schema.prisma",
+    "prisma:deploy": "prisma migrate deploy --schema=../prisma/schema.prisma",
+    "prisma:reset": "prisma migrate reset --force --schema=../prisma/schema.prisma",
+    "prisma:studio": "prisma studio --schema=../prisma/schema.prisma",
+    "db:seed": "node ../prisma/seed.js",
+    "db:sql": "psql \"$DATABASE_URL\" -f sql/001_init_schema.sql && psql \"$DATABASE_URL\" -f sql/002_seed_shiraz.sql"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.5.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.5.0"
+  }
+}

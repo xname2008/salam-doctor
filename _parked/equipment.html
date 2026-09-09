@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <script>
+    (function () {
+      if (sessionStorage.getItem('splashShown') === 'true') {
+        document.documentElement.classList.add('splash-seen');
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var splash = document.getElementById('splash-screen');
+        if (!splash) return;
+
+        if (sessionStorage.getItem('splashShown') === 'true') {
+          splash.classList.add('is-skipped');
+          splash.remove();
+          return;
+        }
+
+        setTimeout(function () {
+          splash.classList.add('is-hiding');
+          setTimeout(function () {
+            splash.remove();
+            sessionStorage.setItem('splashShown', 'true');
+          }, 800);
+        }, 2800);
+      });
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="images/logo-heart.svg?v=5">
+  <link rel="apple-touch-icon" href="images/logo-heart.svg?v=5">
+  <meta name="theme-color" content="#1294e0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="اجاره تجهیزات پزشکی و درمانی در شیراز با تحویل سریع">
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://salam-doctor.com/equipment.html">
+  <meta property="og:title"       content="اجاره تجهیزات پزشکی شیراز | سلام دکتر">
+  <meta property="og:description" content="اجاره تجهیزات پزشکی و درمانی در شیراز با تحویل سریع">
+  <meta property="og:image"       content="https://salam-doctor.ir/images/hero-collage.png">
+  <meta property="og:locale"      content="fa_IR">
+  <meta property="og:site_name"   content="سلام دکتر">
+  <link rel="canonical" href="https://salam-doctor.com/equipment.html">
+  <!-- Twitter/X Card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:title"       content="اجاره تجهیزات پزشکی شیراز | سلام دکتر">
+  <meta name="twitter:description" content="اجاره تجهیزات پزشکی و درمانی در شیراز با تحویل سریع">
+  <meta name="twitter:image"       content="https://salam-doctor.ir/images/hero-collage.png">
+  <title>اجاره تجهیزات پزشکی شیراز | سلام دکتر</title>
+  <link rel="preload" href="assets/fonts/IRANSansXFaNum-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
+  <link rel="stylesheet" href="assets/css/tailwind.min.css">
+  <link rel="stylesheet" href="assets/css/shared.css?v=20260720a">
+  <link rel="stylesheet" href="assets/css/custom.css">
+  <style>
+    /* Shared base/topbar/buttons/footer/chat/nav styles live in assets/css/shared.css */
+    .hero{background:var(--mint)}
+    .hero-grid{
+      display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;
+      min-height:610px;padding:36px 0 42px
+    }
+    .hero h1{font-size:clamp(2rem,4.3vw,2.9rem);line-height:1.45;margin-bottom:10px;font-weight:800}
+    .hero h1 span{color:var(--blue)}
+    .hero p{color:var(--muted);font-size:1.03rem;line-height:1.9;max-width:560px}
+    .hero-actions{display:flex;gap:10px;margin-top:18px}
+    .hero-media{
+      background:#fff;border:1px solid #d6e4ea;border-radius:24px;
+      overflow:hidden;box-shadow:0 18px 40px rgba(19,35,60,.16)
+    }
+    .hero-media img{width:100%;display:block}
+
+    .section{padding:68px 0}
+    /* Keep doctors slider above following sections (Swiper transforms create stacking contexts) */
+    #doctors-clinics{position:relative;z-index:2;isolation:isolate}
+    .title{text-align:center;font-size:clamp(1.75rem,3.2vw,2.45rem);line-height:1.5;font-weight:800}
+    .subtitle{text-align:center;color:var(--muted);margin-top:8px;font-size:.98rem}
+
+    .icon-services{
+      margin-top:24px;
+      display:grid;grid-template-columns:repeat(6,1fr);gap:12px
+    }
+    .icon-item{
+      background:#fff;border:1px solid var(--line);border-radius:14px;
+      min-height:122px;padding:14px;text-align:center;display:flex;flex-direction:column;justify-content:center;gap:8px
+    }
+    .icon{
+      width:44px;height:44px;border-radius:12px;margin:0 auto;
+      display:grid;place-items:center;background:#e8f4fd;color:var(--blue);font-weight:700
+    }
+    .icon-item b{font-size:.9rem;line-height:1.8}
+
+    .equip-section{background:var(--mint)}
+    .equip-grid{
+      margin-top:22px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px
+    }
+    .equip-card{
+      background:#fff;border:1px solid #d6e7e4;border-radius:12px;padding:14px;
+      display:flex;justify-content:space-between;align-items:center;gap:10px
+    }
+    .equip-card .equip-icon{
+      width:36px;height:36px;border-radius:10px;background:#e8f4fd;color:var(--blue);
+      display:grid;place-items:center;flex-shrink:0
+    }
+    .equip-card .equip-icon svg{display:block}
+
+    .w-full{width:100%}
+    .min-w-0{min-width:0}
+    .overflow-hidden{overflow:hidden}
+
+    .doctor-slider{margin-top:24px;position:relative;padding:0 48px 34px;overflow:hidden}
+    .swiper{overflow:hidden;width:100%;min-width:0}
+    .swiper-wrapper{display:flex;box-sizing:border-box}
+    .swiper-slide{flex-shrink:0}
+    .swiper-button-next::after,
+    .swiper-button-prev::after,
+    .swiper-button-next:after,
+    .swiper-button-prev:after{
+      font-family:swiper-icons !important
+    }
+    .doctor-slider .swiper-wrapper{align-items:stretch}
+    .doctor-slider .swiper-slide{height:auto}
+    .doctor-card{
+      background:#0e3571;border-radius:16px;overflow:hidden;color:#fff;text-align:center
+    }
+    .doctor-card img{width:100%;height:200px;object-fit:cover;display:block;background:#dbe7f3}
+    .doctor-body{padding:12px 10px}
+    .doctor-body b{
+      display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+      overflow:hidden;min-height:3.2em;line-height:1.6;font-size:1rem
+    }
+    .doctor-body span{
+      display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;
+      overflow:hidden;min-height:2.6em;line-height:1.3;font-size:.82rem;color:#bfdbff
+    }
+    .doctor-body .btn-main{
+      margin-top:10px;width:100%;font-size:.85rem;padding:9px 12px
+    }
+    .doctor-slider .swiper-button-next,
+    .doctor-slider .swiper-button-prev{
+      width:36px;height:36px;border-radius:999px;background:#fff;border:1px solid #b8d9ef;
+      color:var(--blue);box-shadow:0 6px 16px rgba(18,148,224,.18);
+      position:absolute;top:50%;transform:translateY(-50%);z-index:12;cursor:pointer
+    }
+    .doctor-slider .swiper-button-next:after,
+    .doctor-slider .swiper-button-prev:after{
+      font-family:swiper-icons !important;
+      font-size:16px;font-weight:800;line-height:1
+    }
+    .doctor-slider .swiper-button-next{right:6px;left:auto}
+    .doctor-slider .swiper-button-prev{left:6px;right:auto}
+    .doctor-slider .swiper-button-disabled{opacity:.35;pointer-events:none}
+    .doctor-slider .swiper-pagination,
+    .testimonial-swiper .swiper-pagination{
+      position:absolute;left:0;right:0;bottom:0;z-index:10;
+      display:flex;justify-content:center;align-items:center;gap:6px;
+      user-select:none;-webkit-user-select:none;cursor:default;
+      pointer-events:none
+    }
+    .doctor-slider .swiper-pagination-bullet,
+    .testimonial-swiper .swiper-pagination-bullet{
+      pointer-events:auto;cursor:pointer;user-select:none;-webkit-user-select:none;
+      outline:none
+    }
+    .doctor-slider .swiper-pagination-bullet{
+      width:9px;height:9px;background:#b6d9ef;opacity:1
+    }
+    .doctor-slider .swiper-pagination-bullet-active{background:var(--blue)}
+
+    .form-video{
+      margin-top:32px;
+      display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start
+    }
+    .panel{
+      background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px
+    }
+    .contact-form{
+      margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px
+    }
+    .contact-form input,.contact-form textarea,.contact-form select{
+      width:100%;border:1px solid var(--line);border-radius:10px;padding:10px;font-family:inherit;font-size:.93rem
+    }
+    .contact-form select{background:#fff;cursor:pointer}
+    .contact-form textarea{grid-column:1/-1;min-height:92px;resize:vertical}
+    .contact-form select,.contact-form button[type="submit"],#form-message{grid-column:1/-1}
+    .video-box{
+      border-radius:12px;overflow:hidden;border:1px solid var(--line);
+      background:#0f172a url('images/hero-collage.png') center/cover no-repeat;
+      aspect-ratio:16/9;position:relative;
+    }
+    .video-box video{
+      width:100%;height:100%;display:block;object-fit:cover;
+      background:#0f172a;
+    }
+    .video-box-fallback{
+      position:absolute;inset:0;display:none;place-items:center;
+      color:#fff;font-weight:700;text-align:center;padding:12px;
+      background:rgba(15,23,42,.88);
+    }
+    .video-box.video-error .video-box-fallback{display:grid}
+    .video-box.video-error video{display:none}
+
+    .testimonial-swiper{margin-top:24px;padding-bottom:30px;overflow:hidden;position:relative}
+    .testimonial-swiper .swiper-wrapper{align-items:stretch}
+    .testimonial-swiper .swiper-slide{height:auto}
+    .testimonial{
+      background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;text-align:center
+    }
+    .avatar{
+      width:62px;height:62px;border-radius:999px;background:#d9edfb;color:var(--blue);
+      display:grid;place-items:center;margin:0 auto 10px;font-weight:800
+    }
+    .stars{color:#f59e0b;font-size:.88rem;margin-bottom:6px}
+    .testimonial p{color:var(--muted);font-size:.9rem;line-height:1.9}
+    .testimonial-swiper .swiper-pagination-bullet{
+      width:9px;height:9px;background:#b6d9ef;opacity:1
+    }
+    .testimonial-swiper .swiper-pagination-bullet-active{background:var(--blue)}
+
+    .article-grid{
+      margin-top:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px
+    }
+    .article{
+      background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden
+    }
+    .article img{width:100%;height:190px;object-fit:cover;display:block}
+    .article-body{padding:12px}
+    .article-body b{display:block;line-height:1.6;min-height:54px}
+    .article-body a{color:var(--blue);font-weight:700;font-size:.88rem}
+
+    .cta-band{
+      margin-top:34px;background:var(--navy);color:#fff;border-radius:16px;padding:22px;
+      display:flex;justify-content:space-between;align-items:center;gap:10px
+    }
+
+    /* page-specific chat widget position (right side) */
+    .chat-toggle{right:16px;bottom:158px}
+    .chat-widget{right:16px;bottom:226px}
+
+    .splash-screen{
+      position:fixed;inset:0;z-index:10000;
+      display:grid;place-items:center;
+      background:radial-gradient(circle at 20% 20%, #143055 0%, #061126 45%, #040a18 100%);
+      opacity:1;overflow:hidden;
+    }
+    html.splash-seen #splash-screen,
+    .splash-screen.is-skipped{
+      display:none;
+    }
+    .splash-screen::before{
+      content:"";position:absolute;inset:-20%;
+      background:
+        radial-gradient(circle at 30% 35%, rgba(18,148,224,.35) 0, rgba(18,148,224,0) 36%),
+        radial-gradient(circle at 70% 60%, rgba(13,127,194,.28) 0, rgba(13,127,194,0) 32%);
+      filter:blur(6px);
+      animation:splashBgPulse 2.6s ease-in-out infinite alternate;
+      pointer-events:none;
+    }
+    .splash-screen.is-hiding{
+      pointer-events:none;
+      animation:splashScreenOut .48s cubic-bezier(.22,.8,.2,1) forwards;
+    }
+    .splash-screen.is-hiding .splash-logo{
+      animation:splashLogoOut .48s cubic-bezier(.22,.8,.2,1) forwards;
+    }
+    .splash-logo{
+      position:relative;z-index:1;
+      display:flex;flex-direction:column;align-items:center;gap:12px;
+      animation:splashLogoIn 1.05s cubic-bezier(.19,.8,.23,1) both;
+    }
+    .splash-logo img{
+      position:relative;
+      width:min(270px,70vw);height:min(270px,70vw);
+      object-fit:contain;display:block;
+      filter:contrast(1.03) saturate(1.05);
+      mix-blend-mode:multiply;
+      animation:heartBeat 0.7s ease-in-out 0.8s 3 both;
+    }
+    .splash-logo-fallback{
+      width:min(270px,70vw);height:min(270px,70vw);
+      position:relative;
+      background:linear-gradient(145deg,#1b8bd6,#0e3875);
+      color:#fff;font-size:64px;font-weight:800;
+      display:none;place-items:center;
+      border-radius:24px;
+      box-shadow:inset 0 0 0 2px rgba(255,255,255,.28);
+      animation:heartBeat 0.7s ease-in-out 0.8s 3 both;
+    }
+    .splash-title{
+      color:#f8fbff;font-size:1.1rem;font-weight:700;letter-spacing:.3px
+    }
+    @keyframes splashBgPulse{
+      0%{transform:scale(1) rotate(0deg)}
+      100%{transform:scale(1.06) rotate(2deg)}
+    }
+    @keyframes splashLogoIn{
+      0%{opacity:0;transform:scale(.72) translateY(24px);filter:blur(7px)}
+      60%{opacity:1;transform:scale(1.03) translateY(0);filter:blur(0)}
+      100%{opacity:1;transform:scale(1) translateY(0);filter:blur(0)}
+    }
+    @keyframes splashLogoFloat{
+      0%{transform:translateY(0)}
+      100%{transform:translateY(-6px)}
+    }
+    @keyframes heartBeat{
+      0%, 100%{transform:scale(1)}
+      10%{transform:scale(1.08)}
+      20%{transform:scale(.98)}
+      32%{transform:scale(1.11)}
+      42%{transform:scale(1)}
+    }
+    @keyframes splashLogoOut{
+      0%{opacity:1;transform:scale(1) translateY(0);filter:blur(0)}
+      100%{opacity:0;transform:scale(1.72) translateY(-8px);filter:blur(5px)}
+    }
+    @keyframes splashScreenOut{
+      0%{opacity:1}
+      100%{opacity:0}
+    }
+    @media (prefers-reduced-motion: reduce){
+      .splash-screen::before,.splash-logo,.splash-logo img,.splash-logo-fallback{animation:none}
+      .splash-screen.is-hiding,.splash-screen.is-hiding .splash-logo{animation:none}
+      .splash-screen{opacity:0;pointer-events:none}
+    }
+
+    @media(max-width:1100px){
+      .icon-services{grid-template-columns:repeat(3,1fr)}
+    }
+    @media(max-width:760px){
+      .hero-grid{grid-template-columns:1fr;min-height:auto;padding:26px 0 34px}
+      .hero h1{font-size:2rem}
+      .title{font-size:1.85rem}
+      .icon-services,.equip-grid,.article-grid,.form-video{grid-template-columns:1fr}
+      .contact-form{grid-template-columns:1fr}
+      .cta-band{flex-direction:column;align-items:stretch}
+      .chat-toggle{right:10px;bottom:152px}
+      .chat-widget{right:10px;left:10px;max-width:none;width:auto;bottom:220px}
+      .doctor-slider{padding:0 6px 30px}
+      .doctor-slider .swiper-button-next,
+      .doctor-slider .swiper-button-prev{display:none}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container topbar-row">
+      <a href="index.html" class="brand" aria-label="سلام دکتر — صفحه اصلی">
+        <span class="logo logo-heart-beat" aria-hidden="true">
+          <img src="images/logo-heart.svg" alt="لوگو سلام دکتر" width="40" height="40"
+               onerror="this.onerror=null;this.src='images/logo-heart.svg'">
+        </span>
+        <span class="brand-name">سلام دکتر</span>
+      </a>
+      <nav class="menu">
+        <div class="dropdown">
+          <a href="#">
+            پوست و مو
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="dropdown-content">
+            <a href="hair-transplant.html">کاشت مو و ابرو</a>
+            <a href="skin-rejuvenation.html">پوست و جوانسازی</a>
+            <a href="injection.html">تزریقات زیبایی</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#">
+            لیزر و جراحی
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="dropdown-content">
+            <a href="laser-hair.html">لیزر موهای زائد</a>
+            <a href="cosmetic-surgery.html">جراحی زیبایی</a>
+          </div>
+        </div>
+        <div class="dropdown">
+          <a href="#">
+            تناسب اندام
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+          <div class="dropdown-content">
+            <a href="slimming.html">لاغری و پیکرتراشی</a>
+          </div>
+        </div>
+        <a href="lasik.html">لیزیک</a>
+        <a href="femto-lasik.html">فمتولیزیک</a>
+        <a href="prk.html">PRK</a>
+
+<a href="articles.html">مقالات</a>
+        <a href="products.html">محصولات زیبایی</a>
+        <a href="about.html">درباره ما</a>
+      </nav>
+      <div class="top-cta">
+        <span class="phone">۰۹۰۰۷۰۰۰۴۶۲</span>
+        <a class="btn btn-main" href="tel:+989007000462">مشاوره</a>
+      </div>
+      <button id="nav-hamburger" class="nav-hamburger" aria-label="منو"
+              aria-expanded="false" aria-controls="mobile-drawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+  <div id="drawer-overlay" class="drawer-overlay" hidden></div>
+  <nav id="mobile-drawer" class="mobile-drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <span class="drawer-title"><span class="logo logo-heart-beat drawer-logo" aria-hidden="true"><img src="images/logo-heart.svg" alt="" width="30" height="30" onerror="this.onerror=null;this.src='images/logo-heart.svg'"></span>سلام دکتر</span>
+      <button id="drawer-close" class="drawer-close" aria-label="بستن">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <a href="index.html">خانه</a>
+      <a href="hair-transplant.html">کاشت مو و ابرو</a>
+      <a href="skin-rejuvenation.html">پوست و جوانسازی</a>
+      <a href="injection.html">تزریقات زیبایی</a>
+      <a href="laser-hair.html">لیزر موهای زائد</a>
+      <a href="cosmetic-surgery.html">جراحی زیبایی</a>
+      <a href="slimming.html">لاغری و پیکرتراشی</a>
+      <a href="lasik.html">لیزیک</a>
+      <a href="femto-lasik.html">فمتولیزیک</a>
+      <a href="prk.html">PRK</a>
+      <a href="products.html">محصولات زیبایی</a>
+
+<a href="articles.html">مقالات</a>
+      <a href="about.html">درباره ما</a>
+      <a href="tel:+989007000462" class="drawer-cta">
+        تماس: ۰۹۰۰۷۰۰۰۴۶۲
+      </a>
+    </div>
+  </nav>
+
+  <main style="background:#fff;min-height:60vh">
+    <div class="page-ad-rail">
+      <div class="ad-banner-wrap ad-banner-wrap--portrait" data-ad-slot="global" hidden>
+        <span class="ad-label">تبلیغات</span>
+        <a class="ad-banner-link" href="#" rel="nofollow sponsored" target="_blank">
+          <img class="ad-banner-img" src="" alt="تبلیغ" loading="lazy">
+        </a>
+      </div>
+    </div>
+    <div class="container" style="padding:22px 0 54px">
+      <nav aria-label="مسیر صفحه" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.9rem;color:var(--muted)">
+        <a href="index.html" style="transition:color .2s">خانه</a>
+        <span aria-hidden="true" style="color:#cbd5e1">&larr;</span>
+        <span style="font-weight:700;color:var(--text)">اجاره تجهیزات</span>
+      </nav>
+
+      <h1 style="margin-top:14px;font-size:clamp(1.75rem,3.2vw,2.45rem);line-height:1.5;font-weight:800;color:var(--text)">اجاره تجهیزات پزشکی</h1>
+      <p style="margin-top:10px;color:var(--muted);max-width:860px">
+        برای دریافت تجهیزات پزشکی و درمانی با تحویل سریع در شیراز، کافیست نوع تجهیز را انتخاب کنید تا تیم سلام دکتر برای هماهنگی و مشاوره با شما تماس بگیرد.
+      </p>
+
+      <section class="section equip-section" style="padding:22px 0 0">
+        <div class="equip-grid" style="margin-top:14px">
+          <article class="equip-card">
+            <b>اجاره دستگاه اکسیژن</b>
+            <div class="equip-icon">
+              <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="6" width="12" height="14" rx="2"/><path d="M12 2v4M10 4h4M9 10h6M9 14h6"/></svg>
+            </div>
+          </article>
+          <article class="equip-card">
+            <b>اجاره دستگاه ساکشن</b>
+            <div class="equip-icon">
+              <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 8V4h4v4M16 8V6h2M12 12h4v4h-4z"/></svg>
+            </div>
+          </article>
+          <article class="equip-card">
+            <b>اجاره تخت بیمارستانی</b>
+            <div class="equip-icon">
+              <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 5v14M21 11v8M3 14h18M6 14v-4a2 2 0 0 1 2-2h4l3 3h3a2 2 0 0 1 2 2v1"/></svg>
+            </div>
+          </article>
+          <article class="equip-card">
+            <b>اجاره ویلچر و واکر</b>
+            <div class="equip-icon">
+              <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="16" r="4"/><path d="M9 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z"/><path d="M9 7v5h6l3 5M12 12v3"/></svg>
+            </div>
+          </article>
+          <article class="equip-card">
+            <b>اجاره تشک مواج</b>
+            <div class="equip-icon">
+              <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 10c2 0 3 2 5 2s3-2 5-2 3 2 5 2 3-2 5-2M2 14c2 0 3 2 5 2s3-2 5-2 3 2 5 2 3-2 5-2"/></svg>
+            </div>
+          </article>
+          <article class="equip-card">
+            <b>اجاره دستگاه بای‌پپ</b>
+            <div class="equip-icon">
+              <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="14" height="12" rx="2"/><circle cx="7" cy="12" r="2"/><path d="M17 10h4v4h-4M12 10h2M12 14h2"/></svg>
+            </div>
+          </article>
+        </div>
+        <div style="margin-top:18px;display:flex;justify-content:center">
+          <a class="btn btn-main" href="index.html#doctors-clinics">درخواست مشاوره</a>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>سلام دکتر</h4>
+          <div class="footer-links">
+            <span>تماس: ۰۹۰۰۷۰۰۰۴۶۲</span>
+            <span>شیراز، روبروی پاسارگاد شرقی، جنب نگین عدالت</span>
+            <span>info@salamdoctor.ir</span>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>خدمات پرکاربرد</h4>
+          <div class="footer-links">
+
+<a href="#">وصل سرم و تزریقات</a>
+</div>
+        </div>
+        <div class="footer-col">
+          <h4>راهنمای بیماران</h4>
+          <div class="footer-links">
+            <a href="#">نحوه ثبت درخواست</a>
+            <a href="#">پرسش‌های متداول</a>
+            <a href="#">حریم خصوصی</a>
+            <a href="#">قوانین و شرایط</a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>مقالات جدید</h4>
+          <div class="footer-links">
+            <a href="articles.html">مراقبت بعد از لیزر</a>
+            <a href="articles.html">علائم نیاز به ویزیت فوری</a>
+            <a href="articles.html">مقایسه روش‌های زیبایی</a>
+            <a href="articles.html">بهترین زمان چکاپ</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-note">© 2026 سلام دکتر. تمامی حقوق محفوظ است.</div>
+    </div>
+  </footer>
+
+  <a class="bale-float" href="https://ble.ir/salamdoctoradmin" target="_blank" rel="noopener noreferrer" aria-label="بله" title="بله"><img src="assets/images/bale-icon.svg?v=20260620" alt="" width="28" height="28"></a>
+  <button id="chat-toggle" class="chat-toggle" type="button" aria-label="باز کردن چت پشتیبانی">
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M5 6.5C5 5.1 6.1 4 7.5 4h9C17.9 4 19 5.1 19 6.5v6c0 1.4-1.1 2.5-2.5 2.5H11l-3.8 3.2c-.8.7-2.2.1-2.2-1v-2.2c0-.6-.4-1-1-1V6.5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>
+      <path d="M8 8.8h8M8 11.8h5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+    </svg>
+  </button>
+  <aside id="chat-widget" class="chat-widget" aria-hidden="true">
+    <div class="chat-header">
+      <div class="chat-title-wrap">
+        <span class="chat-status"></span>
+        <span class="chat-title">پشتیبانی آنلاین سلام دکتر</span>
+      </div>
+      <button id="chat-close" class="chat-close" type="button" aria-label="بستن چت">×</button>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input">
+      <input id="chat-input" type="text" placeholder="پیام خود را بنویسید..." autocomplete="off">
+      <button id="chat-send" class="chat-send" type="button" aria-label="ارسال پیام">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 12h13M11 5l7 7-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </aside>
+
+  <nav id="mobile-nav" class="mobile-nav">
+    <div class="mobile-grid">
+      <a class="btn btn-soft" href="skin-rejuvenation.html">پوست و زیبایی</a>
+      <a class="btn btn-soft" href="hair-transplant.html">مو و کاشت</a>
+      <a class="btn btn-green" href="https://ble.ir/salamdoctoradmin" target="_blank" rel="noopener noreferrer">بله</a>
+      <a class="btn btn-main" href="tel:+989007000462">تماس سریع</a>
+    </div>
+  </nav>
+
+  <script src="assets/js/shared.js?v=20260720a" defer></script>
+</body>
+</html>

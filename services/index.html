@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NL3KJ8ZQ');</script>
+<!-- End Google Tag Manager -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1294e0">
+  <link rel="icon" type="image/svg+xml" href="/images/logo-heart.svg?v=5">
+  <title>خدمات تخصصی | سلام دکتر</title>
+  <meta name="description" content="فهرست مراکز درمانی و زیبایی شیراز بر اساس خدمت و برند دستگاه">
+  <link rel="stylesheet" href="/assets/css/category-monetize.css?v=20260719c">
+  <link rel="stylesheet" href="/assets/css/shared.css?v=20260801a">
+  <style>
+    .service-page{background:#fff;min-height:50vh}
+    .service-header{
+      padding:24px 0 32px;border-bottom:1px solid var(--line);
+      background:linear-gradient(180deg,#f8fbfc 0%,var(--mint) 100%)
+    }
+    .service-title{font-size:clamp(1.75rem,3.5vw,2.45rem);font-weight:800;color:var(--navy);line-height:1.45}
+    .service-subtitle{margin-top:10px;font-size:1rem;color:#475569;max-width:720px;line-height:1.9}
+    .service-count{display:inline-block;margin-top:14px;font-weight:700;color:var(--blue)}
+    .service-list-wrap{padding:28px 0 56px}
+    .service-empty{text-align:center;padding:48px 20px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);font-weight:600}
+  </style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NL3KJ8ZQ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+  <header class="topbar">
+    <div class="container topbar-row">
+      <a href="/index.html" class="brand" aria-label="سلام دکتر — صفحه اصلی">
+        <span class="logo logo-heart-beat" aria-hidden="true">
+          <img src="/images/logo-heart.svg" alt="" width="40" height="40">
+        </span>
+        <span class="brand-name">سلام دکتر</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="service-page">
+    <header class="service-header">
+      <div class="container">
+        <h1 class="service-title" id="service-title">در حال بارگذاری…</h1>
+        <p class="service-subtitle" id="service-desc"></p>
+        <span class="service-count" id="service-count"></span>
+      </div>
+    </header>
+    <section class="service-list-wrap">
+      <div class="container">
+        <ul class="premium-clinic-stack" id="service-clinics" role="list"></ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="/data.min.js?v=20260805b"></script>
+  <script>
+(function () {
+  var ALIASES = {
+    deka: 'deka-laser', candela: 'candela-laser', co2: 'co2-laser',
+    fotona: 'fotona-laser',
+    'q-switch': 'qswitch', 'q-switch-laser': 'qswitch', 'qswitch-laser': 'qswitch',
+    'لیزر-کیوسوئیچ': 'qswitch', 'کیوسوئیچ': 'qswitch',
+    fit: 'hair-transplant-fit', 'botox-filler': 'botox-filler',
+    'بوتاکس': 'botox'
+  };
+  var META = {
+    'deka-laser': { label: 'DEKA', title: 'مراکز لیزر DEKA در شیراز', description: 'کلینیک‌ها و مراکز زیبایی شیراز که خدمات لیزر با دستگاه‌های DEKA ارائه می‌دهند.' },
+    'candela-laser': { label: 'CANDELA', title: 'مراکز لیزر CANDELA در شیراز', description: 'معرفی مراکز دارای دستگاه کندلا (Candela) در شیراز.' },
+    'co2-laser': { label: 'لیزر CO2', title: 'مراکز لیزر CO2 در شیراز', description: 'فهرست مراکز شیراز که لیزر CO2 ارائه می‌کنند.' },
+    'fotona-laser': { label: 'لیزر فوتونا', title: 'مراکز لیزر فوتونا (Fotona) در شیراز', description: 'مراکز مجهز به لیزر فوتونا در شیراز.' },
+    qswitch: { label: 'لیزر کیوسوئیچ', title: 'مراکز لیزر کیوسوئیچ در شیراز', description: 'کلینیک‌های ارائه‌دهنده لیزر کیوسوئیچ در شیراز.' },
+    'hair-transplant-fit': { label: 'کاشت مو FIT', title: 'مراکز کاشت مو به روش FIT در شیراز', description: 'معرفی مراکز کاشت مو با روش FIT در شیراز.' },
+    'botox-filler': { label: 'بوتاکس و فیلر', title: 'مراکز بوتاکس و فیلر در شیراز', description: 'فهرست مراکز معتبر تزریق بوتاکس و فیلر در شیراز.' },
+    botox: { label: 'بوتاکس', title: 'مراکز تزریق بوتاکس در شیراز', description: 'کلینیک‌های ارائه‌دهنده تزریق بوتاکس در شیراز.' },
+    'eyebrow-beard-transplant': { label: 'کاشت ابرو و ریش', title: 'مراکز کاشت ابرو و ریش در شیراز', description: 'مراکز تخصصی کاشت ابرو و ریش در شیراز.' },
+    'rf-virtue-endolift': { label: 'RF VIRTUE و اندولیفت', title: 'مراکز RF VIRTUE و اندولیفت در شیراز', description: 'کلینیک‌های ارائه‌دهنده RF VIRTUE و اندولیفت در شیراز.' },
+    'hifu-doublo-gold': { label: 'هایفو دابلو گلد', title: 'مراکز هایفو دابلو گلد در شیراز', description: 'معرفی مراکز دارای هایفو دابلو گلد در شیراز.' }
+  };
+
+  function slugFromPath() {
+    var parts = location.pathname.replace(/\/+$/, '').split('/');
+    var raw = parts[parts.length - 1] || '';
+    if (raw === 'services' || raw === 'index.html') {
+      raw = new URLSearchParams(location.search).get('slug') || '';
+    }
+    try { raw = decodeURIComponent(raw); } catch (_e) {}
+    raw = String(raw || '').toLowerCase();
+    var mapped = ALIASES[raw] || raw;
+    if (mapped && mapped !== raw && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(mapped)) {
+      if (location.pathname.indexOf('/services/') === 0) {
+        location.replace('/services/' + mapped);
+      }
+    }
+    return mapped;
+  }
+
+  function ensureCanonical(slug) {
+    if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return;
+    var href = 'https://salam-doctor.com/services/' + slug;
+    var link = document.querySelector('link[rel="canonical"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      document.head.appendChild(link);
+    }
+    link.setAttribute('href', href);
+  }
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function serviceMatches(item, slug) {
+    if (item == null) return false;
+    if (typeof item === 'string') {
+      var label = item.trim().toLowerCase();
+      return label.indexOf(slug.replace(/-/g, ' ')) !== -1 || label.indexOf(slug) !== -1;
+    }
+    var s = String(item.slug || '').toLowerCase();
+    if (s && s === slug) return true;
+    var url = String(item.url || '');
+    return url.indexOf('/services/' + slug) !== -1;
+  }
+
+  function findClinics(slug) {
+    var list = Array.isArray(window.clinicsData) ? window.clinicsData : [];
+    return list.filter(function (c) {
+      return Array.isArray(c.services) && c.services.some(function (s) { return serviceMatches(s, slug); });
+    }).sort(function (a, b) {
+      if (a.id === 114) return -1;
+      if (b.id === 114) return 1;
+      return String(a.name || '').localeCompare(String(b.name || ''), 'fa');
+    });
+  }
+
+  function render(slug) {
+    var meta = META[slug] || {
+      label: slug,
+      title: 'مراکز ' + slug + ' در شیراز',
+      description: 'فهرست مراکز مرتبط با این خدمت در شیراز.'
+    };
+    document.title = meta.title + ' | سلام دکتر';
+    document.getElementById('service-title').textContent = meta.title;
+    document.getElementById('service-desc').textContent = meta.description;
+    var clinics = findClinics(slug);
+    document.getElementById('service-count').textContent =
+      clinics.length ? (clinics.length + ' مرکز مرتبط در شیراز') : 'به‌زودی مراکز بیشتری اضافه می‌شوند';
+    var mount = document.getElementById('service-clinics');
+    if (!clinics.length) {
+      mount.outerHTML = '<p class="service-empty">در حال حاضر مرکزی با این خدمت ثبت نشده است.</p>';
+      return;
+    }
+    mount.innerHTML = clinics.map(function (c, i) {
+      var name = c.name || c.sliderTitle || ('مرکز ' + c.id);
+      var tag = c.sliderTagline || c.address || '';
+      var img = c.image || '/images/sample-clinic-services.webp';
+      var href = (typeof window.clinicProfilePath === 'function')
+        ? window.clinicProfilePath(c)
+        : ('/doctor/clinic-' + encodeURIComponent(c.id));
+      return '<li class="premium-clinic-item"><a class="premium-clinic-row" href="' + esc(href) + '">' +
+        '<div class="premium-clinic-media"><img class="premium-clinic-image" src="' + esc(img) + '" alt="' + esc(name) + '" loading="lazy">' +
+        '<span class="premium-clinic-rank">' + (i + 1) + '</span></div>' +
+        '<div class="premium-clinic-body"><div class="premium-clinic-heading"><h3 class="premium-clinic-name">' + esc(name) + '</h3></div>' +
+        (tag ? '<p class="premium-clinic-tagline">' + esc(tag) + '</p>' : '') +
+        '<div class="premium-clinic-actions"><span class="btn btn-main premium-clinic-book">مشاهده مرکز</span></div>' +
+        '</div></a></li>';
+    }).join('');
+  }
+
+  function boot() {
+    var slug = slugFromPath();
+    if (!slug) {
+      location.replace('/index.html');
+      return;
+    }
+    ensureCanonical(slug);
+    // Prefer live API when backend is up; fall back to catalog.
+    fetch('/api/services/' + encodeURIComponent(slug))
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (data) {
+        if (data && data.title) {
+          document.title = data.title + ' | سلام دکتر';
+          document.getElementById('service-title').textContent = data.title;
+          document.getElementById('service-desc').textContent = data.description || '';
+          document.getElementById('service-count').textContent =
+            (data.clinics && data.clinics.length)
+              ? (data.clinics.length + ' مرکز مرتبط در شیراز')
+              : 'به‌زودی مراکز بیشتری اضافه می‌شوند';
+          var mount = document.getElementById('service-clinics');
+          if (!data.clinics || !data.clinics.length) {
+            mount.outerHTML = '<p class="service-empty">در حال حاضر مرکزی با این خدمت ثبت نشده است.</p>';
+            return;
+          }
+          mount.innerHTML = data.clinics.map(function (c, i) {
+            var tags = Array.isArray(c.services) ? c.services : [];
+            var tagsHtml = tags.length
+              ? '<ul class="premium-clinic-services" aria-label="خدمات مرتبط">' +
+                tags.map(function (s) {
+                  var label = typeof s === 'string' ? s : (s && (s.label || s.name)) || '';
+                  return label ? '<li><span>' + esc(label) + '</span></li>' : '';
+                }).join('') +
+                '</ul>'
+              : '';
+            return '<li class="premium-clinic-item"><a class="premium-clinic-row" href="' + esc(c.link) + '">' +
+              '<div class="premium-clinic-media"><img class="premium-clinic-image" src="' + esc(c.image) + '" alt="' + esc(c.name) + '" loading="lazy">' +
+              '<span class="premium-clinic-rank">' + (i + 1) + '</span></div>' +
+              '<div class="premium-clinic-body"><div class="premium-clinic-heading"><h3 class="premium-clinic-name">' + esc(c.name) + '</h3></div>' +
+              (c.tagline ? '<p class="premium-clinic-tagline">' + esc(c.tagline) + '</p>' : '') +
+              tagsHtml +
+              '<div class="premium-clinic-actions"><span class="btn btn-main premium-clinic-book">مشاهده مرکز</span></div>' +
+              '</div></a></li>';
+          }).join('');
+          return;
+        }
+        render(slug);
+      })
+      .catch(function () { render(slug); });
+  }
+
+  boot();
+})();
+  </script>
+  <script src="/assets/js/clinic-slugs.js?v=20260903s"></script>
+  <script src="/assets/js/clinic-profile-url.js?v=20260903t"></script>
+  <script src="/assets/js/shared.js?v=20260801a" defer></script>
+</body>
+</html>

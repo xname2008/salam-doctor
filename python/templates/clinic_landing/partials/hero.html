@@ -1,0 +1,100 @@
+{# Hero — biomedical visual + SKAG-driven H1 + primary CTA #}
+<section class="relative overflow-hidden bg-gradient-to-b from-slate-900 via-navy to-[#0a2d5c] text-white">
+  <!-- Ambient mesh / medical grid -->
+  <div class="absolute inset-0 opacity-30 pointer-events-none"
+       style="background-image: radial-gradient(circle at 20% 20%, rgba(18,148,224,0.35), transparent 45%),
+              radial-gradient(circle at 80% 60%, rgba(13,148,136,0.25), transparent 40%),
+              linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+              background-size: auto, auto, 48px 48px, 48px 48px;"></div>
+
+  <div class="relative max-w-6xl mx-auto px-4 pt-10 pb-16 md:pt-16 md:pb-24">
+    <div class="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+      <!-- Copy -->
+      <div class="order-2 lg:order-1">
+        <div class="flex flex-wrap gap-2 mb-5">
+          {% for badge in trust_badges %}
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-xs font-semibold text-blue-50">
+            <i class="fa-solid fa-circle-check text-growth text-[10px]"></i>{{ badge }}
+          </span>
+          {% endfor %}
+        </div>
+
+        <h1 id="skag-h1" class="text-3xl sm:text-4xl lg:text-[2.65rem] font-extrabold leading-[1.35] mb-5"
+            data-default="{{ default_h1 }}">{{ h1 }}</h1>
+
+        <p class="text-base md:text-lg text-blue-100/90 leading-relaxed mb-8 max-w-xl">{{ subheadline }}</p>
+
+        <div class="flex flex-col sm:flex-row gap-3">
+          <a href="tel:{{ phone | replace(' ', '') }}"
+             id="skag-cta-primary"
+             data-default="رزرو فوری نوبت"
+             class="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl bg-gradient-to-l from-gold to-[#e8c84a] text-navy font-extrabold text-lg shadow-hero hover:scale-[1.02] transition-transform">
+            <i class="fa-solid fa-bolt"></i>
+            <span data-skag="cta-primary">{{ cta_primary }}</span>
+          </a>
+          <a href="#eeat"
+             id="skag-cta-secondary"
+             data-default="مشاوره رایگان"
+             class="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-2xl border-2 border-white/25 font-bold hover:bg-white/10 transition">
+            <span data-skag="cta-secondary">{{ cta_secondary }}</span>
+          </a>
+        </div>
+
+        {% if address %}
+        <p class="mt-6 text-sm text-blue-100/70 flex items-start gap-2">
+          <i class="fa-solid fa-location-dot text-gold mt-0.5"></i>
+          <span>{{ address }}</span>
+        </p>
+        {% endif %}
+      </div>
+
+      <!-- Visual: 3D biomedical placeholder + hero image -->
+      <div class="order-1 lg:order-2 relative">
+        <div class="relative aspect-[4/5] sm:aspect-square max-w-md mx-auto lg:max-w-none rounded-3xl overflow-hidden shadow-hero border border-white/10 bg-gradient-to-br from-trust/20 to-growth/10">
+          <!-- Layer 1: hero photo -->
+          <img src="{{ hero_image }}" alt="{{ clinic_name }}"
+               class="absolute inset-0 w-full h-full object-cover mix-blend-normal opacity-90"
+               loading="eager" fetchpriority="high">
+
+          <!-- Layer 2: 3D / biomedical render slot (GLB viewer or PNG overlay) -->
+          <div id="hero-3d-slot"
+               class="absolute inset-0 flex items-end justify-center pointer-events-none"
+               {% if hero_3d_asset %}data-asset="{{ hero_3d_asset }}"{% endif %}>
+            {% if hero_3d_asset and hero_3d_asset.endswith('.glb') %}
+            <model-viewer src="{{ hero_3d_asset }}" alt="رندر سه‌بعدی"
+              class="w-full h-3/5 object-contain"
+              auto-rotate camera-controls shadow-intensity="1"
+              style="background: transparent;"></model-viewer>
+            {% elif hero_3d_asset %}
+            <img src="{{ hero_3d_asset }}" alt="گرافیک پزشکی"
+                 class="w-4/5 h-auto object-contain drop-shadow-2xl translate-y-4">
+            {% else %}
+            <!-- EDIT: replace with clinic GLB/PNG biomedical asset -->
+            <div class="w-full h-full flex items-center justify-center p-8">
+              <div class="relative w-full max-w-[280px] aspect-square">
+                <div class="absolute inset-0 rounded-full bg-trust/20 blur-3xl animate-pulse"></div>
+                <div class="relative h-full rounded-2xl border border-white/20 bg-white/5 backdrop-blur flex flex-col items-center justify-center gap-3 p-6 text-center">
+                  <i class="fa-solid fa-dna text-5xl text-trust/80"></i>
+                  <p class="text-sm font-bold text-white/90">جایگاه رندر ۳D بیومدیکال</p>
+                  <p class="text-xs text-blue-100/60">hero_3d_asset در context</p>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+
+          <!-- Floating trust chip -->
+          <div class="absolute top-4 right-4 px-3 py-2 rounded-xl bg-white/95 text-navy text-xs font-bold shadow-card flex items-center gap-2">
+            <i class="fa-solid fa-shield-heart text-growth"></i>
+            E-E-A-T Verified
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% if hero_3d_asset and hero_3d_asset.endswith('.glb') %}
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+{% endif %}

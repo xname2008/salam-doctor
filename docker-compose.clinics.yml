@@ -1,0 +1,77 @@
+# ==========================================================================
+# docker-compose.clinics.yml  —  ISOLATED per-clinic backend containers (opt-in)
+# --------------------------------------------------------------------------
+# Requirement #2 offers two models. The DEFAULT (host-based multi-tenancy) needs
+# nothing here: the shared `backend` renders every clinic micro-site from the
+# incoming Host header, and add-clinic-domain.sh points domains at backend:3000.
+#
+# Use THIS override only when a clinic needs a fully isolated runtime (its own
+# process, its own data, independent restarts). Bring it up alongside the base:
+#
+#   # 1. Prepare isolated data dir (SQLite file must pre-exist as a file mount)
+#   mkdir -p clinic-data/nahal/uploads && touch clinic-data/nahal/leads.db
+#
+#   # 2. Start the isolated container on the shared network
+#   docker compose -f docker-compose.yml -f docker-compose.clinics.yml up -d clinic_nahal
+#
+#   # 3. Point the dedicated domain block at the isolated container
+#   bash scripts/add-clinic-domain.sh dr-nahal.ir clinic_nahal:3000
+#
+# Copy the clinic_nahal block per clinic (rename service, container_name,
+# SITE_BASE, CLINIC_TENANT and the data paths).
+# ==========================================================================
+
+services:
+  clinic_nahal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clinic_nahal
+    restart: unless-stopped
+    environment:
+      PORT: "3000"
+      HOST: "0.0.0.0"
+      NODE_ENV: production
+      SITE_BASE: "https://dr-nahal.ir"
+      CLINIC_TENANT: "114"          # clinic id this isolated site represents
+    env_file:
+      - .env
+    volumes:
+      # Isolated data (own leads DB + uploads) — no contention with the platform.
+      - ./clinic-data/nahal/leads.db:/app/leads.db
+      - ./clinic-data/nahal/uploads:/app/uploads
+      # Shared application code (read-only).
+      - ./server.js:/app/server.js:ro
+      - ./categoryMonetize.js:/app/categoryMonetize.js:ro
+      - ./serviceLanding.js:/app/serviceLanding.js:ro
+      - ./siteSettings.js:/app/siteSettings.js:ro
+      - ./seoInfra.js:/app/seoInfra.js:ro
+      - ./seoRouter.js:/app/seoRouter.js:ro
+      - ./DirectoryRepository.js:/app/DirectoryRepository.js:ro
+      - ./views:/app/views:ro
+      - ./data.min.js:/app/data.min.js:ro
+      - ./profile.html:/app/profile.html:ro
+    expose:
+      - "3000"
+    networks:
+      - salam-doctor-net        # same network so nginx resolves clinic_nahal:3000
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:3000/api/health',(r)=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+# Same network as the base file — compose merges both -f files into one project,
+# so nginx (web) and clinic_nahal share DNS resolution on salam-doctor-net.
+networks:
+  salam-doctor-net:
+    driver: bridge

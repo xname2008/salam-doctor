@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NL3KJ8ZQ');</script>
+<!-- End Google Tag Manager -->
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/svg+xml" href="images/logo-heart.svg?v=5">
+  <link rel="apple-touch-icon" href="images/logo-heart.svg?v=5">
+  <meta name="theme-color" content="#1294e0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- DYNAMIC_SEO_TAGS -->
+  <link rel="preload" href="assets/fonts/IRANSansXFaNum-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/Vazirmatn-RD-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/css/shared.css?v=20260801a">
+  <style>
+    :root{
+      --blog-paper:#f7fafc;
+      --blog-ink:#13233c;
+      --blog-ink-soft:#3b4d66;
+      --blog-accent:#0d7fc2;
+      --blog-surface:#ffffff;
+      --blog-rule:rgba(19,35,60,.1);
+    }
+
+    .blog-page{
+      min-height:70vh;
+      background:
+        radial-gradient(1200px 420px at 100% -10%, rgba(18,148,224,.08), transparent 55%),
+        linear-gradient(180deg, #eef5fa 0%, var(--blog-paper) 28%, #fff 100%);
+      color:var(--blog-ink);
+    }
+
+    .blog-shell{
+      width:min(860px, 100%);
+      margin:0 auto;
+      padding:28px 18px 80px;
+    }
+
+    .blog-post-header{
+      margin-top:18px;
+      padding-bottom:8px;
+      border-bottom:1px solid var(--blog-rule);
+    }
+
+    .blog-kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin:0 0 12px;
+      padding:5px 12px;
+      border-radius:999px;
+      background:rgba(18,148,224,.1);
+      color:var(--blog-accent);
+      font-size:.78rem;
+      font-weight:800;
+      letter-spacing:.02em;
+    }
+
+    .blog-post-header h1{
+      margin:0;
+      font-family:var(--font-main);
+      font-size:clamp(1.85rem, 3.4vw, 2.65rem);
+      line-height:1.45;
+      font-weight:800;
+      letter-spacing:-.015em;
+      color:var(--navy);
+      max-width:22ch;
+    }
+
+    .blog-post-meta{
+      margin-top:14px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px 18px;
+      color:var(--muted);
+      font-size:.9rem;
+      font-weight:600;
+    }
+
+    .blog-post-meta time{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+
+    /* —— Author Authority Box (E-E-A-T) —— */
+    .author-profile{
+      margin-top:22px;
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:14px 16px;
+      align-items:start;
+      padding:18px 18px 16px;
+      border:1px solid rgba(13,127,194,.22);
+      border-radius:18px;
+      background:
+        linear-gradient(135deg, rgba(232,244,253,.95), rgba(255,255,255,.98));
+      box-shadow:0 10px 28px rgba(4,31,69,.06);
+    }
+
+    .author-avatar{
+      width:56px;
+      height:56px;
+      border-radius:16px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(160deg, var(--navy), #0a4f8a);
+      color:#fff;
+      flex-shrink:0;
+    }
+
+    .author-avatar svg{width:28px;height:28px}
+
+    .author-profile-body{min-width:0}
+
+    .author-profile-label{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin:0 0 6px;
+      font-size:.72rem;
+      font-weight:800;
+      color:var(--blue);
+      text-transform:none;
+    }
+
+    .author-profile-label svg{width:14px;height:14px}
+
+    .author-name{
+      margin:0;
+      font-size:1.12rem;
+      font-weight:800;
+      color:var(--navy);
+      line-height:1.5;
+    }
+
+    .author-credentials{
+      margin:8px 0 0;
+      display:flex;
+      align-items:flex-start;
+      gap:8px;
+      color:#5a6b82;
+      font-size:.9rem;
+      line-height:1.85;
+      font-weight:500;
+    }
+
+    .author-credentials svg{
+      width:18px;
+      height:18px;
+      flex-shrink:0;
+      margin-top:3px;
+      color:var(--blue);
+    }
+
+    .blog-cover{
+      margin:28px 0 8px;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      box-shadow:0 16px 40px rgba(19,35,60,.1);
+      background:#dbe7f3;
+    }
+
+    .blog-cover img{
+      width:100%;
+      height:auto;
+      aspect-ratio:16/9;
+      object-fit:cover;
+      display:block;
+    }
+
+    /* —— Article content typography —— */
+    .article-content{
+      margin:32px auto 0;
+      max-width:42rem; /* ~max-w-3xl reading measure */
+      font-family:var(--font-main);
+      font-size:1.08rem;
+      line-height:2.05; /* leading-loose */
+      color:var(--blog-ink-soft);
+      font-weight:450;
+    }
+
+    .article-content > *:first-child{margin-top:0}
+
+    .article-content h2,
+    .article-content h3,
+    .article-content h4{
+      color:var(--navy);
+      font-weight:800;
+      line-height:1.55;
+      margin:1.65em 0 .55em;
+      letter-spacing:-.01em;
+    }
+
+    .article-content h2{
+      font-size:1.45rem;
+      padding-bottom:.35em;
+      border-bottom:1px solid var(--blog-rule);
+    }
+
+    .article-content h3{font-size:1.22rem}
+    .article-content h4{font-size:1.08rem}
+
+    .article-content p{margin:0 0 1.15em}
+
+    .article-content a{
+      color:var(--blue);
+      text-decoration:underline;
+      text-underline-offset:3px;
+      font-weight:600;
+    }
+
+    .article-content a:hover{color:var(--blue-dark)}
+
+    .article-content strong,
+    .article-content b{color:var(--text);font-weight:800}
+
+    .article-content ul,
+    .article-content ol{
+      margin:0 0 1.25em;
+      padding:0 1.35em 0 0;
+      display:grid;
+      gap:.55em;
+    }
+
+    .article-content li{padding-right:.15em}
+
+    .article-content ul li::marker{color:var(--blue)}
+    .article-content ol li::marker{color:var(--navy);font-weight:700}
+
+    .article-content blockquote{
+      margin:1.5em 0;
+      padding:14px 18px;
+      border-right:4px solid var(--blue);
+      border-radius:0 14px 14px 0;
+      background:linear-gradient(90deg, rgba(232,244,253,.9), rgba(255,255,255,.5));
+      color:var(--navy);
+      font-weight:600;
+      font-style:normal;
+      line-height:1.9;
+    }
+
+    .article-content blockquote p:last-child{margin-bottom:0}
+
+    .article-content table{
+      width:100%;
+      border-collapse:collapse;
+      margin:1.4em 0 1.6em;
+      font-size:.95rem;
+      overflow:hidden;
+      border:1px solid var(--line);
+      border-radius:12px;
+      display:block;
+      overflow-x:auto;
+      -webkit-overflow-scrolling:touch;
+      background:#fff;
+      box-shadow:0 4px 14px rgba(19,35,60,.04);
+    }
+
+    .article-content thead{background:#eef6fc}
+    .article-content th,
+    .article-content td{
+      padding:12px 14px;
+      border-bottom:1px solid var(--line);
+      text-align:right;
+      vertical-align:top;
+      line-height:1.7;
+    }
+
+    .article-content th{
+      font-weight:800;
+      color:var(--navy);
+      white-space:nowrap;
+    }
+
+    .article-content tr:last-child td{border-bottom:none}
+
+    .article-content figure{margin:1.5em 0}
+
+    /* TinyMCE images — responsive + polished */
+    .article-content img{
+      display:block;
+      max-width:100%;
+      height:auto;
+      margin:1.4em auto;
+      border-radius:14px;
+      box-shadow:0 8px 24px rgba(19,35,60,.1);
+      border:1px solid rgba(219,228,238,.9);
+    }
+
+    .article-content hr{
+      border:0;
+      height:1px;
+      background:var(--blog-rule);
+      margin:2em 0;
+    }
+
+    /* —— Related clinics CTA —— */
+    .blog-related-cta{
+      margin:40px auto 0;
+      max-width:42rem;
+      padding:22px 22px 20px;
+      border-radius:20px;
+      background:
+        linear-gradient(145deg, #041f45 0%, #0a3a6e 55%, #0d5f9c 100%);
+      color:#fff;
+      box-shadow:0 18px 40px rgba(4,31,69,.28);
+      position:relative;
+      overflow:hidden;
+    }
+
+    .blog-related-cta::before{
+      content:"";
+      position:absolute;
+      inset:auto -20% -40% auto;
+      width:220px;
+      height:220px;
+      border-radius:50%;
+      background:rgba(18,148,224,.25);
+      pointer-events:none;
+    }
+
+    .blog-related-cta-inner{position:relative;z-index:1}
+
+    .blog-related-cta-eyebrow{
+      margin:0 0 8px;
+      font-size:.78rem;
+      font-weight:800;
+      color:#9fd2f5;
+      letter-spacing:.02em;
+    }
+
+    .blog-related-cta h2{
+      margin:0;
+      font-size:clamp(1.15rem, 2.4vw, 1.4rem);
+      line-height:1.55;
+      font-weight:800;
+      color:#fff;
+    }
+
+    .blog-related-cta p{
+      margin:10px 0 0;
+      color:#c5d8ef;
+      font-size:.95rem;
+      line-height:1.85;
+      max-width:36ch;
+    }
+
+    .blog-related-cta .btn{
+      margin-top:16px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      background:#fff;
+      color:var(--navy);
+      font-weight:800;
+      border-radius:12px;
+      padding:12px 18px;
+      text-decoration:none;
+      box-shadow:0 6px 16px rgba(0,0,0,.12);
+      transition:transform .2s ease, background .2s ease;
+    }
+
+    .blog-related-cta .btn:hover{
+      background:#e8f4fd;
+      transform:translateY(-1px);
+    }
+
+    .blog-related-cta .btn svg{width:18px;height:18px}
+
+    @media (max-width:640px){
+      .blog-shell{padding:18px 14px 64px}
+      .blog-post-header h1{max-width:none}
+      .author-profile{
+        grid-template-columns:1fr;
+        gap:10px;
+      }
+      .author-avatar{width:48px;height:48px;border-radius:14px}
+      .article-content{font-size:1.02rem;line-height:2}
+      .blog-related-cta{padding:18px}
+    }
+  </style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NL3KJ8ZQ"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+  <header class="topbar">
+    <div class="container topbar-row">
+      <a href="index.html" class="brand" aria-label="سلام دکتر — صفحه اصلی">
+        <span class="logo logo-heart-beat" aria-hidden="true">
+          <img src="images/logo-heart.svg" alt="لوگو سلام دکتر" width="40" height="40">
+        </span>
+        <span class="brand-name">سلام دکتر</span>
+      </a>
+      <nav class="menu">
+        <a href="/blog">بلاگ</a>
+        <a href="articles.html">مقالات</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="blog-page">
+    <article class="blog-shell">
+      <nav class="seo-breadcrumb" aria-label="breadcrumb">
+        <a href="index.html">خانه</a>
+        <span class="seo-breadcrumb-separator" aria-hidden="true">›</span>
+        <a href="/blog">بلاگ</a>
+        <span class="seo-breadcrumb-separator" aria-hidden="true">›</span>
+        <span id="blog-crumb-current" class="seo-breadcrumb-current">مقاله</span>
+      </nav>
+      <!-- BLOG_POST_BODY -->
+    </article>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-note">© 2026 سلام دکتر. تمامی حقوق محفوظ است.</div>
+    </div>
+  </footer>
+  <script src="/assets/js/clinic-slugs.js?v=20260903s"></script>
+  <script src="/assets/js/clinic-profile-url.js?v=20260903t"></script>
+  <script src="assets/js/shared.js?v=20260801a" defer></script>
+</body>
+</html>

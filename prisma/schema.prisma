@@ -1,0 +1,334 @@
+// ==========================================================================
+// Salam-Doctor — Medical Directory & Booking Platform (Shiraz)
+// ORM: Prisma  |  Database: PostgreSQL
+//
+// Generate client:   npx prisma generate
+// Create migration:  npx prisma migrate dev --name init
+// Apply in prod:      npx prisma migrate deploy
+// ==========================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum ContractStatus {
+  ACTIVE
+  EXPIRED
+}
+
+enum DeviceType {
+  LASER
+  HIFU
+  ENDOLIFT
+  OTHER
+}
+
+enum VerificationStatus {
+  PENDING
+  APPROVED
+}
+
+enum HeroMediaType {
+  VIDEO
+  IMAGE
+}
+
+// ---------------------------------------------------------------------------
+// Districts — hyper-local Shiraz SEO (معالی‌آباد، عفیف‌آباد، قصرالدشت، زند ...)
+// One District  ->  many Clinics
+// ---------------------------------------------------------------------------
+
+model District {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(120) // e.g. "معالی‌آباد"
+  slug      String   @unique @db.VarChar(140) // e.g. "maaliabad"
+  createdAt DateTime @default(now()) @map("created_at")
+
+  clinics Clinic[]
+
+  @@index([slug])
+  @@map("districts")
+}
+
+// ---------------------------------------------------------------------------
+// Clinics / Doctors — core directory + subscription contract fields
+// ---------------------------------------------------------------------------
+
+model Clinic {
+  id             Int      @id @default(autoincrement())
+  name           String   @db.VarChar(200)
+  licenseNumber  String   @unique @map("license_number") @db.VarChar(80)
+  phone          String   @db.VarChar(40)
+  biography      String?  @db.Text
+  fullAddress    String   @map("full_address") @db.Text
+
+  // Coordinates (WGS84). lat: -90..90, lng: -180..180
+  latitude  Decimal? @db.Decimal(9, 6)
+  longitude Decimal? @db.Decimal(9, 6)
+
+  // Subscription / contract
+  contractStatus         ContractStatus @default(ACTIVE) @map("contract_status")
+  contractDurationMonths Int            @default(14) @map("contract_duration_months")
+  startDate              DateTime?      @map("start_date") @db.Date
+  endDate                DateTime?      @map("end_date") @db.Date
+
+  // Dedicated micro-site
+  hasDedicatedWebsite Boolean @default(false) @map("has_dedicated_website")
+  dedicatedDomain     String? @unique @map("dedicated_domain") @db.VarChar(255)
+
+  // Department contact / consultation tiles (profile dual sections)
+  dept1Title    String? @map("dept1_title") @db.VarChar(200)
+  dept1Phone    String? @map("dept1_phone") @db.VarChar(40)
+  dept1Whatsapp String? @map("dept1_whatsapp") @db.VarChar(40)
+  dept2Title    String? @map("dept2_title") @db.VarChar(200)
+  dept2Phone    String? @map("dept2_phone") @db.VarChar(40)
+  dept2Whatsapp String? @map("dept2_whatsapp") @db.VarChar(40)
+
+  // Rubika / Bale messenger labels + deep links (admin-editable)
+  rubikaTitle String? @map("rubika_title") @db.VarChar(120)
+  rubikaLink  String? @map("rubika_link") @db.VarChar(500)
+  baleTitle   String? @map("bale_title") @db.VarChar(120)
+  baleLink    String? @map("bale_link") @db.VarChar(500)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // SEO-friendly profile URL: /doctor/:slug (manual or short English brand)
+  slug String @unique @db.VarChar(220)
+  // Optional Latin brand used to auto-build clean slugs (e.g. "Nahal Clinic")
+  englishName String? @map("english_name") @db.VarChar(120)
+
+  // District relation (SetNull so removing a district never deletes clinics)
+  districtId Int?      @map("district_id")
+  district   District? @relation(fields: [districtId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  // Many-to-many pivots
+  devices  ClinicDevice[]
+  services ClinicService[]
+  leads    Lead[]
+
+  @@index([districtId])
+  @@index([contractStatus])
+  @@index([contractStatus, endDate]) // expiry sweeps / renewal reminders
+  @@index([slug])
+  @@map("clinics")
+}
+
+// ---------------------------------------------------------------------------
+// Medical Devices — core revenue feature (Candela, Cynosure, Doublo ...)
+// Many-to-many with Clinics via clinic_devices (with authenticity badge)
+// ---------------------------------------------------------------------------
+
+model MedicalDevice {
+  id                 Int                @id @default(autoincrement())
+  brandName          String             @map("brand_name") @db.VarChar(150)
+  deviceType         DeviceType         @map("device_type")
+  verificationStatus VerificationStatus @default(PENDING) @map("verification_status")
+  createdAt          DateTime           @default(now()) @map("created_at")
+
+  clinics ClinicDevice[]
+
+  @@unique([brandName, deviceType])
+  @@index([verificationStatus])
+  @@index([deviceType])
+  @@map("medical_devices")
+}
+
+// Pivot: Clinic <-> MedicalDevice
+model ClinicDevice {
+  id       Int @id @default(autoincrement())
+  clinicId Int @map("clinic_id")
+  deviceId Int @map("device_id")
+
+  isAuthenticBadge Boolean  @default(false) @map("is_authentic_badge")
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  clinic Clinic        @relation(fields: [clinicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  device MedicalDevice @relation(fields: [deviceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([clinicId, deviceId])
+  @@index([deviceId])
+  @@index([clinicId])
+  @@map("clinic_devices")
+}
+
+// ---------------------------------------------------------------------------
+// Services — hierarchical SEO tree (Dermatology -> Hair Transplant)
+// Self relation via parent_id; Many-to-many with Clinics via clinic_services
+// ---------------------------------------------------------------------------
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  parentId    Int?     @map("parent_id")
+  serviceName String   @map("service_name") @db.VarChar(200)
+  slug        String   @unique @db.VarChar(220)
+  basePrice   Decimal? @map("base_price") @db.Decimal(12, 2)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Self relation (deleting a parent lifts children to top-level via SetNull)
+  parent   Service?  @relation("ServiceHierarchy", fields: [parentId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  children Service[] @relation("ServiceHierarchy")
+
+  clinics ClinicService[]
+  hubSeos LocalHubSeo[]
+
+  @@index([slug])
+  @@index([parentId])
+  @@map("services")
+}
+
+// ---------------------------------------------------------------------------
+// Local hub SEO — rich city + service landing copy (thin-content fix)
+// e.g. Shiraz + botox → unique H1 + HTML body for /shiraz/botox
+// ---------------------------------------------------------------------------
+
+model LocalHubSeo {
+  id             Int      @id @default(autoincrement())
+  citySlug       String   @map("city_slug") @db.VarChar(80)
+  serviceSlug    String   @map("service_slug") @db.VarChar(220)
+  serviceId      Int?     @map("service_id")
+  h1Title        String   @map("h1_title") @db.VarChar(300)
+  seoDescription String   @map("seo_description") @db.Text // HTML / rich text
+  metaTitle      String?  @map("meta_title") @db.VarChar(300)
+  metaDescription String? @map("meta_description") @db.VarChar(320)
+  isPublished    Boolean  @default(true) @map("is_published")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  service Service? @relation(fields: [serviceId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@unique([citySlug, serviceSlug])
+  @@index([citySlug])
+  @@index([serviceSlug])
+  @@index([serviceId])
+  @@index([isPublished])
+  @@map("local_hub_seo")
+}
+
+// Pivot: Clinic <-> Service (with optional per-clinic price override)
+model ClinicService {
+  id        Int @id @default(autoincrement())
+  clinicId  Int @map("clinic_id")
+  serviceId Int @map("service_id")
+
+  // Nullable override; falls back to Service.basePrice when null
+  customPrice Decimal? @map("custom_price") @db.Decimal(12, 2)
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  clinic  Clinic  @relation(fields: [clinicId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  service Service @relation(fields: [serviceId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+  @@unique([clinicId, serviceId])
+  @@index([serviceId])
+  @@index([clinicId])
+  @@map("clinic_services")
+}
+
+// ---------------------------------------------------------------------------
+// Blog — Silo / Topic Cluster (Category → Articles)
+// ---------------------------------------------------------------------------
+
+model Category {
+  id              Int      @id @default(autoincrement())
+  name            String   @db.VarChar(200)
+  slug            String   @unique @db.VarChar(220)
+  metaTitle       String?  @map("meta_title") @db.VarChar(300)
+  metaDescription String?  @map("meta_description") @db.VarChar(320)
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  articles Article[]
+
+  @@index([slug])
+  @@map("blog_categories")
+}
+
+// ---------------------------------------------------------------------------
+// Blog Articles — SEO content hub (E-E-A-T author fields + optional service link)
+// ---------------------------------------------------------------------------
+
+model Article {
+  id                 Int       @id @default(autoincrement())
+  slug               String    @unique @db.VarChar(220)
+  title              String    @db.VarChar(300)
+  metaTitle          String?   @map("meta_title") @db.VarChar(300)
+  metaDescription    String?   @map("meta_description") @db.VarChar(320)
+  content            String    @db.Text
+  authorId           String?   @map("author_id") @db.VarChar(64)
+  categoryId         Int?      @map("category_id")
+  publishedAt        DateTime? @map("published_at")
+  featuredImageUrl   String?   @map("featured_image_url") @db.VarChar(500)
+  authorName         String    @default("تیم سلام دکتر") @map("author_name") @db.VarChar(160)
+  authorCredentials  String?   @map("author_credentials") @db.VarChar(400)
+  relatedServiceSlug String?   @map("related_service_slug") @db.VarChar(220)
+  createdAt          DateTime  @default(now()) @map("created_at")
+  updatedAt          DateTime  @updatedAt @map("updated_at")
+
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([createdAt])
+  @@index([publishedAt])
+  @@index([categoryId])
+  @@index([relatedServiceSlug])
+  @@map("articles")
+}
+
+// ---------------------------------------------------------------------------
+// Leads — consultation / landing-page captures synced from SQLite (leads.db)
+// ---------------------------------------------------------------------------
+
+model Lead {
+  id          String   @id @default(cuid())
+  externalId  String   @unique @map("external_id") @db.VarChar(64) // SQLite leads.id
+  name        String   @db.VarChar(120)
+  phone       String   @db.VarChar(20)
+  service     String   @db.VarChar(200)
+  description String?  @db.Text
+  clinicId    Int?     @map("clinic_id")
+  landingPath String?  @map("landing_path") @db.VarChar(255)
+  packageSlug String?  @map("package_slug") @db.VarChar(80)
+  utmSource   String?  @map("utm_source") @db.VarChar(255)
+  utmMedium   String?  @map("utm_medium") @db.VarChar(255)
+  utmCampaign String?  @map("utm_campaign") @db.VarChar(255)
+  utmTerm     String?  @map("utm_term") @db.VarChar(255)
+  utmContent  String?  @map("utm_content") @db.VarChar(255)
+  source      String   @default("sqlite") @db.VarChar(40)
+  capturedAt  DateTime @map("captured_at")
+  syncedAt    DateTime @default(now()) @map("synced_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  clinic Clinic? @relation(fields: [clinicId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+
+  @@index([phone])
+  @@index([clinicId])
+  @@index([capturedAt])
+  @@map("leads")
+}
+
+// ---------------------------------------------------------------------------
+// Hero slides — homepage / landing VIP clinic promotional videos (admin-managed)
+// ---------------------------------------------------------------------------
+
+model HeroSlide {
+  id        String        @id @default(cuid())
+  mediaUrl  String        @map("media_url") @db.VarChar(500)
+  mediaType HeroMediaType @map("media_type")
+  title     String?       @db.VarChar(200)
+  ctaLink   String?       @map("cta_link") @db.VarChar(500)
+  order     Int           @default(0) @map("slide_order")
+  isActive  Boolean       @default(true) @map("is_active")
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+
+  @@index([isActive, order])
+  @@map("hero_slides")
+}
