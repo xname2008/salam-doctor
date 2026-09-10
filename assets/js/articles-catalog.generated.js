@@ -5,13 +5,24 @@
 (function (root) {
   root.ARTICLES_CATALOG = [
   {
+    "slug": "mesotherapy-vs-prp-hair-loss",
+    "title": "مقایسه مزوتراپی و PRP در درمان ریزش مو: اثربخشی و هزینه",
+    "summary": "مزوتراپی مو چیست و چه تفاوتی با PRP دارد؟ مقایسه علمی اثربخشی، عوارض و هزینه تقویت مو برای انتخاب بهترین روش درمان ریزش مو.",
+    "category": "ریزش مو",
+    "cover_image": "assets/images/articles/mesotherapy-vs-prp-hair-loss-cover.webp",
+    "url": "articles/mesotherapy-vs-prp-hair-loss.html",
+    "datePublished": "2026-09-10",
+    "jalaliLabel": "۱۹ شهریور ۱۴۰۵"
+  },
+  {
     "slug": "rhinoplasty-care-guide",
     "title": "راهنمای جامع مراقبت‌های بعد از جراحی بینی و کاهش سریع ورم",
     "summary": "راهنمای تخصصی مراقبت‌های قبل و بعد از جراحی بینی؛ روش‌های علمی کاهش تورم، هزینه رینوپلاستی و پروتکل‌های بالینی برای نتیجه‌ای طبیعی و پایدار.",
     "category": "جراحی بینی",
     "cover_image": "assets/images/articles/rhinoplasti.webp",
     "url": "articles/rhinoplasty-care-guide.html",
-    "datePublished": "2026-09-06"
+    "datePublished": "2026-09-06",
+    "jalaliLabel": "۱۵ شهریور ۱۴۰۵"
   },
   {
     "slug": "body-contouring-clinic-guide",
@@ -20,7 +31,8 @@
     "category": "پیکرتراشی و لاغری",
     "cover_image": "assets/images/articles/body-contouring-cover.webp",
     "url": "articles/body-contouring-clinic-guide.html",
-    "datePublished": "2026-09-05"
+    "datePublished": "2026-09-05",
+    "jalaliLabel": "۱۴ شهریور ۱۴۰۵"
   },
   {
     "slug": "laser-hair-removal-comparison",
@@ -29,7 +41,8 @@
     "category": "لیزر موهای زائد",
     "cover_image": "assets/images/articles/laser-hair-removal-cover.webp",
     "url": "articles/laser-hair-removal-comparison.html",
-    "datePublished": "2026-09-03"
+    "datePublished": "2026-09-03",
+    "jalaliLabel": "۱۲ شهریور ۱۴۰۵"
   },
   {
     "slug": "fit-hair-transplant-cost",

@@ -17,8 +17,26 @@ const HUB_ENTRIES = [
   { slug: 'eyebrow-transplant', name: 'کاشت ابرو', keywords: ['کاشت ابرو', 'ابرو', 'eyebrow'] },
   { slug: 'skin-rejuvenation', name: 'جوانسازی پوست', keywords: ['جوانسازی', 'rejuvenation', 'پوست'] },
   { slug: 'co2-fractional-laser', name: 'لیزر CO2 فرکشنال', keywords: ['co2', 'فرکشنال', 'جای جوش', 'اسکار', 'منافذ'] },
+  { slug: 'fotona-laser', name: 'لیزر فوتونا', keywords: ['فوتونا', 'fotona', 'جوانسازی'] },
   { slug: 'laser-hair-removal', name: 'لیزر موهای زائد', keywords: ['لیزر مو', 'موهای زائد', 'laser hair'] },
   { slug: 'laser-candela-2026', name: 'لیزر کندلا', keywords: ['کندلا', 'candela', 'الکساندرایت', 'alexandrite', 'فول بادی'] },
+  { slug: 'laser-titanium-2026', name: 'لیزر تیتانیوم', keywords: ['تیتانیوم', 'titanium', 'پلاتینیوم', 'platinum', 'لیزر تیتانیوم'] },
+  { slug: 'mole-removal', name: 'برداشتن خال', keywords: ['خال', 'برداشتن خال', 'برداشت خال', 'mole'] },
+  { slug: 'facial', name: 'فیشیال', keywords: ['فیشیال', 'پاکسازی پوست', 'facial'] },
+  { slug: 'pore-treatment', name: 'درمان منافذ باز پوست', keywords: ['منافذ', 'منافذ باز', 'pore'] },
+  { slug: 'buccal-fat', name: 'بوکال فت', keywords: ['بوکال', 'بوکال فت', 'buccal'] },
+  { slug: 'breast-surgery', name: 'جراحی سینه', keywords: ['جراحی سینه', 'سینه', 'ماموپلاستی', 'breast'] },
+  { slug: 'ear-piercing', name: 'پیرسینگ گوش', keywords: ['پیرسینگ', 'پیرسینگ گوش', 'piercing'] },
+  {
+    slug: 'wart-cryotherapy',
+    name: 'درمان زگیل تناسلی',
+    keywords: ['زگیل', 'زگیل تناسلی', 'کرایو', 'کرایوتراپی', 'wart', 'cryo'],
+  },
+  {
+    slug: 'skin-biopsy',
+    name: 'نمونه‌برداری پوستی',
+    keywords: ['نمونه برداری', 'نمونه‌برداری', 'بیوپسی', 'biopsy'],
+  },
   { slug: 'mens-laser-shiraz', name: 'لیزر موهای زائد آقایان', keywords: ['لیزر آقایان', 'مرد', 'آقا', 'men laser'] },
   { slug: 'cosmetic-surgery', name: 'جراحی زیبایی', keywords: ['جراحی', 'بلفاروپلاستی', 'blepharoplasty', 'بخیه', 'پلک'] },
   { slug: 'hifu-doublo-gold', name: 'هایفو دابلو گلد', keywords: ['هایفو', 'hifu', 'دابلو', 'doublo', 'غبغب', 'لیفت'] },
@@ -33,7 +51,7 @@ const HUB_ENTRIES = [
   { slug: 'dermatology', name: 'پوست و مو', keywords: ['پوست و مو', 'dermatology'] },
   { slug: 'laser-surgery', name: 'لیزر و جراحی', keywords: ['لیزر و جراحی'] },
   { slug: 'body-contouring', name: 'تناسب اندام', keywords: ['تناسب', 'body'] },
-  { slug: 'injectables', name: 'زیبایی و تزریقات', keywords: ['تزریق', 'injectable'] },
+  { slug: 'injectables', name: 'تزریقات زیبایی', keywords: ['تزریق', 'injectable'] },
 ];
 
 // Ensure every hub-slugs entry has at least a name stub (future slugs).

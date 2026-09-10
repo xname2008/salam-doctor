@@ -2,7 +2,7 @@
 
 /**
  * Scan articles/*.html and build sitemap <url> entries for static blog posts.
- * Used by scripts/update-sitemap-articles.js and scripts/generate-sitemap.js.
+ * Used by scripts/update-sitemap-articles.js → sitemap-articles.xml only.
  */
 
 const fs = require('fs');

@@ -16,13 +16,14 @@ const ROOT = path.join(__dirname);
 const CATALOG_TO_HUB = Object.freeze({
   'hair-transplant-fit': ['hair-transplant', 'micro-fit-hair-transplant', 'hair-transplant-installment'],
   'eyebrow-beard-transplant': ['eyebrow-transplant'],
-  'fotona-laser': ['laser-hair-removal', 'skin-rejuvenation'],
+  'fotona-laser': ['fotona-laser', 'skin-rejuvenation'],
   'q-switch-laser': ['laser-hair-removal', 'co2-fractional-laser'],
-  'co2-laser': ['co2-fractional-laser', 'laser-hair-removal'],
+  'co2-laser': ['co2-fractional-laser', 'skin-rejuvenation'],
   'rf-virtue-endolift': ['skin-rejuvenation'],
   'hifu-doublo-gold': ['hifu-doublo-gold'],
   'botox-filler': ['botox', 'fillers'],
   'candela-laser': ['laser-candela-2026', 'laser-hair-removal', 'mens-laser-shiraz'],
+  'titanium-laser': ['laser-titanium-2026', 'laser-hair-removal', 'mens-laser-shiraz'],
   'deka-laser': ['laser-hair-removal', 'mens-laser-shiraz'],
   'light-therapy': ['light-therapy'],
 });

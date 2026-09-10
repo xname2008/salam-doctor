@@ -127,6 +127,7 @@ const LONGTAIL_SERVICES = [
   { slug: 'hair-transplant-installment', serviceName: 'کاشت مو اقساطی', parentSlug: 'hair-transplant', basePrice: 25000000, preferredDistricts: ['maaliabad', 'qasrodasht'] },
   { slug: 'micro-fit-hair-transplant', serviceName: 'کاشت مو Micro FIT', parentSlug: 'hair-transplant', basePrice: 28000000, preferredDistricts: ['maaliabad', 'qasrodasht'] },
   { slug: 'laser-candela-2026', serviceName: 'لیزر کندلا ۲۰۲۶', parentSlug: 'laser-hair-removal', basePrice: 1800000, preferredDistricts: ['maaliabad', 'qasrodasht'], forceDevice: 'Candela' },
+  { slug: 'laser-titanium-2026', serviceName: 'لیزر تیتانیوم', parentSlug: 'laser-hair-removal', basePrice: 1800000, preferredDistricts: ['maaliabad', 'qasrodasht'], forceDevice: 'Alma' },
   { slug: 'mens-laser-shiraz', serviceName: 'لیزر موهای زائد آقایان', parentSlug: 'laser-hair-removal', basePrice: 2000000, preferredDistricts: ['maaliabad', 'qasrodasht'] },
   { slug: 'co2-fractional-laser', serviceName: 'لیزر CO2 فرکشنال', parentSlug: 'skin-rejuvenation', basePrice: 3500000, preferredDistricts: ['maaliabad', 'qasrodasht'] },
   { slug: 'hifu-doublo-gold', serviceName: 'هایفو دابلو گلد', parentSlug: 'skin-rejuvenation', basePrice: 8000000, preferredDistricts: ['maaliabad', 'qasrodasht'], forceDevice: 'Doublo Gold' },

@@ -1,24 +1,15 @@
 'use strict';
 
 // ==========================================================================
-// update-sitemap-articles.js — sync static articles/*.html into sitemap.xml
+// update-sitemap-articles.js — write articles-only sitemap-articles.xml
 //
-// Scans the articles/ directory for .html files and merges canonical <url>
-// entries into the root sitemap.xml (no database required).
+// NEVER writes to sitemap.xml (pages sitemap). That regression wiped hubs
+// on 2026-09-10 when articles were merged into a truncated pages file.
 //
-// Usage (host):
+// Usage:
 //   node scripts/update-sitemap-articles.js
 //   node scripts/update-sitemap-articles.js --dry-run
-//   node scripts/update-sitemap-articles.js --articles-dir=articles --out=sitemap.xml
-//   node scripts/update-sitemap-articles.js --lastmod=mtime   # use file mtime
-//
-// Usage (Docker):
-//   bash scripts/update-sitemap-articles-docker.sh
-//
-// Deploy integration:
-//   • npm run sitemap:articles          — articles-only (fast, no Prisma)
-//   • npm run sitemap                   — full regen + article merge
-//   • Run either script before nginx picks up the static sitemap.xml volume.
+//   node scripts/update-sitemap-articles.js --out=sitemap-articles.xml
 // ==========================================================================
 
 const fs = require('fs');
@@ -26,7 +17,6 @@ const path = require('path');
 const {
   scanStaticArticles,
   buildArticleUrlBlocks,
-  mergeArticlesIntoSitemap,
   canonicalOrigin,
 } = require('./lib/static-articles-sitemap');
 
@@ -34,8 +24,8 @@ function parseArgs(argv) {
   const args = {
     dryRun: false,
     articlesDir: path.join(__dirname, '..', 'articles'),
-    out: path.join(__dirname, '..', 'sitemap.xml'),
-    lastmodMode: 'today',
+    out: path.join(__dirname, '..', 'sitemap-articles.xml'),
+    lastmodMode: 'mtime',
   };
 
   for (const arg of argv) {
@@ -45,7 +35,7 @@ function parseArgs(argv) {
     else if (arg.startsWith('--lastmod=')) {
       const mode = arg.split('=')[1];
       if (mode === 'mtime' || mode === 'today') args.lastmodMode = mode;
-      else throw new Error(`Unknown --lastmod value: ${mode} (use "today" or "mtime")`);
+      else throw new Error(`Unknown --lastmod value: ${mode}`);
     } else if (arg === '--help' || arg === '-h') {
       args.help = true;
     }
@@ -55,18 +45,27 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
-  process.stdout.write(`update-sitemap-articles.js — merge articles/*.html into sitemap.xml
+  process.stdout.write(`update-sitemap-articles.js — build sitemap-articles.xml only
 
 Options:
-  --dry-run                 Print resulting XML to stdout; do not write file
+  --dry-run                 Print XML to stdout; do not write
   --articles-dir=PATH       Source directory (default: ./articles)
-  --out=PATH                Target sitemap path (default: ./sitemap.xml)
-  --lastmod=today|mtime     lastmod date: run date (default) or file mtime
-  -h, --help                Show this help
+  --out=PATH                Output path (default: ./sitemap-articles.xml)
+  --lastmod=today|mtime     lastmod source (default: mtime)
+  -h, --help                Show help
 
-Environment:
-  SITE_BASE                 Canonical origin (default: https://salam-doctor.ir)
+IMPORTANT: This script NEVER writes sitemap.xml (pages).
 `);
+}
+
+function buildArticlesSitemapXml(blocks) {
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...(blocks || []),
+    '</urlset>',
+    '',
+  ].join('\n');
 }
 
 function main() {
@@ -76,43 +75,49 @@ function main() {
     return;
   }
 
-  const articles = scanStaticArticles(args.articlesDir, {
-    origin: process.env.SITE_BASE,
-  });
-  const blocks = buildArticleUrlBlocks(articles, { lastmodMode: args.lastmodMode });
-
-  let baseXml = '';
-  if (fs.existsSync(args.out)) {
-    baseXml = fs.readFileSync(args.out, 'utf8');
-  } else {
-    process.stderr.write(
-      `[sitemap-articles] Warning: ${args.out} not found — creating a minimal sitemap with article URLs only.\n`,
+  const outBase = path.basename(args.out).toLowerCase();
+  if (outBase === 'sitemap.xml') {
+    throw new Error(
+      'Refusing to write articles into sitemap.xml — use sitemap-articles.xml (pages sitemap is separate).'
     );
   }
 
-  const xml = mergeArticlesIntoSitemap(baseXml, blocks);
+  const articles = scanStaticArticles(args.articlesDir, {
+    origin: process.env.SITE_BASE || 'https://salam-doctor.com',
+  }).filter((row) => {
+    // Skip prompt / non-published markdown companions; only real article HTML.
+    return row && row.filename && !/^\d{4}-\d{2}-\d{2}-/.test(row.filename);
+  });
+
+  // Prefer the curated 5 public articles; if filter emptied everything, fall back.
+  let list = articles;
+  if (!list.length) {
+    list = scanStaticArticles(args.articlesDir, {
+      origin: process.env.SITE_BASE || 'https://salam-doctor.com',
+    });
+  }
+
+  // Drop dated SEO prompt HTML if any slipped in (*.md companions are already skipped).
+  list = list.filter((row) => !String(row.filename).includes('consolidation') && !String(row.filename).includes('sitemap-rebuild'));
+
+  const blocks = buildArticleUrlBlocks(list, { lastmodMode: args.lastmodMode });
+  const xml = buildArticlesSitemapXml(blocks);
 
   if (args.dryRun) {
     process.stdout.write(xml);
     process.stderr.write(
-      `\n[dry-run] ${articles.length} static article(s) from ${args.articlesDir}\n` +
-        `          origin: ${canonicalOrigin()}\n`,
+      `\n[dry-run] ${list.length} article(s) → ${args.out}\n` +
+        `          origin: ${canonicalOrigin(process.env.SITE_BASE)}\n`
     );
     return;
   }
 
   fs.writeFileSync(args.out, xml, 'utf8');
-  console.log(`Updated ${args.out}`);
-  console.log(`  ${articles.length} static article URL(s) from ${args.articlesDir}`);
-  console.log(`  Canonical origin: ${canonicalOrigin()}`);
-  if (articles.length) {
-    for (const article of articles) {
-      console.log(`    • ${article.loc}`);
-    }
-  } else {
-    console.log('  (no .html files found — removed stale /articles/*.html entries if any)');
-  }
-  console.log('\nIf a CDN caches /sitemap.xml, purge it after deploy.');
+  console.log(`Wrote ${args.out}`);
+  console.log(`  ${list.length} article URL(s) from ${args.articlesDir}`);
+  console.log(`  Canonical origin: ${canonicalOrigin(process.env.SITE_BASE)}`);
+  list.forEach((a) => console.log(`    • ${a.loc}`));
+  console.log('\nDid NOT touch sitemap.xml (pages).');
 }
 
 if (require.main === module) {
@@ -124,4 +129,4 @@ if (require.main === module) {
   }
 }
 
-module.exports = { parseArgs, main };
+module.exports = { parseArgs, main, buildArticlesSitemapXml };

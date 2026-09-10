@@ -1,6 +1,7 @@
 /**
  * Dynamic /services/:slug landing pages.
- * Canonical routes are English-only (e.g. /services/botox, /services/qswitch).
+ * Canonical routes are English-only (e.g. /services/qswitch).
+ * Note: /services/botox 301 → /shiraz/botox (see server.js consolidation).
  * Persian / alias slugs 301 via Express middleware (serviceSlugMap).
  */
 'use strict';
@@ -79,9 +80,10 @@ const SERVICE_LANDINGS = {
   },
   botox: {
     label: 'بوتاکس',
-    title: 'مراکز تزریق بوتاکس در شیراز',
+    title: 'بهترین مراکز تزریق بوتاکس در شیراز | قیمت و نوبت‌دهی | سلام دکتر',
+    h1: 'بهترین مراکز تزریق بوتاکس در شیراز',
     description:
-      'کلینیک‌های ارائه‌دهنده تزریق بوتاکس در شیراز، انتخاب‌شده برای مقایسه و مشاوره رایگان سلام دکتر.',
+      'لیست کلینیک‌های تزریق بوتاکس در شیراز. مقایسه مراکز معتبر + مشاوره رایگان با سلام دکتر.',
   },
   'eyebrow-beard-transplant': {
     label: 'کاشت ابرو و ریش',
@@ -491,6 +493,7 @@ function renderServicePage(slug, deps) {
   const faqItems = buildServiceFaqItems(meta);
   let faqJson = buildFaqPageJsonLd(faqItems);
   const curated = SERVICE_LANDINGS[meta.slug];
+  let seoH1 = (curated && curated.h1) || meta.title || seoTitle;
   const hasCuratedSeo = Boolean(curated && (curated.title || curated.description));
   if (!hasCuratedSeo) {
     try {
@@ -498,11 +501,13 @@ function renderServicePage(slug, deps) {
       const built = seo.serviceSeo(meta.label || meta.title);
       seoTitle = built.title;
       seoDescription = built.description;
+      seoH1 = built.title;
       breadcrumbJson = seo.serviceBreadcrumbs(meta);
     } catch (_err) {
       /* optional */
     }
   } else {
+    seoH1 = curated.h1 || curated.title || seoTitle;
     try {
       const seo = require('./seoInfra');
       breadcrumbJson = seo.serviceBreadcrumbs(meta);
@@ -514,7 +519,7 @@ function renderServicePage(slug, deps) {
   let html = template
     .replace(/\{\{SLUG\}\}/g, escapeHtml(meta.slug))
     .replace(/\{\{LABEL\}\}/g, escapeHtml(meta.label))
-    .replace(/\{\{TITLE\}\}/g, escapeHtml(seoTitle))
+    .replace(/\{\{TITLE\}\}/g, escapeHtml(seoH1))
     .replace(/\{\{DESCRIPTION\}\}/g, escapeHtml(seoDescription))
     .replace(/\{\{CANONICAL\}\}/g, escapeHtml(canonical))
     .replace(/\{\{OG_IMAGE\}\}/g, escapeHtml(deps.ogImage))

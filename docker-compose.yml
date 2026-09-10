@@ -77,6 +77,7 @@ services:
       - ./utils:/app/utils:ro
       - ./scripts/gtm-snippets.js:/app/scripts/gtm-snippets.js:ro
       - ./seoRouter.js:/app/seoRouter.js:ro
+      - ./hub-slugs.js:/app/hub-slugs.js:ro
       - ./searchRouter.js:/app/searchRouter.js:ro
       - ./search-index.js:/app/search-index.js:ro
       - ./DirectoryRepository.js:/app/DirectoryRepository.js:ro

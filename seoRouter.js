@@ -13,8 +13,9 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const { DirectoryRepository } = require('./DirectoryRepository');
-const { buildLocalHubSeo, buildCityHubSeo } = require('./seoInfra');
+const { buildLocalHubSeo, buildCityHubSeo, hubListedClinicCount, HUB_LIST_MIN_CLINICS } = require('./seoInfra');
 const { HUB_SLUGS } = require('./hub-slugs');
+const { hubLabelFa } = require('./hub-labels');
 const {
   SERVICE_LANDINGS,
   findRelatedClinicsByCategory,
@@ -47,22 +48,52 @@ const EMPTY_HUB_FALLBACK_SLUGS = Object.freeze({
   'hair-transplant-installment': 'hair-transplant',
   'micro-fit-hair-transplant': 'hair-transplant',
   'laser-candela-2026': 'laser-hair-removal',
+  'laser-titanium-2026': 'laser-hair-removal',
   'mens-laser-shiraz': 'laser-hair-removal',
   'co2-fractional-laser': 'skin-rejuvenation',
+  'fotona-laser': 'skin-rejuvenation',
   'hifu-doublo-gold': 'skin-rejuvenation',
-  'laser-hair-removal': 'laser-surgery',
-  'cosmetic-surgery': 'laser-surgery',
+  // Pillar hubs keep their own URL (never 301 to parent) — see PILLAR_HUBS_NO_EMPTY_REDIRECT
   'eyebrow-transplant': 'hair-transplant',
   'skin-rejuvenation': 'dermatology',
-  botox: 'injectables',
-  fillers: 'injectables',
-  mesotherapy: 'injectables',
   'dental-implant': 'dentistry',
   orthodontics: 'dentistry',
   'dental-veneer': 'dentistry',
   slimming: 'body-contouring',
   'light-therapy': 'skin-rejuvenation',
+  'mole-removal': 'skin-rejuvenation',
+  facial: 'skin-rejuvenation',
+  'pore-treatment': 'skin-rejuvenation',
+  'buccal-fat': 'cosmetic-surgery',
+  'breast-surgery': 'cosmetic-surgery',
+  'ear-piercing': 'dermatology',
+  'wart-cryotherapy': 'dermatology',
+  'skin-biopsy': 'dermatology',
 });
+
+/**
+ * Category / silo pillar hubs: always 200 with self-canonical even when empty.
+ * Prevents mesotherapy→injectables and cosmetic-surgery→laser-surgery cannibalization.
+ */
+const PILLAR_HUBS_NO_EMPTY_REDIRECT = new Set([
+  'injectables',
+  'mesotherapy',
+  'fillers',
+  'botox',
+  'cosmetic-surgery',
+  'laser-hair-removal',
+  'laser-surgery',
+  'skin-rejuvenation',
+  'hair-transplant',
+  'dermatology',
+  'dentistry',
+  'body-contouring',
+  'slimming',
+  'breast-surgery',
+  'ear-piercing',
+  'wart-cryotherapy',
+  'skin-biopsy',
+]);
 
 let SEO_OVERRIDES = {};
 try {
@@ -72,6 +103,10 @@ try {
 }
 
 function countActiveClinics(data) {
+  // Prefer primary listed clinics (same counter as SERP / FAQ / cards).
+  if (typeof hubListedClinicCount === 'function') {
+    return hubListedClinicCount(data);
+  }
   if (!data) return 0;
   if (data.stats && typeof data.stats.active === 'number') {
     return data.stats.active;
@@ -98,12 +133,23 @@ function emptyHubFallbackCandidates(data) {
   };
 
   if (data && data.service && data.service.parent && data.service.parent.slug) {
-    push(data.service.parent.slug);
+    const parentSlug = String(data.service.parent.slug).trim().toLowerCase();
+    // Do not fall back from a pillar hub onto its parent (self-canonical).
+    if (!PILLAR_HUBS_NO_EMPTY_REDIRECT.has(current)) {
+      push(parentSlug);
+    }
   }
   push(EMPTY_HUB_FALLBACK_SLUGS[current]);
 
   // Keyword heuristics when parent/map miss (e.g. future long-tails).
-  if (current.includes('laser') && current !== 'laser-hair-removal') {
+  // Fotona is rejuvenation/tightening — never fall back to hair-removal.
+  if (
+    current.includes('laser') &&
+    current !== 'laser-hair-removal' &&
+    current !== 'laser-surgery' &&
+    !current.includes('fotona') &&
+    !current.includes('co2')
+  ) {
     push('laser-hair-removal');
     push('laser-surgery');
   }
@@ -111,7 +157,10 @@ function emptyHubFallbackCandidates(data) {
     push('hair-transplant');
     push('dermatology');
   }
-  if (current.includes('botox') || current.includes('filler') || current.includes('meso')) {
+  if (
+    !PILLAR_HUBS_NO_EMPTY_REDIRECT.has(current) &&
+    (current.includes('botox') || current.includes('filler') || current.includes('meso'))
+  ) {
     push('injectables');
   }
 
@@ -144,6 +193,37 @@ async function resolveNonEmptyFallbackPath(repo, citySlug, data) {
 
 const PARENT_BY_CATEGORY = Object.freeze({
   'skin-aesthetic': { slug: 'skin-rejuvenation', name: 'جوانسازی پوست' },
+});
+
+/** Catalog keyword match for long-tail hubs (when Prisma service row is missing). */
+const DEVICE_HUB_CLINIC_KEYWORDS = Object.freeze({
+  'laser-candela-2026': ['کندلا', 'کاندلا', 'candela'],
+  'laser-titanium-2026': ['تیتانیوم', 'titanium', 'پلاتینیوم', 'platinum'],
+  'fotona-laser': ['فوتونا', 'fotona'],
+  'co2-fractional-laser': ['co2', 'فرکشنال', 'سی او دو', 'سی‌او‌دو'],
+  'mole-removal': ['خال', 'برداشتن خال', 'برداشت خال'],
+  facial: ['فیشیال', 'پاکسازی پوست', 'پاکسازی'],
+  'pore-treatment': ['منافذ', 'منافذ باز'],
+  'buccal-fat': ['بوکال', 'buccal'],
+  'breast-surgery': ['سینه', 'جراحی سینه', 'ماموپلاستی', 'breast'],
+  'ear-piercing': ['پیرسینگ', 'پیرسینگ گوش', 'piercing'],
+  'wart-cryotherapy': ['زگیل', 'زگیل تناسلی', 'کرایو', 'کرایوتراپی'],
+  'skin-biopsy': ['نمونه برداری', 'نمونه‌برداری', 'بیوپسی', 'biopsy'],
+});
+
+const HUB_PARENT_FALLBACK = Object.freeze({
+  'laser-candela-2026': { slug: 'laser-hair-removal', name: 'لیزر موهای زائد' },
+  'laser-titanium-2026': { slug: 'laser-hair-removal', name: 'لیزر موهای زائد' },
+  'fotona-laser': { slug: 'skin-rejuvenation', name: 'جوانسازی پوست' },
+  'co2-fractional-laser': { slug: 'skin-rejuvenation', name: 'جوانسازی پوست' },
+  'mole-removal': { slug: 'skin-rejuvenation', name: 'جوانسازی پوست' },
+  facial: { slug: 'skin-rejuvenation', name: 'جوانسازی پوست' },
+  'pore-treatment': { slug: 'skin-rejuvenation', name: 'جوانسازی پوست' },
+  'buccal-fat': { slug: 'cosmetic-surgery', name: 'جراحی زیبایی' },
+  'breast-surgery': { slug: 'cosmetic-surgery', name: 'جراحی زیبایی' },
+  'ear-piercing': { slug: 'dermatology', name: 'پوست و مو' },
+  'wart-cryotherapy': { slug: 'dermatology', name: 'پوست و مو' },
+  'skin-biopsy': { slug: 'dermatology', name: 'پوست و مو' },
 });
 
 let cachedClinicsData = null;
@@ -180,6 +260,47 @@ function shapeRelatedClinicForHub(c) {
   };
 }
 
+function findCatalogClinicsForDeviceHub(slug) {
+  const key = String(slug || '').trim().toLowerCase();
+  const keywords = DEVICE_HUB_CLINIC_KEYWORDS[key];
+  if (!keywords || !keywords.length) return [];
+  const clinics = loadClinicsData();
+  const matched = [];
+  for (const clinic of clinics) {
+    if (!clinic || clinic.id == null) continue;
+    const haystack = [
+      clinic.name,
+      clinic.sliderTitle,
+      clinic.sliderTagline,
+      ...(Array.isArray(clinic.services)
+        ? clinic.services.map((s) =>
+            typeof s === 'string' ? s : (s && (s.label || s.name || s.slug)) || ''
+          )
+        : []),
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase();
+    if (!keywords.some((kw) => haystack.includes(String(kw).toLowerCase()))) continue;
+    matched.push({
+      id: Number(clinic.id),
+      name: clinic.name || clinic.sliderTitle || `مرکز ${clinic.id}`,
+      address: clinic.address || '',
+      profileUrl: clinic.link || `/doctor/${clinic.id}`,
+      isActive: true,
+      district: null,
+      devices: [],
+      rating: { value: 4.8, count: 12 },
+    });
+  }
+  matched.sort((a, b) => {
+    if (a.id === 114) return -1;
+    if (b.id === 114) return 1;
+    return String(a.name).localeCompare(String(b.name), 'fa');
+  });
+  return matched;
+}
+
 /** Hub page when Prisma service row is missing but slug is in sitemap/seo-config. */
 function buildSyntheticHubPage(city, slug) {
   const key = String(slug || '').trim().toLowerCase();
@@ -188,13 +309,18 @@ function buildSyntheticHubPage(city, slug) {
   const landing = SERVICE_LANDINGS[key] || {};
   const override = SEO_OVERRIDES[key] || {};
   const serviceName =
-    String(landing.label || override.h1 || '').trim() || key;
+    String(landing.label || hubLabelFa(key) || '').trim() || key;
   const parent =
-    landing.parentCategory && PARENT_BY_CATEGORY[landing.parentCategory];
-  const related = findRelatedClinicsByCategory(
-    { slug: key, label: serviceName, parentCategory: landing.parentCategory },
-    { loadClinicsData }
-  );
+    (landing.parentCategory && PARENT_BY_CATEGORY[landing.parentCategory]) ||
+    HUB_PARENT_FALLBACK[key] ||
+    null;
+  const deviceClinics = findCatalogClinicsForDeviceHub(key);
+  const related = deviceClinics.length
+    ? { clinics: [], badge: '' }
+    : findRelatedClinicsByCategory(
+        { slug: key, label: serviceName, parentCategory: landing.parentCategory },
+        { loadClinicsData }
+      );
 
   return {
     citySlug: city.slug,
@@ -211,12 +337,12 @@ function buildSyntheticHubPage(city, slug) {
       basePrice: null,
       minPrice: null,
     },
-    clinics: [],
+    clinics: deviceClinics,
     relatedClinics: (related.clinics || []).map(shapeRelatedClinicForHub),
     districts: [],
     stats: {
-      total: 0,
-      active: 0,
+      total: deviceClinics.length,
+      active: deviceClinics.length,
       withAuthenticDevice: 0,
       ratingValue: 4.8,
       reviewCount: 0,
@@ -302,7 +428,11 @@ function createSeoApp(options = {}) {
 
     const activeCount = countActiveClinics(data);
 
-    if (activeCount === 0 && EMPTY_HUB_MODE !== 'noindex') {
+    if (
+      activeCount === 0 &&
+      EMPTY_HUB_MODE !== 'noindex' &&
+      !PILLAR_HUBS_NO_EMPTY_REDIRECT.has(slug)
+    ) {
       const fallbackPath = await resolveNonEmptyFallbackPath(repo, city.slug, data);
       if (fallbackPath && fallbackPath !== localHubPath(city.slug, slug)) {
         console.log(
@@ -313,10 +443,15 @@ function createSeoApp(options = {}) {
       console.log(
         `[seo] empty hub retained: /${city.slug}/${slug} (active=0) → 200 indexable`
       );
+    } else if (activeCount === 0 && PILLAR_HUBS_NO_EMPTY_REDIRECT.has(slug)) {
+      console.log(
+        `[seo] pillar hub retained: /${city.slug}/${slug} (active=0) → 200 self-canonical`
+      );
     }
 
     const fileOverride = SEO_OVERRIDES[slug] || {};
     const seo = buildLocalHubSeo(data, fileOverride);
+    const hubMode = seo.hubMode || (activeCount >= HUB_LIST_MIN_CLINICS ? 'list' : 'guide');
 
     res.render(
       'directory',
@@ -327,6 +462,8 @@ function createSeoApp(options = {}) {
         hubSeo: data.hubSeo || null,
         noindex: false,
         activeClinicCount: activeCount,
+        listedClinicCount: seo.listedClinicCount != null ? seo.listedClinicCount : activeCount,
+        hubMode,
         relatedClinics: data.relatedClinics || [],
       },
       (err, html) => {
@@ -431,7 +568,11 @@ function createSeoApp(options = {}) {
     const activeCount = countActiveClinics(data);
     let redirectTo = null;
 
-    if (activeCount === 0 && EMPTY_HUB_MODE !== 'noindex') {
+    if (
+      activeCount === 0 &&
+      EMPTY_HUB_MODE !== 'noindex' &&
+      !PILLAR_HUBS_NO_EMPTY_REDIRECT.has(resolvedSlug)
+    ) {
       redirectTo = await resolveNonEmptyFallbackPath(repo, citySlug, data);
     }
 
@@ -446,6 +587,8 @@ function createSeoApp(options = {}) {
       path: localHubPath(citySlug, resolvedSlug),
       activeClinicCount: activeCount,
       empty: activeCount === 0,
+      hubMode: seo.hubMode || (activeCount >= HUB_LIST_MIN_CLINICS ? 'list' : 'guide'),
+      listedClinicCount: seo.listedClinicCount != null ? seo.listedClinicCount : activeCount,
       noindex: false,
       redirectTo,
       title: seo.title,
@@ -491,4 +634,5 @@ module.exports = {
   emptyHubFallbackCandidates,
   resolveNonEmptyFallbackPath,
   EMPTY_HUB_FALLBACK_SLUGS,
+  PILLAR_HUBS_NO_EMPTY_REDIRECT,
 };

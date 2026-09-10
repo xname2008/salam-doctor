@@ -3,206 +3,289 @@
   <url>
     <loc>https://salam-doctor.com/</loc>
     <lastmod>2026-05-31</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/about.html</loc>
+    <lastmod>2026-06-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/articles.html</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
     <loc>https://salam-doctor.com/category.html</loc>
     <lastmod>2026-05-31</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/hair-transplant.html</loc>
-    <lastmod>2026-06-13</lastmod>
-    <priority>0.9</priority>
+    <loc>https://salam-doctor.com/clinic-promote.html</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/skin-rejuvenation.html</loc>
-    <lastmod>2026-06-13</lastmod>
-    <priority>0.9</priority>
+    <loc>https://salam-doctor.com/contact.html</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/laser-hair.html</loc>
-    <lastmod>2026-06-13</lastmod>
-    <priority>0.9</priority>
+    <loc>https://salam-doctor.com/doctor/nahal-clinic</loc>
+    <lastmod>2026-09-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/injection.html</loc>
+    <loc>https://salam-doctor.com/faq.html</loc>
     <lastmod>2026-06-13</lastmod>
-    <priority>0.9</priority>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/cosmetic-surgery.html</loc>
+    <loc>https://salam-doctor.com/femto-lasik.html</loc>
     <lastmod>2026-06-13</lastmod>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/slimming.html</loc>
-    <lastmod>2026-06-13</lastmod>
-    <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/eye.html</loc>
-    <lastmod>2026-06-13</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://salam-doctor.com/lasik.html</loc>
     <lastmod>2026-06-13</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/femto-lasik.html</loc>
+    <loc>https://salam-doctor.com/pharmacy.html</loc>
     <lastmod>2026-06-13</lastmod>
-    <priority>0.8</priority>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
   </url>
   <url>
     <loc>https://salam-doctor.com/prk.html</loc>
     <lastmod>2026-06-13</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://salam-doctor.com/products.html</loc>
     <lastmod>2026-06-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/rhinoplasty.html</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/about.html</loc>
-    <lastmod>2026-06-13</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/articles.html</loc>
-    <lastmod>2026-06-02</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/dermatology</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/laser-surgery</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/body-contouring</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/injectables</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/dentistry</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/hair-transplant</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/eyebrow-transplant</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/skin-rejuvenation</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/laser-hair-removal</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/cosmetic-surgery</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/slimming</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
+    <loc>https://salam-doctor.com/shiraz</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://salam-doctor.com/shiraz/botox</loc>
-    <lastmod>2026-09-03</lastmod>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/shiraz/fillers</loc>
-    <lastmod>2026-09-03</lastmod>
+    <loc>https://salam-doctor.com/shiraz/breast-surgery</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/shiraz/mesotherapy</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/dental-implant</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/orthodontics</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/dental-veneer</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/hair-transplant-installment</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/micro-fit-hair-transplant</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/laser-candela-2026</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://salam-doctor.com/shiraz/mens-laser-shiraz</loc>
-    <lastmod>2026-09-03</lastmod>
+    <loc>https://salam-doctor.com/shiraz/buccal-fat</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://salam-doctor.com/shiraz/co2-fractional-laser</loc>
-    <lastmod>2026-09-03</lastmod>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/co2-laser</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/cosmetic-surgery</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/dental-implant</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/dental-veneer</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/dentistry</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/dermatology</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/ear-piercing</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/eyebrow-transplant</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/facial</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/fillers</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/fotona-laser</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/hair-transplant</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/hair-transplant-installment</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://salam-doctor.com/shiraz/hifu-doublo-gold</loc>
-    <lastmod>2026-09-03</lastmod>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/articles/fit-hair-transplant-cost.html</loc>
-    <lastmod>2026-09-01</lastmod>
+    <loc>https://salam-doctor.com/shiraz/injectables</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/articles/laser-hair-removal-comparison.html</loc>
-    <lastmod>2026-09-03</lastmod>
+    <loc>https://salam-doctor.com/shiraz/laser-candela-2026</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/laser-hair-removal</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/laser-surgery</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://salam-doctor.com/doctor/nahal-clinic</loc>
-    <lastmod>2026-09-03</lastmod>
-    <priority>0.6</priority>
+    <loc>https://salam-doctor.com/shiraz/laser-titanium-2026</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/mens-laser-shiraz</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/mesotherapy</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/micro-fit-hair-transplant</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/mole-removal</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/orthodontics</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/pore-treatment</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/skin-biopsy</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/skin-rejuvenation</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/shiraz/wart-cryotherapy</loc>
+    <lastmod>2026-09-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://salam-doctor.com/slimming.html</loc>
+    <lastmod>2026-06-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
   </url>
 </urlset>

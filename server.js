@@ -220,9 +220,9 @@ const HEADER_HTML = `<header class="topbar">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <div class="dropdown-content">
-          <a href="/hair-transplant.html">کاشت مو و ابرو</a>
-          <a href="/skin-rejuvenation.html">پوست و جوانسازی</a>
-          <a href="/injection.html">تزریقات زیبایی</a>
+          <a href="/shiraz/hair-transplant">کاشت مو و ابرو</a>
+          <a href="/shiraz/skin-rejuvenation">پوست و جوانسازی</a>
+          <a href="/shiraz/injectables">تزریقات زیبایی</a>
         </div>
       </div>
       <div class="dropdown">
@@ -230,8 +230,8 @@ const HEADER_HTML = `<header class="topbar">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <div class="dropdown-content">
-          <a href="/laser-hair.html">لیزر موهای زائد</a>
-          <a href="/cosmetic-surgery.html">جراحی زیبایی</a>
+          <a href="/shiraz/laser-hair-removal">لیزر موهای زائد</a>
+          <a href="/shiraz/cosmetic-surgery">جراحی زیبایی</a>
         </div>
       </div>
       <div class="dropdown">
@@ -265,11 +265,11 @@ const DRAWER_HTML = `<div id="drawer-overlay" class="drawer-overlay" hidden></di
   </div>
   <div class="drawer-body">
     <a href="/">خانه</a>
-    <a href="/hair-transplant.html">کاشت مو و ابرو</a>
-    <a href="/skin-rejuvenation.html">پوست و جوانسازی</a>
-    <a href="/injection.html">تزریقات زیبایی</a>
-    <a href="/laser-hair.html">لیزر موهای زائد</a>
-    <a href="/cosmetic-surgery.html">جراحی زیبایی</a>
+    <a href="/shiraz/hair-transplant">کاشت مو و ابرو</a>
+    <a href="/shiraz/skin-rejuvenation">پوست و جوانسازی</a>
+    <a href="/shiraz/injectables">تزریقات زیبایی</a>
+    <a href="/shiraz/laser-hair-removal">لیزر موهای زائد</a>
+    <a href="/shiraz/cosmetic-surgery">جراحی زیبایی</a>
     <a href="/slimming.html">لاغری و پیکرتراشی</a>
     <a href="/lasik.html">لیزیک</a>
     <a href="/femto-lasik.html">فمتولیزیک</a>
@@ -302,6 +302,9 @@ const FOOTER_HTML = `<footer>
           <a href="/shiraz/laser-hair-removal">لیزر موهای زائد در شیراز</a>
           <a href="/shiraz/fillers">تزریق فیلر در شیراز</a>
           <a href="/shiraz/skin-rejuvenation">جوانسازی پوست در شیراز</a>
+          <a href="/shiraz/cosmetic-surgery">جراحی زیبایی در شیراز</a>
+          <a href="/shiraz/breast-surgery">جراحی سینه در شیراز</a>
+          <a href="/shiraz/dermatology">پوست و مو در شیراز</a>
           <a href="/tehran/hair-transplant">کاشت مو در تهران</a>
         </div>
       </div>
@@ -2220,15 +2223,23 @@ function injectClinicMapPlaceholders(html, lat, lng, clinicName) {
 }
 
 function injectProfileMeta(html, clinic, clinicId, overlay) {
-  const name =
-    trimOrNull(clinic.name) ||
-    trimOrNull(clinic.sliderTitle) ||
-    `مرکز ${clinicId}`;
+  const numericId = Number(clinicId);
+  const isNahal = numericId === 114 || String(clinic && clinic.slug || '').trim() === 'nahal-clinic';
+  const name = isNahal
+    ? 'کلینیک نهال'
+    : trimOrNull(clinic.name) ||
+      trimOrNull(clinic.sliderTitle) ||
+      `مرکز ${clinicId}`;
   const localMods = resolveClinicLocalSeoModifiers(clinic, overlay);
   if (!localMods.city) localMods.city = 'شیراز';
-  const seo = clinicSeo(name, localMods);
+  const nahalDescription =
+    'آدرس، تلفن و نوبت‌دهی کلینیک نهال در شیراز (پوست، مو، زیبایی و کاشت مو). مشاهده جزئیات و رزرو از طریق سلام دکتر.';
+  const seo = clinicSeo(name, {
+    ...localMods,
+    ...(isNahal ? { description: nahalDescription } : {}),
+  });
   const title = seo.title;
-  const ogTitle = seo.h1;
+  const ogTitle = seo.title;
   const display = resolveClinicDisplayContact(clinic, overlay);
   const address =
     display.addressRaw ||
@@ -4018,6 +4029,127 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
+    // Candela / Titanium / Botox / laser-hair.html consolidation.
+    if (method === 'GET' || method === 'HEAD') {
+      // Trailing slash on /shiraz/* hubs → one-hop 301 (canonical without slash).
+      const rawPathOnly = String(req.url || '/').split('?')[0].split('#')[0];
+      if (
+        rawPathOnly.length > 1 &&
+        rawPathOnly.endsWith('/') &&
+        rawPathOnly.startsWith('/shiraz')
+      ) {
+        const qs = String(req.url || '').includes('?')
+          ? '?' + String(req.url).split('?').slice(1).join('?').split('#')[0]
+          : '';
+        sendPermanentRedirect(res, rawPathOnly.replace(/\/+$/, '') + qs, method);
+        return;
+      }
+
+      let decodedPath = pathname;
+      try {
+        decodedPath = decodeURIComponent(pathname);
+      } catch (_err) {
+        /* keep pathname */
+      }
+      // Dual hub consolidations: .html → Shiraz canonical (one-hop 301)
+      if (decodedPath === '/laser-hair.html') {
+        sendPermanentRedirect(res, '/shiraz/laser-hair-removal', method);
+        return;
+      }
+      if (decodedPath === '/cosmetic-surgery.html') {
+        sendPermanentRedirect(res, '/shiraz/cosmetic-surgery', method);
+        return;
+      }
+      if (decodedPath === '/hair-transplant.html') {
+        sendPermanentRedirect(res, '/shiraz/hair-transplant', method);
+        return;
+      }
+      if (decodedPath === '/skin-rejuvenation.html') {
+        sendPermanentRedirect(res, '/shiraz/skin-rejuvenation', method);
+        return;
+      }
+      if (decodedPath === '/injection.html') {
+        sendPermanentRedirect(res, '/shiraz/injectables', method);
+        return;
+      }
+      if (
+        decodedPath === '/services/candela-laser' ||
+        /^\/services\/.*کندلا.*/i.test(decodedPath)
+      ) {
+        sendPermanentRedirect(res, '/shiraz/laser-candela-2026', method);
+        return;
+      }
+      if (
+        decodedPath === '/services/titanium-laser' ||
+        /^\/services\/.*تیتانیوم.*/i.test(decodedPath)
+      ) {
+        sendPermanentRedirect(res, '/shiraz/laser-titanium-2026', method);
+        return;
+      }
+      // Botox → /shiraz/botox only (Persian aliases must not chain via /services/botox).
+      // Exact paths only — do NOT match بوتاکس-و-فیلر (botox-filler stays separate).
+      if (
+        decodedPath === '/services/botox' ||
+        decodedPath === '/services/بوتاکس' ||
+        decodedPath === '/services/تزریق-بوتاکس'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/botox', method);
+        return;
+      }
+
+      // Soft-404 recovery: high-impression Persian /services/* → Shiraz hubs
+      const soft404HubRedirects = {
+        '/services/برداشتن-خال': '/shiraz/mole-removal',
+        '/services/برداشت-خال-و': '/shiraz/mole-removal',
+        '/services/فیشیال': '/shiraz/facial',
+        '/services/فیشیال-و-پاکسازی-پوست': '/shiraz/facial',
+        '/services/برطرف-کردن-منافذ-باز-پوست': '/shiraz/pore-treatment',
+        '/services/درمان-منافذ-صورت': '/shiraz/pore-treatment',
+        '/services/بوکال-فت': '/shiraz/buccal-fat',
+        '/services/لیفت-صورت-بوکال-فت': '/shiraz/buccal-fat',
+        // CO2 → fractional CO2 hub
+        '/services/co2-laser': '/shiraz/co2-fractional-laser',
+        '/services/لیزرco2': '/shiraz/co2-fractional-laser',
+        '/services/لیزر-فرکشنالco2': '/shiraz/co2-fractional-laser',
+        // Fotona → fotona hub (NOT hair-removal)
+        '/services/fotona-laser': '/shiraz/fotona-laser',
+        '/services/لیزر-فوتونا': '/shiraz/fotona-laser',
+        '/services/فوتونا': '/shiraz/fotona-laser',
+        '/shiraz/فوتونا': '/shiraz/fotona-laser',
+        '/shiraz/لیزر-فوتونا': '/shiraz/fotona-laser',
+        // Soft-404: مزوژل و بوتاکس → botox hub (exact path only)
+        '/services/مزوژل-و-بوتاکس': '/shiraz/botox',
+        // Soft-404 batch B — new Shiraz landings
+        '/services/جراحی-سینه': '/shiraz/breast-surgery',
+        '/services/پیرسینگ-گوش': '/shiraz/ear-piercing',
+        '/services/درمان-زگیل-تناسلی-با-کرایو-تراپی-و-لیزر-درمانی':
+          '/shiraz/wart-cryotherapy',
+        '/services/نمونه-برداری-پوستی': '/shiraz/skin-biopsy',
+        // Face/neck lift soft-404 → rejuvenation category (not a new thin hub)
+        '/services/جوان-سازی-و-لیفت-صورت-و-گردن': '/shiraz/skin-rejuvenation',
+        // IPL / pico hair → laser hair Shiraz hub
+        '/services/پیکو-لیزر-مو-های-زائد-با-فناوری-پیشرفته-ipl':
+          '/shiraz/laser-hair-removal',
+        // Slimming / body contouring → static category page
+        '/services/لاغری': '/slimming.html',
+        '/services/پیکرتراشی': '/slimming.html',
+        '/services/اسلیمینگ': '/slimming.html',
+        '/shiraz/لاغری': '/slimming.html',
+        '/shiraz/پیکرتراشی': '/slimming.html',
+        '/shiraz/اسلیمینگ': '/slimming.html',
+        '/shiraz/slimming': '/slimming.html',
+        '/shiraz/body-contouring': '/slimming.html',
+        // Double-chin soft-404s → HIFU Doublo Gold
+        '/services/ساکشن-غبغب': '/shiraz/hifu-doublo-gold',
+        '/services/لیفت-غبغب': '/shiraz/hifu-doublo-gold',
+      };
+      const soft404Dest = soft404HubRedirects[decodedPath];
+      if (soft404Dest) {
+        sendPermanentRedirect(res, soft404Dest, method);
+        return;
+      }
+    }
+
     // Bare /index.html → canonical home (no duplicate URL).
     if (
       (method === 'GET' || method === 'HEAD') &&

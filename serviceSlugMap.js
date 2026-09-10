@@ -12,6 +12,7 @@ const CANONICAL_SERVICE_SLUGS = new Set([
   'qswitch',
   'deka-laser',
   'candela-laser',
+  'titanium-laser',
   'co2-laser',
   'fotona-laser',
   'hair-transplant-fit',
@@ -40,9 +41,13 @@ const SERVICE_SLUG_REDIRECTS = {
   'كيوسوئيچ': 'qswitch',
   'ليزر-كيوسوئيچ': 'qswitch',
 
-  // Botox (canonical: botox / botox-filler)
+  // Botox — aliases used to 301 → /services/botox; server.js now sends them
+  // DIRECTLY to /shiraz/botox (one hop). Keep map for slug resolution / catalog.
   'بوتاکس': 'botox',
   'تزریق-بوتاکس': 'botox',
+  // Soft-404 path handled in server.js → /shiraz/botox (not via this map)
+  // 'مزوژل-و-بوتاکس' intentionally omitted here to avoid /services/botox chain
+
   filler: 'botox-filler',
   'botox-and-filler': 'botox-filler',
   'بوتاکس-و-فیلر': 'botox-filler',
@@ -54,7 +59,19 @@ const SERVICE_SLUG_REDIRECTS = {
   'دکا': 'deka-laser',
   candela: 'candela-laser',
   'کندلا': 'candela-laser',
+  'کاندلا': 'candela-laser',
   'لیزر-کندلا': 'candela-laser',
+  'لیزر-کاندلا': 'candela-laser',
+  // Note: /services/candela-laser and /services/*کندلا* 301 → /shiraz/laser-candela-2026
+  // (see server.js laser consolidation redirects).
+
+  // Titanium laser — aliases collapse toward a services slug that then redirects
+  // to the Shiraz hub (server.js: /services/*تیتانیوم* → /shiraz/laser-titanium-2026).
+  titanium: 'titanium-laser',
+  'تیتانیوم': 'titanium-laser',
+  'لیزر-تیتانیوم': 'titanium-laser',
+  'پلاتینیوم': 'titanium-laser',
+  'لیزر-پلاتینیوم': 'titanium-laser',
   co2: 'co2-laser',
   co2laser: 'co2-laser',
   'لیزر-co2': 'co2-laser',
@@ -158,6 +175,29 @@ function canonicalServicePath(raw) {
   return `/services/${slug}`;
 }
 
+/**
+ * Service landings permanently consolidated onto /shiraz/* hubs.
+ * Excluded from dynamic /services sitemap (canonical is the hub URL).
+ */
+const SERVICES_REDIRECTED_TO_HUB = new Set([
+  'botox',
+  'candela-laser',
+  'titanium-laser',
+  'co2-laser',
+  'fotona-laser',
+]);
+
+function serviceHubCanonicalPath(slug) {
+  const map = {
+    botox: '/shiraz/botox',
+    'candela-laser': '/shiraz/laser-candela-2026',
+    'titanium-laser': '/shiraz/laser-titanium-2026',
+    'co2-laser': '/shiraz/co2-fractional-laser',
+    'fotona-laser': '/shiraz/fotona-laser',
+  };
+  return map[slug] || null;
+}
+
 function canonicalServiceUrl(raw, siteBase) {
   const path = canonicalServicePath(raw);
   if (!path) return null;
@@ -227,6 +267,7 @@ function createServiceSlugRedirectApp() {
 module.exports = {
   CANONICAL_SERVICE_SLUGS,
   SERVICE_SLUG_REDIRECTS,
+  SERVICES_REDIRECTED_TO_HUB,
   decodeSlug,
   isEnglishServiceSlug,
   persianLabelSlug,
@@ -236,6 +277,7 @@ module.exports = {
   needsServiceSlugRedirect,
   canonicalServicePath,
   canonicalServiceUrl,
+  serviceHubCanonicalPath,
   englishSlugFromLabel,
   slugsReferToSameService,
   serviceSlugRedirectMiddleware,

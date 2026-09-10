@@ -463,9 +463,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </svg>
           </a>
           <div class="dropdown-content">
-            <a href="hair-transplant.html">کاشت مو و ابرو</a>
-            <a href="skin-rejuvenation.html">پوست و جوانسازی</a>
-            <a href="injection.html">تزریقات زیبایی</a>
+            <a href="/shiraz/hair-transplant">کاشت مو و ابرو</a>
+            <a href="/shiraz/skin-rejuvenation">پوست و جوانسازی</a>
+            <a href="/shiraz/injectables">تزریقات زیبایی</a>
           </div>
         </div>
         <div class="dropdown">
@@ -476,8 +476,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </svg>
           </a>
           <div class="dropdown-content">
-            <a href="laser-hair.html">لیزر موهای زائد</a>
-            <a href="cosmetic-surgery.html">جراحی زیبایی</a>
+            <a href="/shiraz/laser-hair-removal">لیزر موهای زائد</a>
+            <a href="/shiraz/cosmetic-surgery">جراحی زیبایی</a>
           </div>
         </div>
         <div class="dropdown">
@@ -514,11 +514,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
     <div class="drawer-body">
       <a href="/">خانه</a>
-      <a href="hair-transplant.html">کاشت مو و ابرو</a>
-      <a href="skin-rejuvenation.html">پوست و جوانسازی</a>
-      <a href="injection.html">تزریقات زیبایی</a>
-      <a href="laser-hair.html">لیزر موهای زائد</a>
-      <a href="cosmetic-surgery.html">جراحی زیبایی</a>
+      <a href="/shiraz/hair-transplant">کاشت مو و ابرو</a>
+      <a href="/shiraz/skin-rejuvenation">پوست و جوانسازی</a>
+      <a href="/shiraz/injectables">تزریقات زیبایی</a>
+      <a href="/shiraz/laser-hair-removal">لیزر موهای زائد</a>
+      <a href="/shiraz/cosmetic-surgery">جراحی زیبایی</a>
       <a href="slimming.html">لاغری و پیکرتراشی</a>
       <a href="lasik.html">لیزیک</a>
       <a href="femto-lasik.html">فمتولیزیک</a>
@@ -838,6 +838,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <a href="/shiraz/laser-hair-removal">لیزر موهای زائد در شیراز</a>
             <a href="/shiraz/fillers">تزریق فیلر در شیراز</a>
             <a href="/shiraz/skin-rejuvenation">جوانسازی پوست در شیراز</a>
+            <a href="/shiraz/cosmetic-surgery">جراحی زیبایی در شیراز</a>
+            <a href="/shiraz/breast-surgery">جراحی سینه در شیراز</a>
+            <a href="/shiraz/dermatology">پوست و مو در شیراز</a>
             <a href="/tehran/hair-transplant">کاشت مو در تهران</a>
           </div>
         </div>
@@ -865,8 +868,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   <nav id="mobile-nav" class="mobile-nav">
     <div class="mobile-grid">
-      <a class="btn btn-soft" href="skin-rejuvenation.html">پوست و زیبایی</a>
-      <a class="btn btn-soft" href="hair-transplant.html">مو و کاشت</a>
+      <a class="btn btn-soft" href="/shiraz/skin-rejuvenation">پوست و زیبایی</a>
+      <a class="btn btn-soft" href="/shiraz/hair-transplant">مو و کاشت</a>
       <a id="mobile-clinic-call" class="btn btn-main" href="#" dir="ltr" hidden>تماس تلفنی</a>
       <a id="mobile-clinic-whatsapp" class="btn btn-green" href="#" target="_blank" rel="noopener noreferrer" hidden>واتس‌اپ</a>
     </div>
@@ -935,6 +938,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
 
       function clinicDisplayName(clinic) {
+        var id = Number(clinic && clinic.id);
+        var slug = String((clinic && clinic.slug) || '').trim();
+        if (id === 114 || slug === 'nahal-clinic') return 'کلینیک نهال';
         return (
           clinic.profileTitle ||
           clinic.displayName ||
@@ -946,12 +952,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       function clinicProfileTitle(clinic) {
         var displayName = clinicDisplayName(clinic);
-        var city = clinic.city || clinic.cityFa || clinic.city_name || 'شیراز';
-        return displayName + ' در ' + city + ' | سلام دکتر';
+        return displayName + ' شیراز | پوست، مو و زیبایی | آدرس و نوبت | سلام دکتر';
       }
 
       function clinicLocalSeoHeadline(clinic) {
-        return clinicDisplayName(clinic);
+        return clinicDisplayName(clinic) + ' شیراز | پوست، مو و زیبایی';
+      }
+
+      function clinicProfileDescription(clinic) {
+        var id = Number(clinic && clinic.id);
+        var slug = String((clinic && clinic.slug) || '').trim();
+        if (id === 114 || slug === 'nahal-clinic') {
+          return 'آدرس، تلفن و نوبت‌دهی کلینیک نهال در شیراز (پوست، مو، زیبایی و کاشت مو). مشاهده جزئیات و رزرو از طریق سلام دکتر.';
+        }
+        return null;
       }
 
       const clinicName = document.getElementById('clinic-name');
@@ -967,18 +981,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       (function updateProfileMeta(headline, clinicDesc) {
         var pageTitle = clinicProfileTitle(clinic);
+        var pageDesc = clinicProfileDescription(clinic) ||
+          (headline + '. ' + (clinicDesc || 'رزرو نوبت آنلاین از طریق سلام دکتر.'));
         document.title = pageTitle;
         var metaDesc = document.querySelector('meta[name="description"]');
-        if (metaDesc) {
-          metaDesc.setAttribute(
-            'content',
-            headline + '. ' + (clinicDesc || 'رزرو نوبت آنلاین از طریق سلام دکتر.')
-          );
-        }
+        if (metaDesc) metaDesc.setAttribute('content', pageDesc);
         var ogTitle = document.querySelector('meta[property="og:title"]');
         var ogDesc = document.querySelector('meta[property="og:description"]');
-        if (ogTitle) ogTitle.setAttribute('content', headline);
-        if (ogDesc) ogDesc.setAttribute('content', headline + ' — سلام دکتر');
+        if (ogTitle) ogTitle.setAttribute('content', pageTitle);
+        if (ogDesc) ogDesc.setAttribute('content', pageDesc);
+        var twTitle = document.querySelector('meta[name="twitter:title"]');
+        var twDesc = document.querySelector('meta[name="twitter:description"]');
+        if (twTitle) twTitle.setAttribute('content', pageTitle);
+        if (twDesc) twDesc.setAttribute('content', pageDesc);
         var canonical = document.querySelector('link[rel="canonical"]');
         if (canonical) {
           var path = (typeof window.clinicProfilePath === 'function')
@@ -1800,11 +1815,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
 
       var CLINIC_CATEGORY_HINTS = [
-        { id: 'hair', name: 'کاشت مو و ابرو', href: 'hair-transplant.html', keywords: ['کاشت', 'مو', 'ابرو', 'ریش'] },
-        { id: 'skin', name: 'جوانسازی و پوست', href: 'skin-rejuvenation.html', keywords: ['پوست', 'جوان', 'فیشیال', 'هایفو', 'مزو'] },
-        { id: 'laser', name: 'لیزر موهای زائد', href: 'laser-hair.html', keywords: ['لیزر', 'الکساندرایت', 'کندلا', 'تیتانیوم'] },
-        { id: 'injection', name: 'تزریقات زیبایی', href: 'injection.html', keywords: ['تزریق', 'بوتاکس', 'ژل', 'فیلر', 'مزوژل'] },
-        { id: 'surgery', name: 'جراحی زیبایی', href: 'cosmetic-surgery.html', keywords: ['جراحی', 'بلفارو', 'لابیا', 'سانترال', 'لیفت'] },
+        { id: 'hair', name: 'کاشت مو و ابرو', href: '/shiraz/hair-transplant', keywords: ['کاشت', 'مو', 'ابرو', 'ریش'] },
+        { id: 'skin', name: 'جوانسازی و پوست', href: '/shiraz/skin-rejuvenation', keywords: ['پوست', 'جوان', 'فیشیال', 'هایفو', 'مزو'] },
+        { id: 'laser', name: 'لیزر موهای زائد', href: '/shiraz/laser-hair-removal', keywords: ['لیزر', 'الکساندرایت', 'کندلا', 'تیتانیوم'] },
+        { id: 'injection', name: 'تزریقات زیبایی', href: '/shiraz/injectables', keywords: ['تزریق', 'بوتاکس', 'ژل', 'فیلر', 'مزوژل'] },
+        { id: 'surgery', name: 'جراحی زیبایی', href: '/shiraz/cosmetic-surgery', keywords: ['جراحی', 'بلفارو', 'لابیا', 'سانترال', 'لیفت'] },
         { id: 'slimming', name: 'لاغری و پیکرتراشی', href: 'slimming.html', keywords: ['لاغری', 'پیکرتراشی', 'کرایو', 'چربی'] },
         { id: 'lasik', name: 'لیزیک', href: 'lasik.html', keywords: ['لیزیک', 'چشم'] },
         { id: 'prk', name: 'پی‌آر‌کی', href: 'prk.html', keywords: ['prk', 'پی آر کی'] }
