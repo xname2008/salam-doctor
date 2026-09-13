@@ -35,12 +35,15 @@ const HUB_SLUGS = [
   'laser-hair-removal',
   'cosmetic-surgery',
   'slimming',
+  'rhinoplasty',
+  'lasik',
+  'femto-lasik',
+  'prk',
+  'pharmacy',
   'botox',
   'fillers',
   'mesotherapy',
-  'dental-implant',
-  'orthodontics',
-  'dental-veneer',
+  // dental-implant / orthodontics / dental-veneer → 301 /shiraz/dentistry (empty inventory)
   // —— Long-tail (Hair / Laser / Skin / HIFU) ——
   'hair-transplant-installment',
   'micro-fit-hair-transplant',

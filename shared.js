@@ -26,8 +26,8 @@
 
 function ensureNavMenuLinks() {
   var EXTRA_LINKS = [
-    { file: 'pharmacy.html', label: 'داروخانه', afterFile: 'products.html' },
-    { file: 'faq.html', label: 'سوالات متداول', afterFile: 'pharmacy.html' }
+    { file: '/shiraz/pharmacy', label: 'داروخانه', afterFile: 'products.html' },
+    { file: 'faq.html', label: 'سوالات متداول', afterFile: '/shiraz/pharmacy' }
   ];
 
   function hrefPrefix(container) {
@@ -53,6 +53,11 @@ function ensureNavMenuLinks() {
     return link;
   }
 
+  function linkHref(prefix, file) {
+    if (String(file || '').charAt(0) === '/') return file;
+    return (prefix || '') + file;
+  }
+
   function patchContainer(container) {
     if (!container) return;
     var prefix = hrefPrefix(container);
@@ -60,7 +65,7 @@ function ensureNavMenuLinks() {
       if (hasLink(container, item.file)) return;
       var anchor = findAnchor(container, item.afterFile);
       if (!anchor) return;
-      insertAfter(anchor, prefix + item.file, item.label);
+      insertAfter(anchor, linkHref(prefix, item.file), item.label);
     });
   }
 
@@ -74,7 +79,7 @@ function ensureNavMenuLinks() {
       if (hasLink(topMenu, item.file)) return;
       var anchor = findAnchor(topMenu, item.afterFile);
       if (!anchor) return;
-      insertAfter(anchor, menuPrefix + item.file, item.label);
+      insertAfter(anchor, linkHref(menuPrefix, item.file), item.label);
     });
   }
 }

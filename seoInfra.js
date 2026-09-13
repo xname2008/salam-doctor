@@ -49,7 +49,6 @@ const CATEGORY_PAGES = [
   { id: 'femto-lasik', file: 'femto-lasik.html', name: 'فمتولیزیک' },
   { id: 'prk', file: 'prk.html', name: 'پی‌آر‌کی' },
   { id: 'products', file: 'products.html', name: 'محصولات زیبایی' },
-  { id: 'pharmacy', file: 'pharmacy.html', name: 'داروخانه' },
   { id: 'eye', file: 'eye.html', name: 'چشم و بینایی' },
 ];
 
@@ -1188,9 +1187,11 @@ async function collectUniqueServiceSlugs(deps) {
 
 /** Hubs that 301 elsewhere — never list in pages sitemap. */
 const SITEMAP_EXCLUDED_HUB_SLUGS = new Set([
-  'body-contouring', // → /slimming.html
+  'body-contouring', // → /shiraz/slimming
   'light-therapy', // → /shiraz/skin-rejuvenation
-  'slimming', // → /slimming.html
+  'dental-implant', // → /shiraz/dentistry
+  'dental-veneer', // → /shiraz/dentistry
+  'orthodontics', // → /shiraz/dentistry
 ]);
 
 /** Extra /shiraz/* required in pages sitemap but not always in HUB_SLUGS. */
@@ -1225,6 +1226,12 @@ async function collectSitemapEntries(deps) {
       p === '/hair-transplant.html' ||
       p === '/skin-rejuvenation.html' ||
       p === '/injection.html' ||
+      p === '/slimming.html' ||
+      p === '/rhinoplasty.html' ||
+      p === '/lasik.html' ||
+      p === '/femto-lasik.html' ||
+      p === '/prk.html' ||
+      p === '/pharmacy.html' ||
       p === '/index.html' ||
       p === '/search'
     ) {
@@ -1261,13 +1268,7 @@ async function collectSitemapEntries(deps) {
   add('/clinic-promote.html', today, '0.7', 'weekly');
   add('/category.html', today, '0.6', 'weekly');
   add('/products.html', today, '0.6', 'weekly');
-  add('/pharmacy.html', today, '0.6', 'weekly');
   add('/shiraz', today, '0.9', 'daily');
-  add('/slimming.html', today, '0.9', 'weekly');
-  add('/rhinoplasty.html', today, '0.8', 'weekly');
-  add('/lasik.html', today, '0.8', 'weekly');
-  add('/femto-lasik.html', today, '0.8', 'weekly');
-  add('/prk.html', today, '0.8', 'weekly');
 
   // Active doctors — catalog (fallback when Prisma is empty / unavailable).
   const clinics = typeof loadClinicsData === 'function' ? loadClinicsData() : [];

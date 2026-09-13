@@ -239,15 +239,15 @@ const HEADER_HTML = `<header class="topbar">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <div class="dropdown-content">
-          <a href="/slimming.html">لاغری و پیکرتراشی</a>
+          <a href="/shiraz/slimming">لاغری و پیکرتراشی</a>
         </div>
       </div>
-      <a href="/lasik.html">لیزیک</a>
-      <a href="/femto-lasik.html">فمتولیزیک</a>
-      <a href="/prk.html">PRK</a>
+      <a href="/shiraz/lasik">لیزیک</a>
+      <a href="/shiraz/femto-lasik">فمتولیزیک</a>
+      <a href="/shiraz/prk">PRK</a>
       <a href="/articles.html">مقالات</a>
       <a href="/products.html">محصولات زیبایی</a>
-      <a href="/pharmacy.html">داروخانه</a>
+      <a href="/shiraz/pharmacy">داروخانه</a>
       <a href="/faq.html">سوالات متداول</a>
       <a href="/about.html">درباره ما</a>
     </nav>
@@ -270,12 +270,12 @@ const DRAWER_HTML = `<div id="drawer-overlay" class="drawer-overlay" hidden></di
     <a href="/shiraz/injectables">تزریقات زیبایی</a>
     <a href="/shiraz/laser-hair-removal">لیزر موهای زائد</a>
     <a href="/shiraz/cosmetic-surgery">جراحی زیبایی</a>
-    <a href="/slimming.html">لاغری و پیکرتراشی</a>
-    <a href="/lasik.html">لیزیک</a>
-    <a href="/femto-lasik.html">فمتولیزیک</a>
-    <a href="/prk.html">PRK</a>
+    <a href="/shiraz/slimming">لاغری و پیکرتراشی</a>
+    <a href="/shiraz/lasik">لیزیک</a>
+    <a href="/shiraz/femto-lasik">فمتولیزیک</a>
+    <a href="/shiraz/prk">PRK</a>
     <a href="/products.html">محصولات زیبایی</a>
-    <a href="/pharmacy.html">داروخانه</a>
+    <a href="/shiraz/pharmacy">داروخانه</a>
     <a href="/faq.html">سوالات متداول</a>
       <a href="/articles.html">مقالات</a>
     <a href="/about.html">درباره ما</a>
@@ -4031,16 +4031,39 @@ const server = http.createServer(async (req, res) => {
   try {
     // Candela / Titanium / Botox / laser-hair.html consolidation.
     if (method === 'GET' || method === 'HEAD') {
-      // Trailing slash on /shiraz/* hubs → one-hop 301 (canonical without slash).
       const rawPathOnly = String(req.url || '/').split('?')[0].split('#')[0];
+      const qs = String(req.url || '').includes('?')
+        ? '?' + String(req.url).split('?').slice(1).join('?').split('#')[0]
+        : '';
+
+      // Empty dental specialties → /shiraz/dentistry (one-hop, incl. trailing slash)
+      if (
+        rawPathOnly === '/shiraz/dental-implant' ||
+        rawPathOnly === '/shiraz/dental-implant/' ||
+        rawPathOnly === '/shiraz/dental-veneer' ||
+        rawPathOnly === '/shiraz/dental-veneer/' ||
+        rawPathOnly === '/shiraz/orthodontics' ||
+        rawPathOnly === '/shiraz/orthodontics/'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/dentistry' + qs, method);
+        return;
+      }
+
+      // Alias: rejuvenation → skin-rejuvenation (one-hop)
+      if (
+        rawPathOnly === '/shiraz/rejuvenation' ||
+        rawPathOnly === '/shiraz/rejuvenation/'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/skin-rejuvenation' + qs, method);
+        return;
+      }
+
+      // Trailing slash on /shiraz/* hubs → one-hop 301 (canonical without slash).
       if (
         rawPathOnly.length > 1 &&
         rawPathOnly.endsWith('/') &&
         rawPathOnly.startsWith('/shiraz')
       ) {
-        const qs = String(req.url || '').includes('?')
-          ? '?' + String(req.url).split('?').slice(1).join('?').split('#')[0]
-          : '';
         sendPermanentRedirect(res, rawPathOnly.replace(/\/+$/, '') + qs, method);
         return;
       }
@@ -4070,6 +4093,30 @@ const server = http.createServer(async (req, res) => {
       }
       if (decodedPath === '/injection.html') {
         sendPermanentRedirect(res, '/shiraz/injectables', method);
+        return;
+      }
+      if (decodedPath === '/slimming.html') {
+        sendPermanentRedirect(res, '/shiraz/slimming', method);
+        return;
+      }
+      if (decodedPath === '/rhinoplasty.html') {
+        sendPermanentRedirect(res, '/shiraz/rhinoplasty', method);
+        return;
+      }
+      if (decodedPath === '/lasik.html') {
+        sendPermanentRedirect(res, '/shiraz/lasik', method);
+        return;
+      }
+      if (decodedPath === '/femto-lasik.html') {
+        sendPermanentRedirect(res, '/shiraz/femto-lasik', method);
+        return;
+      }
+      if (decodedPath === '/prk.html') {
+        sendPermanentRedirect(res, '/shiraz/prk', method);
+        return;
+      }
+      if (decodedPath === '/pharmacy.html') {
+        sendPermanentRedirect(res, '/shiraz/pharmacy', method);
         return;
       }
       if (
@@ -4131,14 +4178,13 @@ const server = http.createServer(async (req, res) => {
         '/services/پیکو-لیزر-مو-های-زائد-با-فناوری-پیشرفته-ipl':
           '/shiraz/laser-hair-removal',
         // Slimming / body contouring → static category page
-        '/services/لاغری': '/slimming.html',
-        '/services/پیکرتراشی': '/slimming.html',
-        '/services/اسلیمینگ': '/slimming.html',
-        '/shiraz/لاغری': '/slimming.html',
-        '/shiraz/پیکرتراشی': '/slimming.html',
-        '/shiraz/اسلیمینگ': '/slimming.html',
-        '/shiraz/slimming': '/slimming.html',
-        '/shiraz/body-contouring': '/slimming.html',
+        '/services/لاغری': '/shiraz/slimming',
+        '/services/پیکرتراشی': '/shiraz/slimming',
+        '/services/اسلیمینگ': '/shiraz/slimming',
+        '/shiraz/لاغری': '/shiraz/slimming',
+        '/shiraz/پیکرتراشی': '/shiraz/slimming',
+        '/shiraz/اسلیمینگ': '/shiraz/slimming',
+        '/shiraz/body-contouring': '/shiraz/slimming',
         // Double-chin soft-404s → HIFU Doublo Gold
         '/services/ساکشن-غبغب': '/shiraz/hifu-doublo-gold',
         '/services/لیفت-غبغب': '/shiraz/hifu-doublo-gold',

@@ -41,9 +41,11 @@ const CANONICAL_ORIGIN = String(process.env.SITE_BASE || 'https://salam-doctor.c
 
 /** Hubs that 301 elsewhere — never list. */
 const SITEMAP_EXCLUDED_HUB_SLUGS = new Set([
-  'body-contouring', // → /slimming.html
+  'body-contouring', // → /shiraz/slimming
   'light-therapy', // → /shiraz/skin-rejuvenation
-  'slimming', // → /slimming.html
+  'dental-implant', // → /shiraz/dentistry
+  'dental-veneer', // → /shiraz/dentistry
+  'orthodontics', // → /shiraz/dentistry
 ]);
 
 /**
@@ -65,14 +67,8 @@ const STATIC_PAGES = [
   { path: '/clinic-promote.html', priority: '0.7', lastmod: '2026-09-10', changefreq: 'weekly' },
   { path: '/category.html', priority: '0.6', lastmod: '2026-05-31', changefreq: 'weekly' },
   { path: '/products.html', priority: '0.6', lastmod: '2026-06-13', changefreq: 'weekly' },
-  { path: '/pharmacy.html', priority: '0.6', lastmod: '2026-06-13', changefreq: 'weekly' },
   { path: '/shiraz', priority: '0.9', lastmod: '2026-09-10', changefreq: 'daily' },
-  // Static category hubs still self-canonical (duals consolidated onto /shiraz/*)
-  { path: '/slimming.html', priority: '0.9', lastmod: '2026-06-13', changefreq: 'weekly' },
-  { path: '/rhinoplasty.html', priority: '0.8', lastmod: '2026-09-06', changefreq: 'weekly' },
-  { path: '/lasik.html', priority: '0.8', lastmod: '2026-06-13', changefreq: 'weekly' },
-  { path: '/femto-lasik.html', priority: '0.8', lastmod: '2026-06-13', changefreq: 'weekly' },
-  { path: '/prk.html', priority: '0.8', lastmod: '2026-06-13', changefreq: 'weekly' },
+  // products/eye remain utility .html (pharmacy → /shiraz/pharmacy)
 ];
 
 function today() {
@@ -114,6 +110,12 @@ function assertCanonical(loc) {
     rel === '/hair-transplant.html' ||
     rel === '/skin-rejuvenation.html' ||
     rel === '/injection.html' ||
+    rel === '/slimming.html' ||
+    rel === '/rhinoplasty.html' ||
+    rel === '/lasik.html' ||
+    rel === '/femto-lasik.html' ||
+    rel === '/prk.html' ||
+    rel === '/pharmacy.html' ||
     rel === '/index.html' ||
     rel === '/search'
   ) {
