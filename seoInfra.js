@@ -1192,10 +1192,11 @@ const SITEMAP_EXCLUDED_HUB_SLUGS = new Set([
   'dental-implant', // → /shiraz/dentistry
   'dental-veneer', // → /shiraz/dentistry
   'orthodontics', // → /shiraz/dentistry
+  'co2-laser', // → /shiraz/co2-fractional-laser
 ]);
 
 /** Extra /shiraz/* required in pages sitemap but not always in HUB_SLUGS. */
-const SITEMAP_EXTRA_HUB_SLUGS = ['co2-laser'];
+const SITEMAP_EXTRA_HUB_SLUGS = [];
 
 /**
  * Pages-only sitemap entries (NO articles, NO /services/*).
@@ -1232,6 +1233,7 @@ async function collectSitemapEntries(deps) {
       p === '/femto-lasik.html' ||
       p === '/prk.html' ||
       p === '/pharmacy.html' ||
+      p === '/shiraz/co2-laser' ||
       p === '/index.html' ||
       p === '/search'
     ) {

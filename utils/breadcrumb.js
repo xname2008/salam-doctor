@@ -93,8 +93,8 @@ const SPECIALTY_HUB_HINTS = [
   },
   {
     slug: 'co2-fractional-laser',
-    name: 'لیزر CO2',
-    keywords: ['co2', 'سی او دو', 'فراکشنال'],
+    name: 'لیزر CO2 فرکشنال',
+    keywords: ['co2', 'سی او دو', 'فراکشنال', 'فرکشنال', 'جای جوش', 'اسکار', 'co2-laser'],
   },
   {
     slug: 'dentistry',

@@ -31,7 +31,7 @@ const HUB_LABELS_FA = Object.freeze({
   'laser-candela-2026': 'لیزر کاندلا',
   'laser-titanium-2026': 'لیزر تیتانیوم',
   'mens-laser-shiraz': 'لیزر آقایان',
-  'co2-fractional-laser': 'لیزر CO2 فراکشنال',
+  'co2-fractional-laser': 'لیزر CO2 فرکشنال',
   'fotona-laser': 'لیزر فوتونا',
   'hifu-doublo-gold': 'هایفو دابلو گلد',
   'light-therapy': 'نور درمانی',

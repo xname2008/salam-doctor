@@ -46,12 +46,13 @@ const SITEMAP_EXCLUDED_HUB_SLUGS = new Set([
   'dental-implant', // → /shiraz/dentistry
   'dental-veneer', // → /shiraz/dentistry
   'orthodontics', // → /shiraz/dentistry
+  'co2-laser', // → /shiraz/co2-fractional-laser
 ]);
 
 /**
  * Extra /shiraz/* slugs required in the pages sitemap but not always in HUB_SLUGS.
  */
-const SITEMAP_EXTRA_HUB_SLUGS = ['co2-laser'];
+const SITEMAP_EXTRA_HUB_SLUGS = [];
 
 function isSampleClinicSlug(slug) {
   return /^sample-clinic(?:-\d+)?$/i.test(String(slug || '').trim());
@@ -116,6 +117,7 @@ function assertCanonical(loc) {
     rel === '/femto-lasik.html' ||
     rel === '/prk.html' ||
     rel === '/pharmacy.html' ||
+    rel === '/shiraz/co2-laser' ||
     rel === '/index.html' ||
     rel === '/search'
   ) {

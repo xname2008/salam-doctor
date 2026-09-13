@@ -64,7 +64,7 @@ For each:
 
 ## Out of scope
 - Inventing dental clinics
-- Dual CO2 (`co2-laser` vs `co2-fractional-laser`) — separate decision; both may stay under `/shiraz/` for now
+- Dual CO2 (`co2-laser` vs `co2-fractional-laser`) — **resolved**: KEEP `/shiraz/co2-fractional-laser`; 301 `/shiraz/co2-laser` → fractional
 - Articles stay under `/articles/`
 
 ---

@@ -4058,6 +4058,15 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
+      // Dual CO2 hubs → KEEP /shiraz/co2-fractional-laser (one-hop)
+      if (
+        rawPathOnly === '/shiraz/co2-laser' ||
+        rawPathOnly === '/shiraz/co2-laser/'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/co2-fractional-laser' + qs, method);
+        return;
+      }
+
       // Trailing slash on /shiraz/* hubs → one-hop 301 (canonical without slash).
       if (
         rawPathOnly.length > 1 &&
