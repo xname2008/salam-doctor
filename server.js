@@ -4163,6 +4163,9 @@ const server = http.createServer(async (req, res) => {
         '/services/درمان-منافذ-صورت': '/shiraz/pore-treatment',
         '/services/بوکال-فت': '/shiraz/buccal-fat',
         '/services/لیفت-صورت-بوکال-فت': '/shiraz/buccal-fat',
+        // Wrong-slug guesses → KEEP hubs (GSC soft 404s)
+        '/shiraz/pores': '/shiraz/pore-treatment',
+        '/shiraz/buccal-fat-removal': '/shiraz/buccal-fat',
         // CO2 → fractional CO2 hub
         '/services/co2-laser': '/shiraz/co2-fractional-laser',
         '/services/لیزرco2': '/shiraz/co2-fractional-laser',
