@@ -1049,12 +1049,14 @@ function categoryBreadcrumbs(category) {
 }
 
 function serviceBreadcrumbs(meta) {
+  const slug = meta && meta.slug;
+  const path = (slug && canonicalServicePath(slug)) || `/services/${slug || ''}`;
   return breadcrumbList([
     { name: 'خانه', url: '/' },
     { name: 'خدمات', url: '/category.html' },
     {
       name: meta.label || meta.title,
-      url: `/services/${meta.slug}`,
+      url: path,
     },
   ]);
 }
@@ -1134,6 +1136,7 @@ async function collectUniqueServiceSlugs(deps) {
   const addSlug = (raw) => {
     const canonical = resolveCanonicalEnglishSlug(raw);
     if (!canonical || !isEnglishServiceSlug(canonical)) return;
+    if (SERVICES_REDIRECTED_TO_HUB.has(canonical)) return;
     slugs.add(canonical);
   };
 

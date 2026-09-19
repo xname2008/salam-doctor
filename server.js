@@ -22,6 +22,7 @@ const {
   resolveCanonicalEnglishSlug,
   isEnglishServiceSlug,
   canonicalServicePath,
+  serviceHubCanonicalPath,
 } = require('./serviceSlugMap');
 const {
   createSeoInfraHandlers,
@@ -2740,10 +2741,13 @@ function normalizeServiceTag(item) {
     const label = item.trim();
     if (!label || label === 'دارد') return null;
     const slug = slugifyService(label);
+    const resolved =
+      resolveCanonicalEnglishSlug(slug) ||
+      (isEnglishServiceSlug(slug) ? slug : slug);
     return {
       label,
-      slug,
-      url: `/services/${slug}`,
+      slug: resolved,
+      url: serviceHubCanonicalPath(resolved) || `/services/${resolved}`,
     };
   }
   if (typeof item !== 'object') return null;
@@ -2756,7 +2760,9 @@ function normalizeServiceTag(item) {
   }
   if (!slug) slug = slugifyService(label);
   slug = resolveCanonicalEnglishSlug(slug) || (isEnglishServiceSlug(slug) ? slug : slugifyService(label));
-  if (!url) url = `/services/${slug}`;
+  const hubUrl = serviceHubCanonicalPath(slug);
+  if (hubUrl) url = hubUrl;
+  else if (!url) url = `/services/${slug}`;
   else if (url.startsWith('/services/')) url = `/services/${slug}`;
   return { label, slug, url };
 }
@@ -4153,7 +4159,8 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
-      // Soft-404 recovery: high-impression Persian /services/* → Shiraz hubs
+      // Soft-404 recovery + equity: losers → Shiraz KEEP (one hop).
+      // Alias→English chains also collapse via serviceSlugRedirectMiddleware.
       const soft404HubRedirects = {
         '/services/برداشتن-خال': '/shiraz/mole-removal',
         '/services/برداشت-خال-و': '/shiraz/mole-removal',
@@ -4161,13 +4168,19 @@ const server = http.createServer(async (req, res) => {
         '/services/فیشیال-و-پاکسازی-پوست': '/shiraz/facial',
         '/services/برطرف-کردن-منافذ-باز-پوست': '/shiraz/pore-treatment',
         '/services/درمان-منافذ-صورت': '/shiraz/pore-treatment',
+        // GSC pore ghosts
+        '/services/منافذ': '/shiraz/pore-treatment',
+        '/services/درمان-منافذ': '/shiraz/pore-treatment',
+        '/services/درمان-منافذ-باز': '/shiraz/pore-treatment',
+        '/services/منافذ-باز-پوست': '/shiraz/pore-treatment',
         '/services/بوکال-فت': '/shiraz/buccal-fat',
         '/services/لیفت-صورت-بوکال-فت': '/shiraz/buccal-fat',
         // Wrong-slug guesses → KEEP hubs (GSC soft 404s)
         '/shiraz/pores': '/shiraz/pore-treatment',
         '/shiraz/buccal-fat-removal': '/shiraz/buccal-fat',
-        // CO2 → fractional CO2 hub
+        // CO2 → fractional CO2 hub (incl. chain-killer لیزر-co2)
         '/services/co2-laser': '/shiraz/co2-fractional-laser',
+        '/services/لیزر-co2': '/shiraz/co2-fractional-laser',
         '/services/لیزرco2': '/shiraz/co2-fractional-laser',
         '/services/لیزر-فرکشنالco2': '/shiraz/co2-fractional-laser',
         // Fotona → fotona hub (NOT hair-removal)
@@ -4178,6 +4191,35 @@ const server = http.createServer(async (req, res) => {
         '/shiraz/لیزر-فوتونا': '/shiraz/fotona-laser',
         // Soft-404: مزوژل و بوتاکس → botox hub (exact path only)
         '/services/مزوژل-و-بوتاکس': '/shiraz/botox',
+        // Competing /services 200s → KEEP hubs
+        '/services/hair-transplant-fit': '/shiraz/micro-fit-hair-transplant',
+        '/services/fit': '/shiraz/micro-fit-hair-transplant',
+        '/services/fit-method': '/shiraz/micro-fit-hair-transplant',
+        '/services/کاشت-مو-fit': '/shiraz/micro-fit-hair-transplant',
+        '/services/hifu-doublo-gold': '/shiraz/hifu-doublo-gold',
+        '/services/هایفو-دابلو-گلد': '/shiraz/hifu-doublo-gold',
+        '/services/هایفو': '/shiraz/hifu-doublo-gold',
+        '/services/eyebrow-beard-transplant': '/shiraz/eyebrow-transplant',
+        '/services/کاشت-ابرو-و-ریش': '/shiraz/eyebrow-transplant',
+        '/services/کاشت-ابرو': '/shiraz/eyebrow-transplant',
+        '/services/botox-filler': '/shiraz/injectables',
+        '/services/بوتاکس-و-فیلر': '/shiraz/injectables',
+        '/services/فیلر': '/shiraz/injectables',
+        '/services/deka-laser': '/shiraz/laser-hair-removal',
+        '/services/لیزر-دکا': '/shiraz/laser-hair-removal',
+        // GSC category ghosts
+        '/services/کاشت-مو': '/shiraz/hair-transplant',
+        '/services/لیزر-موهای-زائد': '/shiraz/laser-hair-removal',
+        // Hair-method ghosts (GSC)
+        '/services/sut': '/shiraz/hair-transplant',
+        '/services/fue': '/shiraz/hair-transplant',
+        '/services/fut': '/shiraz/hair-transplant',
+        '/services/fue-fut': '/shiraz/hair-transplant',
+        '/services/کاشت-مو-sut': '/shiraz/hair-transplant',
+        '/services/کاشت-مو-fue': '/shiraz/hair-transplant',
+        '/services/کاشت-مو-fut': '/shiraz/hair-transplant',
+        '/services/میکروگرافت': '/shiraz/micro-fit-hair-transplant',
+        '/services/micrograft': '/shiraz/micro-fit-hair-transplant',
         // Soft-404 batch B — new Shiraz landings
         '/services/جراحی-سینه': '/shiraz/breast-surgery',
         '/services/پیرسینگ-گوش': '/shiraz/ear-piercing',

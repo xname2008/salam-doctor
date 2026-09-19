@@ -163,21 +163,10 @@ function resolveHubServiceSlug(raw) {
   return resolveCanonicalEnglishSlug(raw) || decodeSlug(raw);
 }
 
-function needsServiceSlugRedirect(raw) {
-  const slug = decodeSlug(raw);
-  const canonical = resolveCanonicalEnglishSlug(slug);
-  return Boolean(canonical && slug && canonical !== slug);
-}
-
-function canonicalServicePath(raw) {
-  const slug = resolveCanonicalEnglishSlug(raw);
-  if (!slug) return null;
-  return `/services/${slug}`;
-}
-
 /**
  * Service landings permanently consolidated onto /shiraz/* hubs.
  * Excluded from dynamic /services sitemap (canonical is the hub URL).
+ * light-therapy + rf-virtue-endolift + qswitch intentionally omitted.
  */
 const SERVICES_REDIRECTED_TO_HUB = new Set([
   'botox',
@@ -185,6 +174,11 @@ const SERVICES_REDIRECTED_TO_HUB = new Set([
   'titanium-laser',
   'co2-laser',
   'fotona-laser',
+  'hair-transplant-fit',
+  'hifu-doublo-gold',
+  'eyebrow-beard-transplant',
+  'botox-filler',
+  'deka-laser',
 ]);
 
 function serviceHubCanonicalPath(slug) {
@@ -194,8 +188,27 @@ function serviceHubCanonicalPath(slug) {
     'titanium-laser': '/shiraz/laser-titanium-2026',
     'co2-laser': '/shiraz/co2-fractional-laser',
     'fotona-laser': '/shiraz/fotona-laser',
+    'hair-transplant-fit': '/shiraz/micro-fit-hair-transplant',
+    'hifu-doublo-gold': '/shiraz/hifu-doublo-gold',
+    'eyebrow-beard-transplant': '/shiraz/eyebrow-transplant',
+    'botox-filler': '/shiraz/injectables',
+    'deka-laser': '/shiraz/laser-hair-removal',
   };
   return map[slug] || null;
+}
+
+function needsServiceSlugRedirect(raw) {
+  const slug = decodeSlug(raw);
+  const canonical = resolveCanonicalEnglishSlug(slug);
+  if (!canonical) return false;
+  if (serviceHubCanonicalPath(canonical)) return true;
+  return Boolean(slug && canonical !== slug);
+}
+
+function canonicalServicePath(raw) {
+  const slug = resolveCanonicalEnglishSlug(raw);
+  if (!slug) return null;
+  return serviceHubCanonicalPath(slug) || `/services/${slug}`;
 }
 
 function canonicalServiceUrl(raw, siteBase) {
@@ -228,7 +241,10 @@ function slugsReferToSameService(a, b) {
 }
 
 /**
- * Express middleware: /services/{persian-or-alias} → 301 /services/{english}
+ * Express middleware: /services/{persian-or-alias|english} → one-hop 301.
+ * Prefer /shiraz KEEP hub when the English canonical is consolidated;
+ * otherwise alias → /services/{english}. Never chain via an intermediate
+ * /services/ slug that itself 301s to a hub.
  */
 function serviceSlugRedirectMiddleware(req, res, next) {
   const pathname = String((req.path || req.url || '').split('?')[0]);
@@ -245,6 +261,11 @@ function serviceSlugRedirectMiddleware(req, res, next) {
   }
   const canonical = resolveCanonicalEnglishSlug(raw);
   const current = decodeSlug(raw);
+  const hubDest = canonical ? serviceHubCanonicalPath(canonical) : null;
+  if (hubDest && !isApi) {
+    res.redirect(301, hubDest);
+    return true;
+  }
   if (canonical && current && canonical !== current) {
     const dest = isApi ? `/api/services/${canonical}` : `/services/${canonical}`;
     res.redirect(301, dest);
