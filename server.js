@@ -4134,6 +4134,32 @@ const server = http.createServer(async (req, res) => {
         sendPermanentRedirect(res, '/shiraz/pharmacy', method);
         return;
       }
+      if (decodedPath === '/botox.html') {
+        sendPermanentRedirect(res, '/shiraz/botox', method);
+        return;
+      }
+      if (decodedPath === '/facial.html') {
+        sendPermanentRedirect(res, '/shiraz/facial', method);
+        return;
+      }
+
+      // Bare root stubs (CF .html-strip leftovers) → /shiraz KEEP (never 404)
+      const bareStubHubRedirects = {
+        '/laser-hair': '/shiraz/laser-hair-removal',
+        '/skin-rejuvenation': '/shiraz/skin-rejuvenation',
+        '/slimming': '/shiraz/slimming',
+        '/injection': '/shiraz/injectables',
+        '/hair-transplant': '/shiraz/hair-transplant',
+        '/cosmetic-surgery': '/shiraz/cosmetic-surgery',
+        '/botox': '/shiraz/botox',
+        '/facial': '/shiraz/facial',
+      };
+      const bareStubKey = decodedPath.replace(/\/+$/, '') || decodedPath;
+      if (bareStubHubRedirects[bareStubKey]) {
+        sendPermanentRedirect(res, bareStubHubRedirects[bareStubKey], method);
+        return;
+      }
+
       if (
         decodedPath === '/services/candela-laser' ||
         /^\/services\/.*کندلا.*/i.test(decodedPath)
