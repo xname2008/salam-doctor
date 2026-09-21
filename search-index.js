@@ -16,6 +16,7 @@ const HUB_ENTRIES = [
   { slug: 'micro-fit-hair-transplant', name: 'کاشت مو Micro FIT', keywords: ['micro fit', 'microfit', 'میکرو فیت', 'میکروگرافت'] },
   { slug: 'eyebrow-transplant', name: 'کاشت ابرو', keywords: ['کاشت ابرو', 'ابرو', 'eyebrow'] },
   { slug: 'skin-rejuvenation', name: 'جوانسازی پوست', keywords: ['جوانسازی', 'rejuvenation', 'پوست'] },
+  { slug: 'light-therapy', name: 'لایت تراپی و نور درمانی', keywords: ['لایت تراپی', 'نور درمانی', 'لایتتراپی', 'فتوتراپی', 'light therapy', 'phototherapy'] },
   { slug: 'co2-fractional-laser', name: 'لیزر CO2 فرکشنال', keywords: ['co2', 'فرکشنال', 'جای جوش', 'اسکار', 'منافذ', 'لیزر co2', 'سی او دو'] },
   { slug: 'fotona-laser', name: 'لیزر فوتونا', keywords: ['فوتونا', 'fotona', 'جوانسازی'] },
   { slug: 'laser-hair-removal', name: 'لیزر موهای زائد', keywords: ['لیزر مو', 'موهای زائد', 'laser hair'] },

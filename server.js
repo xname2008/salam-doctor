@@ -4089,6 +4089,16 @@ const server = http.createServer(async (req, res) => {
       } catch (_err) {
         /* keep pathname */
       }
+      // Legacy gel/botox article slug → dedicated botox-filler-guide (one-hop)
+      if (
+        decodedPath === '/articles/skin-rejuvenation-guide.html' ||
+        decodedPath === '/articles/skin-rejuvenation-guide' ||
+        decodedPath === '/articles/skin-rejuvenation-guide/'
+      ) {
+        sendPermanentRedirect(res, '/articles/botox-filler-guide.html', method);
+        return;
+      }
+
       // Dual hub consolidations: .html → Shiraz canonical (one-hop 301)
       if (decodedPath === '/laser-hair.html') {
         sendPermanentRedirect(res, '/shiraz/laser-hair-removal', method);
@@ -4142,6 +4152,10 @@ const server = http.createServer(async (req, res) => {
         sendPermanentRedirect(res, '/shiraz/facial', method);
         return;
       }
+      if (decodedPath === '/light-therapy.html') {
+        sendPermanentRedirect(res, '/shiraz/light-therapy', method);
+        return;
+      }
 
       // Bare root stubs (CF .html-strip leftovers) → /shiraz KEEP (never 404)
       const bareStubHubRedirects = {
@@ -4153,6 +4167,7 @@ const server = http.createServer(async (req, res) => {
         '/cosmetic-surgery': '/shiraz/cosmetic-surgery',
         '/botox': '/shiraz/botox',
         '/facial': '/shiraz/facial',
+        '/light-therapy': '/shiraz/light-therapy',
       };
       const bareStubKey = decodedPath.replace(/\/+$/, '') || decodedPath;
       if (bareStubHubRedirects[bareStubKey]) {
@@ -4188,6 +4203,12 @@ const server = http.createServer(async (req, res) => {
       // Soft-404 recovery + equity: losers → Shiraz KEEP (one hop).
       // Alias→English chains also collapse via serviceSlugRedirectMiddleware.
       const soft404HubRedirects = {
+        '/services/light-therapy': '/shiraz/light-therapy',
+        '/services/نور-درمانی': '/shiraz/light-therapy',
+        '/services/نوردرمانی': '/shiraz/light-therapy',
+        '/services/لایت-تراپی': '/shiraz/light-therapy',
+        '/services/لایتتراپی': '/shiraz/light-therapy',
+        '/services/فتوتراپی': '/shiraz/light-therapy',
         '/services/برداشتن-خال': '/shiraz/mole-removal',
         '/services/برداشت-خال-و': '/shiraz/mole-removal',
         '/services/فیشیال': '/shiraz/facial',

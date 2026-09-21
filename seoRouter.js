@@ -60,7 +60,6 @@ const EMPTY_HUB_FALLBACK_SLUGS = Object.freeze({
   orthodontics: 'dentistry',
   'dental-veneer': 'dentistry',
   // slimming is pillar KEEP — body-contouring aliases 301 to /shiraz/slimming
-  'light-therapy': 'skin-rejuvenation',
   'mole-removal': 'skin-rejuvenation',
   facial: 'skin-rejuvenation',
   'pore-treatment': 'skin-rejuvenation',
@@ -98,6 +97,7 @@ const PILLAR_HUBS_NO_EMPTY_REDIRECT = new Set([
   'ear-piercing',
   'wart-cryotherapy',
   'skin-biopsy',
+  'light-therapy',
 ]);
 
 let SEO_OVERRIDES = {};

@@ -42,7 +42,6 @@ const CANONICAL_ORIGIN = String(process.env.SITE_BASE || 'https://salam-doctor.c
 /** Hubs that 301 elsewhere — never list. */
 const SITEMAP_EXCLUDED_HUB_SLUGS = new Set([
   'body-contouring', // → /shiraz/slimming
-  'light-therapy', // → /shiraz/skin-rejuvenation
   'dental-implant', // → /shiraz/dentistry
   'dental-veneer', // → /shiraz/dentistry
   'orthodontics', // → /shiraz/dentistry

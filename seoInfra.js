@@ -1191,7 +1191,6 @@ async function collectUniqueServiceSlugs(deps) {
 /** Hubs that 301 elsewhere — never list in pages sitemap. */
 const SITEMAP_EXCLUDED_HUB_SLUGS = new Set([
   'body-contouring', // → /shiraz/slimming
-  'light-therapy', // → /shiraz/skin-rejuvenation
   'dental-implant', // → /shiraz/dentistry
   'dental-veneer', // → /shiraz/dentistry
   'orthodontics', // → /shiraz/dentistry
