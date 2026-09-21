@@ -4089,13 +4089,15 @@ const server = http.createServer(async (req, res) => {
       } catch (_err) {
         /* keep pathname */
       }
-      // Legacy gel/botox article slug → dedicated botox-filler-guide (one-hop)
+      // Legacy gel/botox article slug → bare KEEP (one-hop).
+      // Public /articles/botox-filler-guide.html → bare is handled by CF Worker;
+      // origin must still serve the .html file so Worker can fetch it for KEEP 200.
       if (
         decodedPath === '/articles/skin-rejuvenation-guide.html' ||
         decodedPath === '/articles/skin-rejuvenation-guide' ||
         decodedPath === '/articles/skin-rejuvenation-guide/'
       ) {
-        sendPermanentRedirect(res, '/articles/botox-filler-guide.html', method);
+        sendPermanentRedirect(res, '/articles/botox-filler-guide', method);
         return;
       }
 

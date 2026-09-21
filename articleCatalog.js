@@ -12,6 +12,16 @@ const { formatPersianJalaliDate } = require('./persianDate');
 const PUBLISHED_COMMENT_RE = /<!--\s*article-published:\s*(\d{4}-\d{2}-\d{2})\s*-->/i;
 const JALALI_COMMENT_RE = /<!--\s*article-jalali:\s*([^-]+?)\s*-->/i;
 
+/** Slugs whose public KEEP is the extensionless /articles/{slug} URL. */
+const BARE_CANONICAL_ARTICLE_SLUGS = new Set(['botox-filler-guide']);
+
+function articlePublicPath(slug) {
+  const clean = String(slug || '').trim();
+  if (!clean) return '';
+  if (BARE_CANONICAL_ARTICLE_SLUGS.has(clean)) return `articles/${clean}`;
+  return `articles/${clean}.html`;
+}
+
 function stripHtml(value) {
   return String(value || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 }
@@ -111,7 +121,7 @@ function parseArticleMetadata(html, slug) {
     summary,
     category,
     cover_image: normalizeCoverPath(coverImage),
-    url: `articles/${slug}.html`,
+    url: articlePublicPath(slug),
   };
 }
 
@@ -232,4 +242,6 @@ module.exports = {
   writeGeneratedCatalogJs,
   normalizeCoverPath,
   toIsoDateLocal,
+  BARE_CANONICAL_ARTICLE_SLUGS,
+  articlePublicPath,
 };

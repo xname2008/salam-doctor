@@ -5,6 +5,16 @@
 (function (root) {
   root.ARTICLES_CATALOG = [
   {
+    "slug": "botox-filler-guide",
+    "title": "راهنمای جامع ماندگاری و عوارض تزریق ژل و بوتاکس",
+    "summary": "بررسی کامل میزان ماندگاری، عوارض احتمالی و مراقبت‌های قبل و بعد از تزریق ژل و بوتاکس به همراه نکات مهم انتخاب کلینیک در شیراز.",
+    "category": "جوانسازی پوست",
+    "cover_image": "assets/images/articles/skin-rejuvenation-cover.webp",
+    "url": "articles/botox-filler-guide",
+    "datePublished": "2026-09-12",
+    "jalaliLabel": "۲۱ شهریور ۱۴۰۵"
+  },
+  {
     "slug": "mesotherapy-vs-prp-hair-loss",
     "title": "مقایسه مزوتراپی و PRP در درمان ریزش مو: اثربخشی و هزینه",
     "summary": "مزوتراپی مو چیست و چه تفاوتی با PRP دارد؟ مقایسه علمی اثربخشی، عوارض و هزینه تقویت مو برای انتخاب بهترین روش درمان ریزش مو.",

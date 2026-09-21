@@ -21,7 +21,8 @@ const ASSET_EXT =
 
 /** Legacy .html (and matching bare stubs) → /shiraz KEEP. One hop only. */
 const HTML_TO_KEEP: Record<string, string> = {
-  '/articles/skin-rejuvenation-guide.html': '/articles/botox-filler-guide.html',
+  '/articles/botox-filler-guide.html': '/articles/botox-filler-guide',
+  '/articles/skin-rejuvenation-guide.html': '/articles/botox-filler-guide',
   '/laser-hair.html': '/shiraz/laser-hair-removal',
   '/skin-rejuvenation.html': '/shiraz/skin-rejuvenation',
   '/slimming.html': '/shiraz/slimming',
@@ -39,7 +40,7 @@ const HTML_TO_KEEP: Record<string, string> = {
 };
 
 const BARE_STUB_TO_KEEP: Record<string, string> = {
-  '/articles/skin-rejuvenation-guide': '/articles/botox-filler-guide.html',
+  '/articles/skin-rejuvenation-guide': '/articles/botox-filler-guide',
   '/laser-hair': '/shiraz/laser-hair-removal',
   '/skin-rejuvenation': '/shiraz/skin-rejuvenation',
   '/slimming': '/shiraz/slimming',

@@ -12,9 +12,12 @@ const DEFAULT_ORIGIN = 'https://salam-doctor.com';
 const ARTICLE_PRIORITY = '0.7';
 const ARTICLE_CHANGEFREQ = 'monthly';
 
+/** Slugs whose sitemap <loc> is extensionless (matches public KEEP). */
+const BARE_CANONICAL_ARTICLE_SLUGS = new Set(['botox-filler-guide']);
+
 /** Matches any existing static-article <url> block in sitemap.xml. */
 const STATIC_ARTICLE_URL_BLOCK_RE =
-  /\s*<url>[\s\S]*?<loc>[^<]*\/articles\/[^<]+\.html<\/loc>[\s\S]*?<\/url>/gi;
+  /\s*<url>[\s\S]*?<loc>[^<]*\/articles\/[^<]+(?:\.html)?<\/loc>[\s\S]*?<\/url>/gi;
 
 function canonicalOrigin(override) {
   return String(override || process.env.SITE_BASE || DEFAULT_ORIGIN).replace(/\/$/, '');
@@ -43,7 +46,11 @@ function today() {
 function articleLoc(filename, origin) {
   const name = String(filename || '').trim();
   if (!name || !/\.html$/i.test(name)) return null;
-  return `${canonicalOrigin(origin)}/articles/${name}`;
+  const slug = name.replace(/\.html$/i, '');
+  const pathPart = BARE_CANONICAL_ARTICLE_SLUGS.has(slug)
+    ? `articles/${slug}`
+    : `articles/${name}`;
+  return `${canonicalOrigin(origin)}/${pathPart}`;
 }
 
 /**
@@ -153,6 +160,7 @@ module.exports = {
   DEFAULT_ORIGIN,
   ARTICLE_PRIORITY,
   ARTICLE_CHANGEFREQ,
+  BARE_CANONICAL_ARTICLE_SLUGS,
   STATIC_ARTICLE_URL_BLOCK_RE,
   canonicalOrigin,
   xmlEscape,

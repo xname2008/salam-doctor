@@ -7,6 +7,7 @@ const {
   syncArticleDatesInHtml,
   resolveJalaliLabel,
   normalizeCoverPath,
+  BARE_CANONICAL_ARTICLE_SLUGS,
 } = require('./articleCatalog');
 
 const STATIC_ID_PREFIX = 'static:';
@@ -102,7 +103,9 @@ function parseStaticArticleHtml(html, slug) {
     status: 'published',
     views: 0,
     source: 'static',
-    url: `/articles/${slug}.html`,
+    url: BARE_CANONICAL_ARTICLE_SLUGS.has(slug)
+      ? `/articles/${slug}`
+      : `/articles/${slug}.html`,
   };
 }
 
