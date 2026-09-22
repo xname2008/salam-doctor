@@ -75,6 +75,29 @@
     .tbl-sort:hover{color:#1294e0}
     details summary{list-style:none}
     details summary::-webkit-details-marker{display:none}
+
+    /* Trust badges (thin inventory) */
+    .trust-badges{display:grid;grid-template-columns:1fr;gap:.75rem;margin-top:1.5rem;max-width:42rem}
+    @media(min-width:640px){.trust-badges{grid-template-columns:repeat(3,1fr)}}
+    .trust-badge{
+      display:flex;align-items:flex-start;gap:.65rem;
+      background:#fff;border:1px solid #e2e8f0;border-radius:1rem;
+      padding:.85rem 1rem;box-shadow:0 1px 2px rgba(15,23,42,.04)
+    }
+    .trust-badge__icon{
+      flex-shrink:0;width:2rem;height:2rem;border-radius:.75rem;
+      display:grid;place-items:center;background:#ecfdf5;color:#059669
+    }
+    .trust-badge__text{font-size:.8rem;font-weight:700;color:#0f172a;line-height:1.45}
+
+    /* Editorial guide frame */
+    .hub-editorial{
+      max-width:56rem;margin-inline:auto;
+      background:rgba(248,250,252,.95);
+      border:1px solid #e2e8f0;border-radius:1rem;padding:1.5rem;
+      box-shadow:0 1px 3px rgba(15,23,42,.04)
+    }
+    @media(min-width:768px){.hub-editorial{padding:2rem}}
     .hub-seo-prose p{margin:0 0 1rem}
     .hub-seo-prose p:last-child{margin-bottom:0}
     .hub-seo-prose h2,.hub-seo-prose h3,.hub-seo-prose h4{
@@ -82,10 +105,82 @@
     }
     .hub-seo-prose h2{font-size:1.15rem}
     .hub-seo-prose h3{font-size:1.05rem}
-    .hub-seo-prose ul,.hub-seo-prose ol{margin:0 0 1rem;padding-inline-start:1.25rem}
-    .hub-seo-prose li{margin:.35rem 0}
-    .hub-seo-prose a{color:#1294e0;font-weight:600;text-decoration:underline}
+    .hub-seo-prose section+section{margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid #e2e8f0}
     .hub-seo-prose strong{color:#0f172a}
+
+    /* Related-service link pills (not tip checklists) */
+    .hub-seo-prose section:not(#choosing-tips) ul{
+      list-style:none;margin:0 0 1rem;padding:0;
+      display:flex;flex-wrap:wrap;gap:.6rem
+    }
+    .hub-seo-prose section:not(#choosing-tips) ul li{margin:0}
+    .hub-seo-prose section:not(#choosing-tips) ul a{
+      display:inline-flex;align-items:center;gap:.45rem;
+      padding:.55rem .95rem;border-radius:9999px;
+      background:#fff;border:1px solid #e2e8f0;color:#0f172a;
+      font-size:.85rem;font-weight:700;text-decoration:none;
+      box-shadow:0 1px 2px rgba(15,23,42,.04);
+      transition:border-color .2s,color .2s,transform .2s,box-shadow .2s
+    }
+    .hub-seo-prose section:not(#choosing-tips) ul a::after{
+      content:"";width:.65rem;height:.65rem;flex-shrink:0;
+      background:currentColor;
+      -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M15 6l-6 6 6 6' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+              mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M15 6l-6 6 6 6' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+      opacity:.55;transition:transform .2s,opacity .2s
+    }
+    .hub-seo-prose section:not(#choosing-tips) ul a:hover{
+      border-color:#7dd3fc;color:#0369a1;
+      transform:translateY(-1px);box-shadow:0 4px 12px rgba(14,165,233,.12)
+    }
+    .hub-seo-prose section:not(#choosing-tips) ul a:hover::after{transform:translateX(-2px);opacity:1}
+    .hub-seo-prose p a{color:#0369a1;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+
+    /* Tips checklist */
+    .hub-seo-prose #choosing-tips ul{
+      list-style:none;margin:0;padding:0;
+      display:grid;grid-template-columns:1fr;gap:.75rem
+    }
+    @media(min-width:640px){
+      .hub-seo-prose #choosing-tips ul{grid-template-columns:1fr 1fr}
+    }
+    .hub-seo-prose #choosing-tips li{
+      display:flex;align-items:flex-start;gap:.65rem;margin:0;
+      background:#fff;border:1px solid #e2e8f0;border-radius:.85rem;
+      padding:.85rem 1rem;font-size:.9rem;font-weight:600;color:#334155;line-height:1.5
+    }
+    .hub-seo-prose #choosing-tips li::before{
+      content:"";flex-shrink:0;width:1.15rem;height:1.15rem;margin-top:.1rem;
+      background:#059669;
+      -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M9 12l2 2 4-4' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='12' cy='12' r='9' stroke='black' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
+              mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M9 12l2 2 4-4' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='12' cy='12' r='9' stroke='black' stroke-width='2'/%3E%3C/svg%3E") center/contain no-repeat;
+    }
+
+    /* FAQ accordion */
+    .hub-faq details{
+      border:1px solid #e2e8f0;border-radius:1rem;background:#fff;
+      overflow:hidden;box-shadow:0 1px 2px rgba(15,23,42,.03);
+      transition:border-color .2s,box-shadow .2s
+    }
+    .hub-faq details[open]{border-color:#bae6fd;box-shadow:0 4px 14px rgba(14,165,233,.08)}
+    .hub-faq summary{
+      display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+      padding:1rem 1.15rem;font-weight:700;color:#0f172a;cursor:pointer;
+      transition:background .2s
+    }
+    .hub-faq summary:hover{background:#f8fafc}
+    .hub-faq__chevron{
+      flex-shrink:0;width:1.75rem;height:1.75rem;border-radius:9999px;
+      display:grid;place-items:center;background:#f1f5f9;color:#0369a1;
+      transition:transform .25s ease,background .2s
+    }
+    .hub-faq details[open] .hub-faq__chevron{transform:rotate(180deg);background:#e0f2fe}
+    .hub-faq__body{
+      padding:0 1.15rem 1.1rem;color:#475569;line-height:1.7;
+      border-top:1px solid #f1f5f9;padding-top:.85rem;
+      animation:hubFaqIn .22s ease
+    }
+    @keyframes hubFaqIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased">
@@ -123,6 +218,9 @@
       <%
         var rv = stats.ratingValue;
         var fullStars = Math.floor(rv);
+        var thinInventory = (typeof activeClinicCount !== 'undefined'
+          ? Number(activeClinicCount)
+          : Number(stats.active || 0)) < 3;
       %>
       <div class="inline-flex flex-wrap items-center gap-2 rounded-full bg-white border border-slate-200 px-4 py-2 text-sm shadow-sm">
         <span class="star-on text-base tracking-wide" aria-label="امتیاز <%= rv %> از ۵">
@@ -132,20 +230,43 @@
         <span class="text-slate-500">(<%= stats.reviewCount %> نظر)</span>
       </div>
 
-      <dl class="grid grid-cols-3 gap-3 md:gap-6 mt-6 max-w-xl">
-        <div class="bg-white rounded-xl border border-slate-200 p-3 text-center">
-          <dt class="text-xs text-slate-500">مراکز</dt>
-          <dd class="text-xl md:text-2xl font-bold text-sky-600"><%= stats.total %></dd>
-        </div>
-        <div class="bg-white rounded-xl border border-slate-200 p-3 text-center">
-          <dt class="text-xs text-slate-500">فعال</dt>
-          <dd class="text-xl md:text-2xl font-bold text-sky-600"><%= stats.active %></dd>
-        </div>
-        <div class="bg-white rounded-xl border border-slate-200 p-3 text-center">
-          <dt class="text-xs text-slate-500">دستگاه اصل</dt>
-          <dd class="text-xl md:text-2xl font-bold text-emerald-600"><%= stats.withAuthenticDevice %></dd>
-        </div>
-      </dl>
+      <% if (thinInventory) { %>
+        <ul class="trust-badges" aria-label="مزایای سلام دکتر">
+          <li class="trust-badge">
+            <span class="trust-badge__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+            </span>
+            <span class="trust-badge__text">تضمین اصالت مجوز پزشکی</span>
+          </li>
+          <li class="trust-badge">
+            <span class="trust-badge__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 19V5M8 19V9M12 19V7M16 19v-6M20 19V11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </span>
+            <span class="trust-badge__text">بررسی تخصصی تیم سلام دکتر</span>
+          </li>
+          <li class="trust-badge">
+            <span class="trust-badge__icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 16.9v.1a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h.1c1.1 0 2 .9 2.1 2a12.8 12.8 0 0 0 .7 2.8 2 2 0 0 1-.5 2.1L5.5 9.8a16 16 0 0 0 6 6l.9-.9a2 2 0 0 1 2.1-.5 12.8 12.8 0 0 0 2.8.7c1.1.1 2 1 2 2.1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="trust-badge__text">مشاوره اولیه رایگان</span>
+          </li>
+        </ul>
+      <% } else { %>
+        <dl class="grid grid-cols-3 gap-3 md:gap-6 mt-6 max-w-xl">
+          <div class="bg-white rounded-xl border border-slate-200 p-3 text-center">
+            <dt class="text-xs text-slate-500">مراکز</dt>
+            <dd class="text-xl md:text-2xl font-bold text-sky-600"><%= stats.total %></dd>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-200 p-3 text-center">
+            <dt class="text-xs text-slate-500">فعال</dt>
+            <dd class="text-xl md:text-2xl font-bold text-sky-600"><%= stats.active %></dd>
+          </div>
+          <div class="bg-white rounded-xl border border-slate-200 p-3 text-center">
+            <dt class="text-xs text-slate-500">دستگاه اصل</dt>
+            <dd class="text-xl md:text-2xl font-bold text-emerald-600"><%= stats.withAuthenticDevice %></dd>
+          </div>
+        </dl>
+      <% } %>
 
       <% if (service.children && service.children.length) { %>
         <nav class="flex flex-wrap gap-2 mt-5" aria-label="زیرخدمات">
@@ -240,22 +361,25 @@
       </section>
       <% } %>
 
-      <!-- Clinic cards (honest framing when thin inventory) -->
+      <!-- Clinic cards / featured banner (honest framing when thin inventory) -->
       <section aria-labelledby="all-clinics-heading">
-        <h2 id="all-clinics-heading" class="text-xl md:text-2xl font-bold text-slate-900 mb-4">
-          <% if (clinics.length === 1) { %>
-            مرکز معرفی‌شده برای <%= service.name %> در <%= city %>
-          <% } else if (!listMode) { %>
-            مراکز معرفی‌شده <%= service.name %> در <%= city %>
-          <% } else { %>
-            مراکز <%= service.name %> در <%= city %>
-          <% } %>
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="clinic-cards">
-          <% clinics.forEach(function(c) { %>
-            <%- include('_clinic-card', { c: c, premium: c.isActive }) %>
-          <% }) %>
-        </div>
+        <% if (clinics.length === 1) { %>
+          <h2 id="all-clinics-heading" class="sr-only">مرکز منتخب <%= service.name %> در <%= city %></h2>
+          <%- include('_featured-clinic-banner', { c: clinics[0], service: service, city: city }) %>
+        <% } else { %>
+          <h2 id="all-clinics-heading" class="text-xl md:text-2xl font-bold text-slate-900 mb-4">
+            <% if (!listMode) { %>
+              مراکز معرفی‌شده <%= service.name %> در <%= city %>
+            <% } else { %>
+              مراکز <%= service.name %> در <%= city %>
+            <% } %>
+          </h2>
+          <div class="grid grid-cols-1 <%= clinics.length === 2 ? 'md:grid-cols-2 max-w-4xl' : 'md:grid-cols-2 lg:grid-cols-3' %> gap-5" id="clinic-cards">
+            <% clinics.forEach(function(c) { %>
+              <%- include('_clinic-card', { c: c, premium: c.isActive }) %>
+            <% }) %>
+          </div>
+        <% } %>
       </section>
 
       <% if (listMode && districts && districts.length) { %>
@@ -272,8 +396,8 @@
 
     <% if (seo.seoDescriptionHtml) { %>
       <section class="mt-12 md:mt-16 hub-seo-copy" aria-labelledby="hub-seo-copy-heading">
-        <h2 id="hub-seo-copy-heading" class="text-xl md:text-2xl font-bold text-slate-900 mb-5">راهنمای <%= service.name %> در <%= city %></h2>
-        <div class="hub-seo-prose rounded-2xl border border-slate-200 bg-white p-6 md:p-8 text-slate-700 leading-relaxed shadow-sm">
+        <h2 id="hub-seo-copy-heading" class="text-xl md:text-2xl font-bold text-slate-900 mb-5 text-center md:text-right">راهنمای <%= service.name %> در <%= city %></h2>
+        <div class="hub-seo-prose hub-editorial text-slate-700 leading-relaxed">
           <%- seo.seoDescriptionHtml %>
         </div>
       </section>
@@ -282,14 +406,16 @@
     <!-- FAQ (visible content mirrors FAQPage JSON-LD) -->
     <section class="mt-12 md:mt-16" aria-labelledby="faq-heading">
       <h2 id="faq-heading" class="text-xl md:text-2xl font-bold text-slate-900 mb-5">سوالات متداول</h2>
-      <div class="space-y-3">
+      <div class="hub-faq space-y-3">
         <% seo.faq.forEach(function(item, fi) { %>
-          <details class="group rounded-2xl border border-slate-200 bg-white overflow-hidden" <%= fi === 0 ? 'open' : '' %>>
-            <summary class="flex items-center justify-between gap-3 px-5 py-4 font-bold text-slate-800 cursor-pointer hover:bg-slate-50 transition-colors">
+          <details <%= fi === 0 ? 'open' : '' %>>
+            <summary>
               <span><%= item.q %></span>
-              <span class="text-sky-500 text-xl leading-none group-open:rotate-45 transition-transform" aria-hidden="true">+</span>
+              <span class="hub-faq__chevron" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
             </summary>
-            <p class="px-5 pb-4 text-slate-600 leading-relaxed border-t border-slate-100 pt-3"><%= item.a %></p>
+            <p class="hub-faq__body"><%= item.a %></p>
           </details>
         <% }) %>
       </div>

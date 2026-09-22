@@ -1,0 +1,107 @@
+<%
+  // Full-width "featured center" banner for thin-inventory hubs (exactly 1 clinic).
+  // Locals: c (shaped clinic), service (optional), city (optional)
+  var cf = Math.floor((c.rating && c.rating.value) || 0);
+  var initial = String(c.name || 'م').trim().charAt(0) || 'م';
+  var ctaHref = c.profileUrl || 'tel:+989007000462';
+%>
+<article class="featured-center relative overflow-hidden rounded-2xl border border-sky-200/80 bg-gradient-to-bl from-white via-sky-50/40 to-teal-50/50 shadow-sm" aria-labelledby="featured-center-title">
+  <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-l from-sky-500 via-teal-400 to-emerald-400" aria-hidden="true"></div>
+
+  <div class="flex flex-col gap-5 p-5 md:p-7 lg:flex-row lg:items-stretch lg:gap-8">
+    <div class="flex shrink-0 items-start gap-4">
+      <div class="featured-center__avatar grid h-20 w-20 place-items-center rounded-2xl bg-gradient-to-br from-sky-500 to-teal-600 text-2xl font-extrabold text-white shadow-md ring-4 ring-white md:h-24 md:w-24 md:text-3xl" aria-hidden="true">
+        <%= initial %>
+      </div>
+      <div class="lg:hidden">
+        <p class="mb-1 text-[11px] font-extrabold tracking-wide text-emerald-700">مرکز منتخب و تاییدشده در شیراز</p>
+        <h3 id="featured-center-title" class="text-xl font-extrabold leading-snug text-slate-900">
+          <a href="<%= ctaHref %>" class="hover:text-sky-600 transition-colors"><%= c.name %></a>
+        </h3>
+      </div>
+    </div>
+
+    <div class="min-w-0 flex-1">
+      <p class="mb-1 hidden text-xs font-extrabold tracking-wide text-emerald-700 lg:block">مرکز منتخب و تاییدشده در شیراز</p>
+      <h3 class="mb-3 hidden text-2xl font-extrabold leading-snug text-slate-900 lg:block">
+        <a href="<%= ctaHref %>" class="hover:text-sky-600 transition-colors"><%= c.name %></a>
+      </h3>
+
+      <div class="mb-4 flex flex-wrap items-center gap-2">
+        <% if (c.isActive) { %>
+          <span class="inline-flex items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-bold text-emerald-800">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+            تاییدشده سلام دکتر
+          </span>
+        <% } %>
+        <% if (c.district) { %>
+          <span class="inline-flex rounded-full border border-sky-200 bg-sky-50 px-2.5 py-1 text-[11px] font-bold text-sky-800"><%= c.district.name %></span>
+        <% } %>
+        <% if (c.services && c.services.length) { %>
+          <% c.services.slice(0, 3).forEach(function(svc) { %>
+            <span class="inline-flex rounded-full border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-semibold text-slate-600"><%= svc %></span>
+          <% }) %>
+        <% } %>
+        <% if (c.devices && c.devices.length) { %>
+          <% c.devices.filter(function(d){ return d.isAuthentic; }).slice(0, 2).forEach(function(d) { %>
+            <span class="badge-verify inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold text-white">
+              <%= d.brandName %> — اصل
+            </span>
+          <% }) %>
+        <% } %>
+      </div>
+
+      <div class="mb-4 flex flex-wrap items-center gap-3 text-sm">
+        <span class="inline-flex items-center gap-1.5">
+          <span class="star-on tracking-wide" aria-label="امتیاز <%= c.rating.value %>">
+            <% for (var j = 1; j <= 5; j++) { %><span class="<%= j <= cf ? 'star-on' : 'star-off' %>">★</span><% } %>
+          </span>
+          <strong class="text-slate-800"><%= c.rating.value %></strong>
+          <span class="text-xs text-slate-400">(<%= c.rating.count %> نظر)</span>
+        </span>
+      </div>
+
+      <dl class="grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+        <% if (c.address) { %>
+          <div class="flex gap-2 rounded-xl border border-slate-200/80 bg-white/70 px-3 py-2.5">
+            <svg class="mt-0.5 shrink-0 text-sky-500" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21s-7-4.9-9.5-9A5.6 5.6 0 0 1 12 6a5.6 5.6 0 0 1 9.5 6c-2.5 4.1-9.5 9-9.5 9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="2"/></svg>
+            <div>
+              <dt class="text-[11px] font-bold text-slate-400">آدرس</dt>
+              <dd class="leading-relaxed text-slate-700"><%= c.address %></dd>
+            </div>
+          </div>
+        <% } %>
+        <div class="flex gap-2 rounded-xl border border-slate-200/80 bg-white/70 px-3 py-2.5">
+          <svg class="mt-0.5 shrink-0 text-sky-500" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <div>
+            <dt class="text-[11px] font-bold text-slate-400">ساعات پاسخگویی</dt>
+            <dd class="leading-relaxed text-slate-700">شنبه تا پنجشنبه · ۹ تا ۲۱</dd>
+          </div>
+        </div>
+      </dl>
+    </div>
+
+    <div class="flex shrink-0 flex-col justify-center gap-2 lg:w-56">
+      <a href="<%= ctaHref %>" class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-sky-500 px-5 py-3.5 text-sm font-extrabold text-white shadow-md shadow-sky-500/25 transition hover:bg-sky-600 hover:shadow-lg">
+        رزرو وقت و مشاوره رایگان
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <% if (c.phone) { %>
+        <a href="tel:<%= String(c.phone).replace(/[^\d+]/g, '') %>" class="inline-flex w-full items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition hover:border-sky-300 hover:text-sky-700" dir="ltr">
+          <%= c.phone %>
+        </a>
+      <% } %>
+    </div>
+  </div>
+</article>
+
+<a href="/clinic-promote.html" class="clinic-promote-banner group mt-4 flex flex-col gap-2 rounded-2xl border border-dashed border-slate-300 bg-white px-5 py-4 transition hover:border-sky-400 hover:bg-sky-50/50 sm:flex-row sm:items-center sm:justify-between">
+  <div class="min-w-0">
+    <p class="text-sm font-extrabold text-slate-800">ثبت کلینیک</p>
+    <p class="mt-0.5 text-sm leading-relaxed text-slate-500">پزشک یا مدیر کلینیک زیبایی در شیراز هستید؟ جهت معرفی مرکز خود کلیک کنید</p>
+  </div>
+  <span class="inline-flex shrink-0 items-center gap-1.5 text-sm font-bold text-sky-600 transition group-hover:gap-2.5">
+    ثبت مرکز
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>
+</a>

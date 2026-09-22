@@ -7,7 +7,7 @@
 # Prepare once:
 #   cp .env.shirazbeauty.example .env.shirazbeauty
 #   # edit .env.shirazbeauty — set POSTGRES_PASSWORD and matching DATABASE_URL
-#   mkdir -p shirazbeauty-data/uploads && touch shirazbeauty-data/leads.db
+#   mkdir -p shirazbeauty/data/uploads && touch shirazbeauty/data/leads.db
 #
 # Start (background):
 #   docker compose -f docker-compose.shirazbeauty.yml -p shirazbeauty up -d --build
@@ -54,8 +54,8 @@ services:
     env_file:
       - .env.shirazbeauty
     volumes:
-      - ./shirazbeauty-data/leads.db:/app/leads.db
-      - ./shirazbeauty-data/uploads:/app/uploads
+      - ./shirazbeauty/data/leads.db:/app/leads.db
+      - ./shirazbeauty/data/uploads:/app/uploads
       - ./server.js:/app/server.js:ro
       - ./categoryMonetize.js:/app/categoryMonetize.js:ro
       - ./serviceLanding.js:/app/serviceLanding.js:ro

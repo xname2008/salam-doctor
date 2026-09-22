@@ -1,7 +1,7 @@
 /**
  * Dynamic /services/:slug landing pages.
  * Canonical routes are English-only (e.g. /services/qswitch).
- * Note: /services/botox 301 → /shiraz/botox (see server.js consolidation).
+ * Note: /shiraz/botox 301 → /shiraz/botox (see server.js consolidation).
  * Persian / alias slugs 301 via Express middleware (serviceSlugMap).
  */
 'use strict';
