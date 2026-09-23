@@ -73,6 +73,7 @@ services:
       - ./serviceLanding.js:/app/serviceLanding.js:ro
       - ./siteSettings.js:/app/siteSettings.js:ro
       - ./seoInfra.js:/app/seoInfra.js:ro
+      - ./hubClinicSanitize.js:/app/hubClinicSanitize.js:ro
       - ./breadcrumb.js:/app/breadcrumb.js:ro
       - ./utils:/app/utils:ro
       - ./scripts/gtm-snippets.js:/app/scripts/gtm-snippets.js:ro

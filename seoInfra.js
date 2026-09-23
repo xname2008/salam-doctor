@@ -7,6 +7,7 @@
 const { buildMedicalEntityJsonLd } = require('./jsonLdMedicalEntity');
 const { buildFaqPageJsonLd } = require('./faqPageJsonLd');
 const clinicSlug = require('./clinicSlug');
+const { sanitizeHubClinicList } = require('./hubClinicSanitize');
 const {
   breadcrumbListJsonLd,
   breadcrumbNavHtml,
@@ -793,8 +794,9 @@ function localHubFaqPage(data, extraFaqs) {
  */
 function buildLocalHubDoctorItemList(data, canonical) {
   const { service, city, clinics, cityInfo } = data;
-  const activeClinics = (clinics || []).filter((c) => c && c.isActive !== false);
-  const listed = activeClinics.length ? activeClinics : clinics || [];
+  const cleaned = sanitizeHubClinicList(clinics || []);
+  const activeClinics = cleaned.filter((c) => c && c.isActive !== false);
+  const listed = activeClinics.length ? activeClinics : cleaned;
 
   return {
     '@type': 'ItemList',
@@ -826,17 +828,20 @@ function buildLocalHubDoctorItemList(data, canonical) {
 /**
  * Build @graph JSON-LD for a local hub page.
  * LIST (>=3 clinics): MedicalClinic + ItemList + FAQ.
- * GUIDE thin/empty: MedicalWebPage + FAQ; ItemList only when ≥1 clinic (no "لیست 0").
+ * GUIDE (<3 real clinics): MedicalWebPage + FAQ only — never ItemList of 0/1.
  */
 function buildLocalHubJsonLd(data, canonical, extraFaqs, displayName) {
-  const count = hubListedClinicCount(data);
   const listMode = isHubListMode(data);
   const faq = localHubFaqPage(data, extraFaqs);
   const crumbs = graphNodeStrip(localHubBreadcrumbList(data, canonical));
   const graph = [];
 
-  if (listMode || count >= 1) {
+  if (listMode) {
     graph.push(localHubMedicalClinicEntity(data, canonical, displayName));
+    graph.push(crumbs);
+    const itemList = buildLocalHubDoctorItemList(data, canonical);
+    itemList.description = `فهرست مراکز فعال ارائه‌دهنده ${data.service.name} در ${data.city}`;
+    graph.push(itemList);
   } else {
     graph.push({
       '@type': 'MedicalWebPage',
@@ -846,18 +851,9 @@ function buildLocalHubJsonLd(data, canonical, extraFaqs, displayName) {
       description: `راهنمای ${data.service.name} در ${data.city}؛ معیارهای انتخاب مرکز و مشاوره رایگان سلام دکتر.`,
       inLanguage: 'fa-IR',
       isPartOf: { '@id': `${SITE_BASE}/#website` },
+      publisher: { '@id': `${SITE_BASE}/#organization` },
     });
-  }
-
-  graph.push(crumbs);
-
-  if (count >= 1) {
-    const itemList = buildLocalHubDoctorItemList(data, canonical);
-    // Avoid boastful "لیست N مرکز برتر" in ItemList description
-    itemList.description = listMode
-      ? `فهرست مراکز فعال ارائه‌دهنده ${data.service.name} در ${data.city}`
-      : `معرفی مرکز مرتبط با ${data.service.name} در ${data.city}`;
-    graph.push(itemList);
+    graph.push(crumbs);
   }
 
   graph.push(faq);

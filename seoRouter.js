@@ -98,6 +98,15 @@ const PILLAR_HUBS_NO_EMPTY_REDIRECT = new Set([
   'wart-cryotherapy',
   'skin-biopsy',
   'light-therapy',
+  // Device / long-tail hubs: stay 200 GUIDE after placeholder purge (never 301 empty→parent)
+  'facial',
+  'mole-removal',
+  'buccal-fat',
+  'pore-treatment',
+  'laser-candela-2026',
+  'laser-titanium-2026',
+  'fotona-laser',
+  'co2-fractional-laser',
 ]);
 
 let SEO_OVERRIDES = {};
@@ -231,6 +240,13 @@ const HUB_PARENT_FALLBACK = Object.freeze({
   'skin-biopsy': { slug: 'dermatology', name: 'پوست و مو' },
 });
 
+const { clinicProfilePath } = require('./clinicSlug');
+const {
+  isHubListableClinic,
+  sanitizeHubClinicList,
+  sanitizeHubPageData,
+} = require('./hubClinicSanitize');
+
 let cachedClinicsData = null;
 
 function loadClinicsData() {
@@ -239,7 +255,15 @@ function loadClinicsData() {
     const dataPath = path.join(__dirname, 'data.min.js');
     const src = fs.readFileSync(dataPath, 'utf8');
     const fn = new Function(`${src}; return typeof clinicsData !== "undefined" ? clinicsData : [];`);
-    cachedClinicsData = fn() || [];
+    const raw = fn() || [];
+    cachedClinicsData = sanitizeHubClinicList(
+      (Array.isArray(raw) ? raw : []).map((c) => ({
+        ...c,
+        // Normalize profile URL so dead /doctor/{id} stubs are detectable.
+        profileUrl: c.link || clinicProfilePath(c),
+        link: c.link || clinicProfilePath(c),
+      }))
+    );
   } catch (err) {
     console.warn('[seo] loadClinicsData failed:', (err && err.message) || err);
     cachedClinicsData = [];
@@ -253,11 +277,12 @@ function isConfiguredHubSlug(slug) {
 }
 
 function shapeRelatedClinicForHub(c) {
+  const profileUrl = c.link || c.profileUrl || clinicProfilePath(c);
   return {
     id: c.id,
     name: c.name,
     address: c.address || '',
-    profileUrl: c.link || c.profileUrl || `/doctor/${c.id}`,
+    profileUrl,
     isActive: false,
     district: null,
     devices: [],
@@ -273,6 +298,7 @@ function findCatalogClinicsForDeviceHub(slug) {
   const matched = [];
   for (const clinic of clinics) {
     if (!clinic || clinic.id == null) continue;
+    if (!isHubListableClinic(clinic)) continue;
     const haystack = [
       clinic.name,
       clinic.sliderTitle,
@@ -287,11 +313,13 @@ function findCatalogClinicsForDeviceHub(slug) {
       .join(' ')
       .toLowerCase();
     if (!keywords.some((kw) => haystack.includes(String(kw).toLowerCase()))) continue;
+    const profileUrl = clinic.link || clinic.profileUrl || clinicProfilePath(clinic);
     matched.push({
       id: Number(clinic.id),
       name: clinic.name || clinic.sliderTitle || `مرکز ${clinic.id}`,
       address: clinic.address || '',
-      profileUrl: clinic.link || `/doctor/${clinic.id}`,
+      profileUrl,
+      slug: clinic.slug || null,
       isActive: true,
       district: null,
       devices: [],
@@ -303,7 +331,7 @@ function findCatalogClinicsForDeviceHub(slug) {
     if (b.id === 114) return 1;
     return String(a.name).localeCompare(String(b.name), 'fa');
   });
-  return matched;
+  return sanitizeHubClinicList(matched);
 }
 
 /** Hub page when Prisma service row is missing but slug is in sitemap/seo-config. */
@@ -327,7 +355,7 @@ function buildSyntheticHubPage(city, slug) {
         { loadClinicsData }
       );
 
-  return {
+  return sanitizeHubPageData({
     citySlug: city.slug,
     cityInfo: city,
     city: city.nameFa,
@@ -343,7 +371,9 @@ function buildSyntheticHubPage(city, slug) {
       minPrice: null,
     },
     clinics: deviceClinics,
-    relatedClinics: (related.clinics || []).map(shapeRelatedClinicForHub),
+    relatedClinics: sanitizeHubClinicList(
+      (related.clinics || []).map(shapeRelatedClinicForHub)
+    ),
     districts: [],
     stats: {
       total: deviceClinics.length,
@@ -352,7 +382,7 @@ function buildSyntheticHubPage(city, slug) {
       ratingValue: 4.8,
       reviewCount: 0,
     },
-  };
+  });
 }
 
 function createSeoApp(options = {}) {
@@ -430,6 +460,9 @@ function createSeoApp(options = {}) {
       data = buildSyntheticHubPage(city, slug);
     }
     if (!data) return res.status(404).send('دسته‌بندی یافت نشد');
+
+    // Drop Sample Clinic / dead /doctor/{id} fixtures before counts, SEO, and render.
+    sanitizeHubPageData(data);
 
     const activeCount = countActiveClinics(data);
 
@@ -569,6 +602,8 @@ function createSeoApp(options = {}) {
     }
 
     if (!data) return res.status(404).json({ error: 'not_found' });
+
+    sanitizeHubPageData(data);
 
     const activeCount = countActiveClinics(data);
     let redirectTo = null;

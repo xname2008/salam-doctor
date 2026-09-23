@@ -21,6 +21,7 @@ const { clinicProfilePath, slugForClinic } = require('./clinicSlug');
 const { resolveHubServiceSlug } = require('./serviceSlugMap');
 const { HUB_SLUGS, PARENT_SLUGS } = require('./hub-slugs');
 const { hubLabelFa, isParentHubSlug } = require('./hub-labels');
+const { sanitizeHubPageData, sanitizeHubClinicList } = require('./hubClinicSanitize');
 
 class DirectoryRepository {
   /**
@@ -350,12 +351,14 @@ class DirectoryRepository {
     // Defensive, stable re-sort: guarantees premium-first regardless of driver.
     mapped.sort((a, b) => Number(b.isActive) - Number(a.isActive));
 
+    const primary = sanitizeHubClinicList(mapped);
+
     let relatedClinics = [];
-    if (!mapped.length && service.parent) {
+    if (!primary.length && service.parent) {
       relatedClinics = await this._loadRelatedClinics(service.parent.id, service.id);
     }
 
-    return this._shapePage(service, mapped, city, relatedClinics);
+    return sanitizeHubPageData(this._shapePage(service, primary, city, relatedClinics));
   }
 
   async _loadRelatedClinics(parentServiceId, excludeServiceId) {

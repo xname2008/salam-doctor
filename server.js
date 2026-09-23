@@ -1376,11 +1376,15 @@ function featuredHasImage(row) {
 const NAHAL_FEATURED_ID = 'nahal-clinic-featured';
 
 const FEATURED_SLOT_DEFAULTS = [
-  { rank: 1, id: NAHAL_FEATURED_ID, name: 'کلینیک نهال', tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی', image: 'clinics/114/Hero.webp', link: '/doctor/nahal-clinic', badge: 'ویژه' },
-  { rank: 2, id: 'featured-slot-2', name: 'Shiraz Sample Clinic 1', tagline: 'کلینیک تخصصی پوست و مو', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-1', badge: null },
-  { rank: 3, id: 'featured-slot-3', name: 'Shiraz Sample Clinic 4', tagline: 'کلینیک زیبایی و کاشت مو', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-4', badge: null },
-  { rank: 4, id: 'featured-slot-4', name: 'Shiraz Sample Clinic 5', tagline: 'کلینیک زیبایی و کاشت مو', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-5', badge: null },
-  { rank: 5, id: 'featured-slot-5', name: 'Shiraz Sample Clinic 14', tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-14', badge: null },
+  {
+    rank: 1,
+    id: NAHAL_FEATURED_ID,
+    name: 'کلینیک نهال',
+    tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی',
+    image: 'clinics/114/Hero.webp',
+    link: '/doctor/nahal-clinic',
+    badge: 'ویژه',
+  },
 ];
 
 const FEATURED_SLOT_IDS = new Set(FEATURED_SLOT_DEFAULTS.map((slot) => slot.id));
@@ -1517,6 +1521,17 @@ function ensureFeaturedSlots() {
     repairFeaturedLinks(db);
     deactivateNonCanonicalFeaturedSlots(db);
     ensureNahalFeaturedImage(db);
+
+    // Permanently deactivate English placeholder featured fixtures.
+    db.prepare(`
+      UPDATE featured_clinics SET active = 0
+      WHERE name LIKE '%Sample Clinic%'
+         OR name LIKE '%Test Clinic%'
+         OR name LIKE '%Dummy%'
+         OR name LIKE '%کلینیک نمونه%'
+         OR IFNULL(link, '') LIKE '%sample-clinic%'
+         OR id LIKE 'featured-slot-%'
+    `).run();
 
     for (const slot of FEATURED_SLOT_DEFAULTS) {
       const link = normalizeFeaturedLink(slot.link);
@@ -2129,7 +2144,17 @@ function loadClinicsData() {
     const code = fs.readFileSync(file, 'utf8');
     const sandbox = { clinicsData: [] };
     vm.runInNewContext(code.replace(/^const clinicsData/, 'clinicsData'), sandbox);
-    return Array.isArray(sandbox.clinicsData) ? sandbox.clinicsData : [];
+    const raw = Array.isArray(sandbox.clinicsData) ? sandbox.clinicsData : [];
+    // Hub / directory consumers must never see English Sample Clinic fixtures.
+    const { sanitizeHubClinicList } = require('./hubClinicSanitize');
+    const { clinicProfilePath } = clinicSlug;
+    return sanitizeHubClinicList(
+      raw.map((c) => ({
+        ...c,
+        profileUrl: c.link || clinicProfilePath(c),
+        link: c.link || clinicProfilePath(c),
+      }))
+    );
   } catch (err) {
     console.warn('loadClinicsData:', err.message || err);
     return [];

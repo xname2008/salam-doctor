@@ -10,6 +10,7 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const { clinicProfilePath } = require('./clinicSlug');
+const { sanitizeHubClinicList, isHubListableClinic } = require('./hubClinicSanitize');
 const {
   CANONICAL_SERVICE_SLUGS,
   decodeSlug,
@@ -357,6 +358,11 @@ function findRelatedClinicsByCategory(meta, deps, excludeIds) {
 
   for (const clinic of clinics) {
     if (!clinic || clinic.id == null || exclude.has(Number(clinic.id))) continue;
+    if (!isHubListableClinic({
+      ...clinic,
+      profileUrl: clinic.link || clinicProfilePath(clinic),
+      link: clinic.link || clinicProfilePath(clinic),
+    })) continue;
     const haystack = clinicHaystack(clinic);
     if (!keywords.some((kw) => haystack.includes(kw))) continue;
     matched.push({
@@ -376,7 +382,7 @@ function findRelatedClinicsByCategory(meta, deps, excludeIds) {
     return String(a.name).localeCompare(String(b.name), 'fa');
   });
 
-  return { clinics: matched.slice(0, 4), badge: category.badge };
+  return { clinics: sanitizeHubClinicList(matched.slice(0, 4)), badge: category.badge };
 }
 
 function loadClinicsDataViaDeps(deps) {
