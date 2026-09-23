@@ -245,6 +245,7 @@ const {
   isHubListableClinic,
   sanitizeHubClinicList,
   sanitizeHubPageData,
+  resolveClinicCardImages,
 } = require('./hubClinicSanitize');
 
 let cachedClinicsData = null;
@@ -278,6 +279,7 @@ function isConfiguredHubSlug(slug) {
 
 function shapeRelatedClinicForHub(c) {
   const profileUrl = c.link || c.profileUrl || clinicProfilePath(c);
+  const media = resolveClinicCardImages(c);
   return {
     id: c.id,
     name: c.name,
@@ -287,6 +289,9 @@ function shapeRelatedClinicForHub(c) {
     district: null,
     devices: [],
     rating: { value: 4.8, count: 12 },
+    heroImage: media.heroImage,
+    coverImage: media.coverImage,
+    image: media.image,
   };
 }
 
@@ -314,6 +319,7 @@ function findCatalogClinicsForDeviceHub(slug) {
       .toLowerCase();
     if (!keywords.some((kw) => haystack.includes(String(kw).toLowerCase()))) continue;
     const profileUrl = clinic.link || clinic.profileUrl || clinicProfilePath(clinic);
+    const media = resolveClinicCardImages(clinic);
     matched.push({
       id: Number(clinic.id),
       name: clinic.name || clinic.sliderTitle || `مرکز ${clinic.id}`,
@@ -324,6 +330,9 @@ function findCatalogClinicsForDeviceHub(slug) {
       district: null,
       devices: [],
       rating: { value: 4.8, count: 12 },
+      heroImage: media.heroImage,
+      coverImage: media.coverImage,
+      image: media.image,
     });
   }
   matched.sort((a, b) => {

@@ -10,6 +10,8 @@ const DEAD_DOCTOR_PATH_RE =
   /(?:^|https?:\/\/[^/]+)?\/doctor\/(?:\d+|sample-clinic(?:-\d+)?)\/?$/i;
 const LEGACY_PROFILE_QUERY_RE = /profile\.html\?(?:[^#]*&)?(?:id|clinic_id)=\d+/i;
 
+const DEFAULT_CLINIC_IMAGE = '/assets/images/defaults/clinic-default.webp';
+
 function isPlaceholderClinicName(name) {
   return PLACEHOLDER_NAME_RE.test(String(name || ''));
 }
@@ -65,12 +67,59 @@ function isHubListableClinic(clinic) {
 }
 
 /**
+ * Public web path for a clinic media asset (leading slash; keep absolute URLs).
+ * @param {string} raw
+ * @returns {string}
+ */
+function publicClinicAssetPath(raw) {
+  const s = String(raw || '').trim();
+  if (!s) return '';
+  if (/^https?:\/\//i.test(s) || s.startsWith('data:')) return s;
+  return `/${s.replace(/^\/+/, '')}`;
+}
+
+/**
+ * Resolve hero/cover/image for hub cards and featured banners.
+ * Prefers explicit catalog fields, then /clinics/{id}/Hero.webp, then default.
+ * @param {object} clinic
+ * @returns {{ heroImage: string, coverImage: string, image: string }}
+ */
+function resolveClinicCardImages(clinic) {
+  const id = clinic && clinic.id != null ? Number(clinic.id) : NaN;
+  const explicit = publicClinicAssetPath(
+    (clinic && (clinic.heroImage || clinic.coverImage || clinic.image)) || ''
+  );
+  // Skip low-signal sample placeholders so filesystem hero can win for real clinics.
+  const usableExplicit =
+    explicit && !/sample-clinic-services|clinic-placeholder/i.test(explicit)
+      ? explicit
+      : '';
+  const byIdHero =
+    Number.isInteger(id) && id > 0 ? `/clinics/${id}/Hero.webp` : '';
+  const image = usableExplicit || byIdHero || DEFAULT_CLINIC_IMAGE;
+  return {
+    heroImage: image,
+    coverImage: image,
+    image,
+  };
+}
+
+/**
+ * @param {object} clinic
+ * @returns {object}
+ */
+function withClinicCardImages(clinic) {
+  if (!clinic || typeof clinic !== 'object') return clinic;
+  return Object.assign({}, clinic, resolveClinicCardImages(clinic));
+}
+
+/**
  * @param {object[]} clinics
  * @returns {object[]}
  */
 function sanitizeHubClinicList(clinics) {
   if (!Array.isArray(clinics) || !clinics.length) return [];
-  return clinics.filter(isHubListableClinic);
+  return clinics.filter(isHubListableClinic).map(withClinicCardImages);
 }
 
 /**
@@ -115,9 +164,13 @@ function sanitizeHubPageData(data) {
 
 module.exports = {
   PLACEHOLDER_NAME_RE,
+  DEFAULT_CLINIC_IMAGE,
   isPlaceholderClinicName,
   isDeadDoctorProfileUrl,
   isHubListableClinic,
+  publicClinicAssetPath,
+  resolveClinicCardImages,
+  withClinicCardImages,
   sanitizeHubClinicList,
   sanitizeHubPageData,
 };

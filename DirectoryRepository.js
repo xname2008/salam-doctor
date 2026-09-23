@@ -21,7 +21,7 @@ const { clinicProfilePath, slugForClinic } = require('./clinicSlug');
 const { resolveHubServiceSlug } = require('./serviceSlugMap');
 const { HUB_SLUGS, PARENT_SLUGS } = require('./hub-slugs');
 const { hubLabelFa, isParentHubSlug } = require('./hub-labels');
-const { sanitizeHubPageData, sanitizeHubClinicList } = require('./hubClinicSanitize');
+const { sanitizeHubPageData, sanitizeHubClinicList, resolveClinicCardImages } = require('./hubClinicSanitize');
 
 class DirectoryRepository {
   /**
@@ -405,6 +405,12 @@ class DirectoryRepository {
       isAuthentic: Boolean(cd.isAuthenticBadge),
     }));
     const rating = pseudoRating(c.id); // TODO: replace with real reviews table
+    const media = resolveClinicCardImages({
+      id: c.id,
+      image: c.image || null,
+      heroImage: c.heroImage || null,
+      coverImage: c.coverImage || null,
+    });
 
     return {
       id: c.id,
@@ -425,6 +431,9 @@ class DirectoryRepository {
         ? `https://${c.dedicatedDomain}`
         : clinicProfilePath(c),
       rating,
+      heroImage: media.heroImage,
+      coverImage: media.coverImage,
+      image: media.image,
     };
   }
 

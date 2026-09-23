@@ -1,49 +1,67 @@
-<article class="<%= premium ? 'card-premium' : 'bg-white border border-slate-200' %> rounded-2xl p-5 flex flex-col gap-3 shadow-sm hover:shadow-md transition-shadow relative">
-  <% if (premium) { %>
-    <span class="absolute top-4 left-4 text-[10px] md:text-xs font-extrabold text-amber-800 bg-amber-100 border border-amber-300 rounded-full px-2.5 py-0.5">مرکز ویژه</span>
-  <% } %>
-
-  <header class="<%= premium ? 'pt-6' : '' %>">
-    <h3 class="text-base md:text-lg font-bold text-slate-900 leading-snug">
-      <a href="<%= c.profileUrl %>" class="hover:text-sky-600 transition-colors"><%= c.name %></a>
-    </h3>
-    <% if (c.district) { %>
-      <p class="text-sm font-semibold text-sky-600 mt-1"><%= c.district.name %></p>
+<%
+  var defaultImg = '/assets/images/defaults/clinic-default.webp';
+  var heroSrc = c.heroImage || c.coverImage || c.image || defaultImg;
+%>
+<article class="<%= premium ? 'card-premium' : 'bg-white border border-slate-200' %> rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow relative">
+  <div class="aspect-video w-full overflow-hidden rounded-t-xl bg-slate-100 relative">
+    <img
+      src="<%= heroSrc %>"
+      alt="<%= c.name %>"
+      width="400"
+      height="225"
+      loading="lazy"
+      decoding="async"
+      class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+      onerror="this.onerror=null;this.src='<%= defaultImg %>'"
+    >
+    <% if (premium) { %>
+      <span class="absolute top-3 left-3 z-10 text-[10px] md:text-xs font-extrabold text-amber-800 bg-amber-100/95 border border-amber-300 rounded-full px-2.5 py-0.5 shadow-sm">مرکز ویژه</span>
     <% } %>
-  </header>
-
-  <div class="flex items-center gap-2 text-sm">
-    <span class="star-on text-sm tracking-wide" aria-label="امتیاز <%= c.rating.value %>">
-      <% var cf = Math.floor(c.rating.value); for (var j = 1; j <= 5; j++) { %>
-        <span class="<%= j <= cf ? 'star-on' : 'star-off' %>">★</span>
-      <% } %>
-    </span>
-    <strong class="text-slate-800"><%= c.rating.value %></strong>
-    <span class="text-slate-400 text-xs">(<%= c.rating.count %>)</span>
   </div>
 
-  <% if (c.address) { %>
-    <address class="not-italic text-xs md:text-sm text-slate-500 leading-relaxed"><%= c.address %></address>
-  <% } %>
+  <div class="p-5 flex flex-col gap-3 flex-1">
+    <header>
+      <h3 class="text-base md:text-lg font-bold text-slate-900 leading-snug">
+        <a href="<%= c.profileUrl %>" class="hover:text-sky-600 transition-colors"><%= c.name %></a>
+      </h3>
+      <% if (c.district) { %>
+        <p class="text-sm font-semibold text-sky-600 mt-1"><%= c.district.name %></p>
+      <% } %>
+    </header>
 
-  <% if (c.devices && c.devices.length) { %>
-    <div class="flex flex-wrap gap-1.5" aria-label="دستگاه‌های مرکز">
-      <% c.devices.slice(0, 5).forEach(function(d) { %>
-        <% if (d.isAuthentic) { %>
-          <span class="badge-verify inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-white rounded-full px-2.5 py-1">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
-            <%= d.brandName %> — اصل
-          </span>
-        <% } else { %>
-          <span class="text-[10px] md:text-xs font-medium text-slate-600 bg-slate-100 border border-slate-200 rounded-full px-2.5 py-1"><%= d.brandName %></span>
+    <div class="flex items-center gap-2 text-sm">
+      <span class="star-on text-sm tracking-wide" aria-label="امتیاز <%= c.rating.value %>">
+        <% var cf = Math.floor(c.rating.value); for (var j = 1; j <= 5; j++) { %>
+          <span class="<%= j <= cf ? 'star-on' : 'star-off' %>">★</span>
         <% } %>
-      <% }) %>
+      </span>
+      <strong class="text-slate-800"><%= c.rating.value %></strong>
+      <span class="text-slate-400 text-xs">(<%= c.rating.count %>)</span>
     </div>
-  <% } %>
 
-  <footer class="mt-auto pt-2">
-    <a href="<%= c.profileUrl %>" class="flex w-full items-center justify-center rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm py-2.5 transition-colors">
-      مشاهده پروفایل و مشاوره
-    </a>
-  </footer>
+    <% if (c.address) { %>
+      <address class="not-italic text-xs md:text-sm text-slate-500 leading-relaxed"><%= c.address %></address>
+    <% } %>
+
+    <% if (c.devices && c.devices.length) { %>
+      <div class="flex flex-wrap gap-1.5" aria-label="دستگاه‌های مرکز">
+        <% c.devices.slice(0, 5).forEach(function(d) { %>
+          <% if (d.isAuthentic) { %>
+            <span class="badge-verify inline-flex items-center gap-1 text-[10px] md:text-xs font-bold text-white rounded-full px-2.5 py-1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+              <%= d.brandName %> — اصل
+            </span>
+          <% } else { %>
+            <span class="text-[10px] md:text-xs font-medium text-slate-600 bg-slate-100 border border-slate-200 rounded-full px-2.5 py-1"><%= d.brandName %></span>
+          <% } %>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <footer class="mt-auto pt-2">
+      <a href="<%= c.profileUrl %>" class="flex w-full items-center justify-center rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm py-2.5 transition-colors">
+        مشاهده پروفایل و مشاوره
+      </a>
+    </footer>
+  </div>
 </article>
