@@ -4098,6 +4098,27 @@ const server = http.createServer(async (req, res) => {
         return;
       }
 
+      // Candela / Titanium short aliases → 2026 KEEP (one-hop; never chain via
+      // candela-laser / titanium-laser or fall back to laser-hair-removal).
+      if (
+        rawPathOnly === '/shiraz/candela' ||
+        rawPathOnly === '/shiraz/candela/' ||
+        rawPathOnly === '/shiraz/candela-laser' ||
+        rawPathOnly === '/shiraz/candela-laser/'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/laser-candela-2026' + qs, method);
+        return;
+      }
+      if (
+        rawPathOnly === '/shiraz/titanium' ||
+        rawPathOnly === '/shiraz/titanium/' ||
+        rawPathOnly === '/shiraz/titanium-laser' ||
+        rawPathOnly === '/shiraz/titanium-laser/'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/laser-titanium-2026' + qs, method);
+        return;
+      }
+
       // Trailing slash on /shiraz/* hubs → one-hop 301 (canonical without slash).
       if (
         rawPathOnly.length > 1 &&
@@ -4252,6 +4273,11 @@ const server = http.createServer(async (req, res) => {
         // Wrong-slug guesses → KEEP hubs (GSC soft 404s)
         '/shiraz/pores': '/shiraz/pore-treatment',
         '/shiraz/buccal-fat-removal': '/shiraz/buccal-fat',
+        // Candela / Titanium short aliases → 2026 KEEP (one-hop)
+        '/shiraz/candela': '/shiraz/laser-candela-2026',
+        '/shiraz/candela-laser': '/shiraz/laser-candela-2026',
+        '/shiraz/titanium': '/shiraz/laser-titanium-2026',
+        '/shiraz/titanium-laser': '/shiraz/laser-titanium-2026',
         // CO2 → fractional CO2 hub (incl. chain-killer لیزر-co2)
         '/services/co2-laser': '/shiraz/co2-fractional-laser',
         '/services/لیزر-co2': '/shiraz/co2-fractional-laser',

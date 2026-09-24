@@ -32,6 +32,14 @@ const {
   resolveHubServiceSlug,
 } = require('./serviceSlugMap');
 
+/** Short / legacy /shiraz/* aliases → money KEEP (one-hop; never intermediate). */
+const SHIRAZ_HUB_ALIAS_TO_KEEP = Object.freeze({
+  candela: 'laser-candela-2026',
+  'candela-laser': 'laser-candela-2026',
+  titanium: 'laser-titanium-2026',
+  'titanium-laser': 'laser-titanium-2026',
+});
+
 const SITE_BASE = process.env.SITE_BASE || 'https://salam-doctor.com';
 const PAGE_CACHE_TTL_MS = 5 * 60 * 1000;
 
@@ -435,6 +443,14 @@ function createSeoApp(options = {}) {
     if (!city) return res.status(404).send('شهر یافت نشد');
 
     const decoded = decodeSlug(serviceSlug);
+    const aliasKeep = SHIRAZ_HUB_ALIAS_TO_KEEP[decoded];
+    if (aliasKeep) {
+      const dest = localHubPath(city.slug, aliasKeep);
+      if (dest !== localHubPath(city.slug, decoded)) {
+        return sendPermanentRedirect(res, dest);
+      }
+    }
+
     const canonical = resolveCanonicalEnglishSlug(serviceSlug);
     if (canonical && canonical !== decoded) {
       const dest = localHubPath(city.slug, canonical);
@@ -595,6 +611,11 @@ function createSeoApp(options = {}) {
     }
 
     const decoded = decodeSlug(serviceSlug);
+    const aliasKeep = SHIRAZ_HUB_ALIAS_TO_KEEP[decoded];
+    if (aliasKeep) {
+      return res.redirect(301, localHubPath(citySlug, aliasKeep));
+    }
+
     const canonical = resolveCanonicalEnglishSlug(serviceSlug);
     if (canonical && canonical !== decoded) {
       return res.redirect(301, localHubPath(citySlug, canonical));
