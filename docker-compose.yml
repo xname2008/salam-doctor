@@ -45,6 +45,7 @@ services:
       # Persist admin-edited intros so nginx and the backend share the same files
       - ./clinic-intros:/app/clinic-intros
       - ./rhinoplasty.html:/app/rhinoplasty.html:ro
+      - ./hair-loss-treatment.html:/app/hair-loss-treatment.html:ro
       - ./server.js:/app/server.js:ro
       - ./persianDate.js:/app/persianDate.js:ro
       - ./articleCatalog.js:/app/articleCatalog.js:ro

@@ -21,7 +21,7 @@ COPY jsonLdMedicalEntity.js local-seo-registry.js htmlSitemap.js blogBreadcrumb.
      hub-slugs.js leads.json data.min.js \
      profile.html blog-list.html blog-post.html category.html \
      hair-transplant.html skin-rejuvenation.html laser-hair.html injection.html \
-     cosmetic-surgery.html slimming.html rhinoplasty.html lasik.html femto-lasik.html prk.html \
+     cosmetic-surgery.html slimming.html rhinoplasty.html hair-loss-treatment.html lasik.html femto-lasik.html prk.html \
      products.html pharmacy.html eye.html ./
 COPY data ./data
 COPY articles ./articles

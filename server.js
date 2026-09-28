@@ -4083,9 +4083,24 @@ const server = http.createServer(async (req, res) => {
       // Alias: rejuvenation → skin-rejuvenation (one-hop)
       if (
         rawPathOnly === '/shiraz/rejuvenation' ||
-        rawPathOnly === '/shiraz/rejuvenation/'
+        rawPathOnly === '/shiraz/rejuvenation/' ||
+        rawPathOnly === '/rejuvenation.html' ||
+        rawPathOnly === '/rejuvenation' ||
+        rawPathOnly === '/rejuvenation/' ||
+        rawPathOnly === '/services/rejuvenation' ||
+        rawPathOnly === '/services/rejuvenation/'
       ) {
         sendPermanentRedirect(res, '/shiraz/skin-rejuvenation' + qs, method);
+        return;
+      }
+
+      // Root-level botox/filler guide stubs → article KEEP (one-hop)
+      if (
+        rawPathOnly === '/botox-filler-guide.html' ||
+        rawPathOnly === '/botox-filler-guide' ||
+        rawPathOnly === '/botox-filler-guide/'
+      ) {
+        sendPermanentRedirect(res, '/articles/botox-filler-guide' + qs, method);
         return;
       }
 

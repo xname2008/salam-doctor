@@ -23,8 +23,10 @@ const ASSET_EXT =
 const HTML_TO_KEEP: Record<string, string> = {
   '/articles/botox-filler-guide.html': '/articles/botox-filler-guide',
   '/articles/skin-rejuvenation-guide.html': '/articles/botox-filler-guide',
+  '/botox-filler-guide.html': '/articles/botox-filler-guide',
   '/laser-hair.html': '/shiraz/laser-hair-removal',
   '/skin-rejuvenation.html': '/shiraz/skin-rejuvenation',
+  '/rejuvenation.html': '/shiraz/skin-rejuvenation',
   '/slimming.html': '/shiraz/slimming',
   '/injection.html': '/shiraz/injectables',
   '/hair-transplant.html': '/shiraz/hair-transplant',
@@ -41,8 +43,10 @@ const HTML_TO_KEEP: Record<string, string> = {
 
 const BARE_STUB_TO_KEEP: Record<string, string> = {
   '/articles/skin-rejuvenation-guide': '/articles/botox-filler-guide',
+  '/botox-filler-guide': '/articles/botox-filler-guide',
   '/laser-hair': '/shiraz/laser-hair-removal',
   '/skin-rejuvenation': '/shiraz/skin-rejuvenation',
+  '/rejuvenation': '/shiraz/skin-rejuvenation',
   '/slimming': '/shiraz/slimming',
   '/injection': '/shiraz/injectables',
   '/hair-transplant': '/shiraz/hair-transplant',

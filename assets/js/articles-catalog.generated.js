@@ -5,6 +5,16 @@
 (function (root) {
   root.ARTICLES_CATALOG = [
   {
+    "slug": "hair-loss-treatment-comparison",
+    "title": "مقایسه مزوتراپی و PRP در درمان ریزش مو: اثربخشی، هزینه و ماندگاری",
+    "summary": "مزوتراپی مو چیست و چه تفاوتی با PRP دارد؟ مقایسه علمی اثربخشی، عوارض، هزینه و ماندگاری برای انتخاب بهترین روش درمان ریزش مو.",
+    "category": "ریزش مو",
+    "cover_image": "assets/images/articles/hair-loss-treatment-comparison-cover.webp",
+    "url": "articles/hair-loss-treatment-comparison.html",
+    "datePublished": "2026-09-18",
+    "jalaliLabel": "۲۷ شهریور ۱۴۰۵"
+  },
+  {
     "slug": "botox-filler-guide",
     "title": "راهنمای جامع ماندگاری و عوارض تزریق ژل و بوتاکس",
     "summary": "بررسی کامل میزان ماندگاری، عوارض احتمالی و مراقبت‌های قبل و بعد از تزریق ژل و بوتاکس به همراه نکات مهم انتخاب کلینیک در شیراز.",

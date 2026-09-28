@@ -92,6 +92,7 @@ module.exports = {
 <p>لیزر CO2 فرکشنال یکی از روش‌های پرکاربرد برای درمان جای جوش، اسکار و بهبود بافت پوست است. پروتکل درمانی و تعداد جلسات به تشخیص پزشک و وضعیت پوست بستگی دارد.</p>
 <ul>
   <li><a href="/shiraz/skin-rejuvenation">جوانسازی پوست در شیراز</a></li>
+  <li><a href="/shiraz/light-therapy">لایت تراپی و نور درمانی در شیراز</a></li>
   <li><a href="/shiraz/laser-surgery">لیزر و جراحی در شیراز</a></li>
   <li><a href="/shiraz/dermatology">پوست و مو در شیراز</a></li>
 </ul>
@@ -395,6 +396,17 @@ module.exports = {
     description:
       'لیست کلینیک‌های فیشیال و پاکسازی پوست در شیراز. مقایسه مراکز معتبر + مشاوره رایگان با سلام دکتر.',
     h1: 'بهترین مراکز فیشیال پوست در شیراز',
+    seoDescription: `
+<section id="facial-related" aria-labelledby="facial-related-heading">
+<h2 id="facial-related-heading">خدمات مرتبط پوست و زیبایی</h2>
+<ul>
+  <li><a href="/shiraz/light-therapy">لایت تراپی و نور درمانی در شیراز</a></li>
+  <li><a href="/shiraz/skin-rejuvenation">جوانسازی پوست در شیراز</a></li>
+  <li><a href="/shiraz/pore-treatment">درمان منافذ باز پوست در شیراز</a></li>
+  <li><a href="/shiraz/co2-fractional-laser">لیزر CO2 فرکشنال در شیراز</a></li>
+</ul>
+</section>
+`.trim(),
   },
 
   'pore-treatment': {
