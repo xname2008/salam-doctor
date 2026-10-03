@@ -5,12 +5,22 @@
 (function (root) {
   root.ARTICLES_CATALOG = [
   {
+    "slug": "best-hair-transplant-center-shiraz",
+    "title": "بهترین مرکز کاشت مو در شیراز را چطور انتخاب کنیم؟ معیارها، هزینه و سوالات مشاوره",
+    "summary": "پیش از انتخاب مرکز کاشت مو در شیراز این‌ها را چک کنید: استعلام نظام پزشکی، روش مناسب، صداقت در تعداد گرافت، قرارداد کتبی، نشانه‌های هشدار و سوالات مشاوره.",
+    "category": "کاشت مو",
+    "cover_image": "assets/images/articles/hair-transplant-cover.webp",
+    "url": "/articles/best-hair-transplant-center-shiraz",
+    "datePublished": "2026-10-03",
+    "jalaliLabel": "۱۱ مهر ۱۴۰۵"
+  },
+  {
     "slug": "hair-loss-treatment-comparison",
     "title": "مقایسه مزوتراپی و PRP در درمان ریزش مو: اثربخشی، هزینه و ماندگاری",
     "summary": "مزوتراپی مو چیست و چه تفاوتی با PRP دارد؟ مقایسه علمی اثربخشی، عوارض، هزینه و ماندگاری برای انتخاب بهترین روش درمان ریزش مو.",
     "category": "ریزش مو",
     "cover_image": "assets/images/articles/hair-loss-treatment-comparison-cover.webp",
-    "url": "articles/hair-loss-treatment-comparison.html",
+    "url": "/articles/hair-loss-treatment-comparison",
     "datePublished": "2026-09-18",
     "jalaliLabel": "۲۷ شهریور ۱۴۰۵"
   },
@@ -20,7 +30,7 @@
     "summary": "بررسی کامل میزان ماندگاری، عوارض احتمالی و مراقبت‌های قبل و بعد از تزریق ژل و بوتاکس به همراه نکات مهم انتخاب کلینیک در شیراز.",
     "category": "جوانسازی پوست",
     "cover_image": "assets/images/articles/skin-rejuvenation-cover.webp",
-    "url": "articles/botox-filler-guide",
+    "url": "/articles/botox-filler-guide",
     "datePublished": "2026-09-12",
     "jalaliLabel": "۲۱ شهریور ۱۴۰۵"
   },
@@ -30,7 +40,7 @@
     "summary": "مزوتراپی مو چیست و چه تفاوتی با PRP دارد؟ مقایسه علمی اثربخشی، عوارض و هزینه تقویت مو برای انتخاب بهترین روش درمان ریزش مو.",
     "category": "ریزش مو",
     "cover_image": "assets/images/articles/mesotherapy-vs-prp-hair-loss-cover.webp",
-    "url": "articles/mesotherapy-vs-prp-hair-loss.html",
+    "url": "/articles/mesotherapy-vs-prp-hair-loss",
     "datePublished": "2026-09-10",
     "jalaliLabel": "۱۹ شهریور ۱۴۰۵"
   },
@@ -40,7 +50,7 @@
     "summary": "راهنمای تخصصی مراقبت‌های قبل و بعد از جراحی بینی؛ روش‌های علمی کاهش تورم، هزینه رینوپلاستی و پروتکل‌های بالینی برای نتیجه‌ای طبیعی و پایدار.",
     "category": "جراحی بینی",
     "cover_image": "assets/images/articles/rhinoplasti.webp",
-    "url": "articles/rhinoplasty-care-guide.html",
+    "url": "/articles/rhinoplasty-care-guide",
     "datePublished": "2026-09-06",
     "jalaliLabel": "۱۵ شهریور ۱۴۰۵"
   },
@@ -50,7 +60,7 @@
     "summary": "پنج معیار علمی انتخاب کلینیک پیکرتراشی و لیپوماتیک: صلاحیت جراح، ایمنی مرکز، شفافیت مشاوره، تحلیل هزینه و کیفیت مراقبت‌های پس از عمل.",
     "category": "پیکرتراشی و لاغری",
     "cover_image": "assets/images/articles/body-contouring-cover.webp",
-    "url": "articles/body-contouring-clinic-guide.html",
+    "url": "/articles/body-contouring-clinic-guide",
     "datePublished": "2026-09-05",
     "jalaliLabel": "۱۴ شهریور ۱۴۰۵"
   },
@@ -60,7 +70,7 @@
     "summary": "مقایسه علمی لیزر کاندلا (Nd:YAG) و الکساندرایت در حذف موهای زائد؛ بررسی اثربخشی، ایمنی پوست، هزینه بلندمدت و انتخاب دستگاه مناسب بر اساس نوع پوست.",
     "category": "لیزر موهای زائد",
     "cover_image": "assets/images/articles/laser-hair-removal-cover.webp",
-    "url": "articles/laser-hair-removal-comparison.html",
+    "url": "/articles/laser-hair-removal-comparison",
     "datePublished": "2026-09-03",
     "jalaliLabel": "۱۲ شهریور ۱۴۰۵"
   },
@@ -70,7 +80,7 @@
     "summary": "بررسی تخصصی هزینه‌های کاشت مو به روش FIT، مراقبت‌های حیاتی پس از عمل و تحلیل اقتصادی ارزش درمان. راهنمای علمی برای تسریع روند بهبودی و انتخاب کلینیک معتبر.",
     "category": "کاشت مو",
     "cover_image": "assets/images/articles/hair-transplant-cover.webp",
-    "url": "articles/fit-hair-transplant-cost.html",
+    "url": "/articles/fit-hair-transplant-cost",
     "datePublished": "2026-08-31",
     "jalaliLabel": "۱۰ شهریور ۱۴۰۵"
   }

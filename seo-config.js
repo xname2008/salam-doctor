@@ -248,6 +248,7 @@ module.exports = {
   <li>ارائه مشاوره شفاف درباره هزینه‌ها</li>
   <li>پیگیری و مراقبت پس از کاشت</li>
 </ul>
+<p>برای بررسی دقیق‌تر، <a href="/articles/best-hair-transplant-center-shiraz">چک‌لیست انتخاب مرکز کاشت مو و سوالات جلسه مشاوره</a> را بخوانید.</p>
 </section>
 `.trim(),
     faqs: [
