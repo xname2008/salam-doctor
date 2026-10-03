@@ -12,8 +12,8 @@ const DEFAULT_ORIGIN = 'https://salam-doctor.com';
 const ARTICLE_PRIORITY = '0.7';
 const ARTICLE_CHANGEFREQ = 'monthly';
 
-/** Slugs whose sitemap <loc> is extensionless (matches public KEEP). */
-const BARE_CANONICAL_ARTICLE_SLUGS = new Set(['botox-filler-guide']);
+/** Every static article sitemap <loc> is the extensionless KEEP. */
+const BARE_CANONICAL_ARTICLE_SLUGS = new Set(['*']);
 
 /** Matches any existing static-article <url> block in sitemap.xml. */
 const STATIC_ARTICLE_URL_BLOCK_RE =
@@ -47,10 +47,7 @@ function articleLoc(filename, origin) {
   const name = String(filename || '').trim();
   if (!name || !/\.html$/i.test(name)) return null;
   const slug = name.replace(/\.html$/i, '');
-  const pathPart = BARE_CANONICAL_ARTICLE_SLUGS.has(slug)
-    ? `articles/${slug}`
-    : `articles/${name}`;
-  return `${canonicalOrigin(origin)}/${pathPart}`;
+  return `${canonicalOrigin(origin)}/articles/${slug}`;
 }
 
 /**

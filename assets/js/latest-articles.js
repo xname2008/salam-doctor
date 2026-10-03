@@ -59,7 +59,7 @@
       summary: a.summary || '',
       category: a.category || '',
       cover_image: a.cover_image || '',
-      url: a.url || (a.slug ? 'articles/' + a.slug + '.html' : ''),
+      url: a.url || (a.slug ? '/articles/' + a.slug : ''),
       datePublished: iso,
       jalaliLabel: jalali,
       dateLabel: jalali || formatPersianJalaliDate(iso),
@@ -88,7 +88,8 @@
   var LATEST_ARTICLES = loadCatalog();
 
   function resolveUrl(article, base) {
-    var href = article.url || ('articles/' + article.slug + '.html');
+    var href = article.url || ('/articles/' + article.slug);
+    if (/^https?:\/\//i.test(href) || href.charAt(0) === '/') return href;
     if (!base) return href;
     if (base === 'articles/') return href.replace(/^articles\//, '');
     if (base === '../') return '../' + href.replace(/^\//, '');

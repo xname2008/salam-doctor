@@ -246,7 +246,7 @@ const HEADER_HTML = `<header class="topbar">
       <a href="/shiraz/lasik">لیزیک</a>
       <a href="/shiraz/femto-lasik">فمتولیزیک</a>
       <a href="/shiraz/prk">PRK</a>
-      <a href="/articles.html">مقالات</a>
+      <a href="/articles">مقالات</a>
       <a href="/products.html">محصولات زیبایی</a>
       <a href="/shiraz/pharmacy">داروخانه</a>
       <a href="/faq.html">سوالات متداول</a>
@@ -278,7 +278,7 @@ const DRAWER_HTML = `<div id="drawer-overlay" class="drawer-overlay" hidden></di
     <a href="/products.html">محصولات زیبایی</a>
     <a href="/shiraz/pharmacy">داروخانه</a>
     <a href="/faq.html">سوالات متداول</a>
-      <a href="/articles.html">مقالات</a>
+      <a href="/articles">مقالات</a>
     <a href="/about.html">درباره ما</a>
     <a href="tel:+989007000462" class="drawer-cta" dir="ltr" data-site-phone="support">پشتیبانی سایت: ۰۹۰۰۷۰۰۰۴۶۲</a>
   </div>
@@ -312,7 +312,7 @@ const FOOTER_HTML = `<footer>
       <div class="footer-col">
         <h4>راهنمای بیماران</h4>
         <div class="footer-links">
-          <a href="/articles.html">مقالات آموزشی</a>
+          <a href="/articles">مقالات آموزشی</a>
           <a href="/faq.html">سوالات متداول</a>
           <a href="/about.html">درباره ما</a>
           <a href="/sitemap">نقشه سایت</a>
@@ -321,9 +321,9 @@ const FOOTER_HTML = `<footer>
       <div class="footer-col">
         <h4>مقالات جدید</h4>
         <div class="footer-links">
-          <a href="/articles/laser-hair-removal-comparison.html">مقایسه لیزر کاندلا و الکساندرایت</a>
-          <a href="/articles/fit-hair-transplant-cost.html">هزینه و مراقبت کاشت مو FIT</a>
-          <a href="/articles.html">همه مقالات</a>
+          <a href="/articles/laser-hair-removal-comparison">مقایسه لیزر کاندلا و الکساندرایت</a>
+          <a href="/articles/fit-hair-transplant-cost">هزینه و مراقبت کاشت مو FIT</a>
+          <a href="/articles">همه مقالات</a>
         </div>
       </div>
     </div>
@@ -1234,7 +1234,7 @@ function renderArticlePage(article) {
     '<nav class="article-breadcrumb" aria-label="مسیر صفحه">',
     '<a href="/">خانه</a>',
     '<span aria-hidden="true">›</span>',
-    '<a href="/articles.html">مقالات</a>',
+    '<a href="/articles">مقالات</a>',
     '<span aria-hidden="true">›</span>',
     `<span class="current">${escapeHtmlAttr(title)}</span>`,
     '</nav>',
@@ -1248,7 +1248,7 @@ function renderArticlePage(article) {
     '</div>',
     coverHtml,
     article.body_html,
-    `<a class="article-back" href="/articles.html">بازگشت به مقالات</a>`,
+    `<a class="article-back" href="/articles">بازگشت به مقالات</a>`,
     '</article>',
     '<div class="article-share">',
     '<button type="button" class="btn btn-soft" id="copy-article-link">کپی لینک مقاله</button>',
@@ -1292,7 +1292,7 @@ function renderArticleNotFound() {
     '<div class="article-notfound">',
     '<h1>مقاله یافت نشد</h1>',
     '<p>این مقاله وجود ندارد یا هنوز منتشر نشده است.</p>',
-    '<a class="btn btn-main" href="/articles.html">بازگشت به مقالات</a>',
+    '<a class="btn btn-main" href="/articles">بازگشت به مقالات</a>',
     '</div>',
     '</main>',
     FOOTER_HTML,
@@ -2515,7 +2515,7 @@ function decodeDoctorSlugFromPath(pathname) {
 async function tryHandleDoctorProfileNative(req, res, pathname, method) {
   if (!(method === 'GET' || method === 'HEAD')) return false;
 
-  if (pathname === '/profile.html' || pathname === '/profiles.html') {
+  if (pathname === '/profile.html' || pathname === '/profiles.html' || pathname === '/profile' || pathname === '/profiles') {
     const url = new URL(req.url || '/', 'http://localhost');
     const rawId = validQueryId(url.searchParams.get('id') || url.searchParams.get('clinic_id'));
     if (!rawId) {
@@ -3334,7 +3334,7 @@ function handleSitemapArticles(res, method) {
     listStaticArticles(ARTICLES_DIR).forEach((row) => {
       const slug = String(row.slug || '').trim();
       if (!slug) return;
-      const rel = row.url || `/articles/${slug}.html`;
+      const rel = `/articles/${slug}`;
       bySlug.set(slug, {
         loc: SITE_BASE + (rel.startsWith('/') ? rel : '/' + rel),
         lastmod: sitemapLastmod(row.updated_at || row.published_at),
@@ -3354,7 +3354,7 @@ function handleSitemapArticles(res, method) {
         const staticPath = path.join(ARTICLES_DIR, slug + '.html');
         if (!fs.existsSync(staticPath)) return;
         bySlug.set(slug, {
-          loc: `${SITE_BASE}/articles/${slug}.html`,
+          loc: `${SITE_BASE}/articles/${slug}`,
           lastmod: sitemapLastmod(row.updated_at || row.published_at),
         });
       });
@@ -4119,7 +4119,9 @@ const server = http.createServer(async (req, res) => {
         rawPathOnly === '/shiraz/candela' ||
         rawPathOnly === '/shiraz/candela/' ||
         rawPathOnly === '/shiraz/candela-laser' ||
-        rawPathOnly === '/shiraz/candela-laser/'
+        rawPathOnly === '/shiraz/candela-laser/' ||
+        rawPathOnly === '/shiraz/laser-candela' ||
+        rawPathOnly === '/shiraz/laser-candela/'
       ) {
         sendPermanentRedirect(res, '/shiraz/laser-candela-2026' + qs, method);
         return;
@@ -4128,10 +4130,28 @@ const server = http.createServer(async (req, res) => {
         rawPathOnly === '/shiraz/titanium' ||
         rawPathOnly === '/shiraz/titanium/' ||
         rawPathOnly === '/shiraz/titanium-laser' ||
-        rawPathOnly === '/shiraz/titanium-laser/'
+        rawPathOnly === '/shiraz/titanium-laser/' ||
+        rawPathOnly === '/shiraz/laser-titanium' ||
+        rawPathOnly === '/shiraz/laser-titanium/'
       ) {
         sendPermanentRedirect(res, '/shiraz/laser-titanium-2026' + qs, method);
         return;
+      }
+
+      // Doubled /articles/articles/{slug}(.html) → bare KEEP (one hop).
+      {
+        let articlePath = rawPathOnly;
+        try {
+          articlePath = decodeURIComponent(rawPathOnly);
+        } catch (_err) {
+          /* keep raw */
+        }
+        const doubled = articlePath.match(/^\/articles\/articles\/(.+)$/i);
+        if (doubled) {
+          const rest = doubled[1].replace(/\/+$/, '').replace(/\.html$/i, '');
+          sendPermanentRedirect(res, (rest ? `/articles/${rest}` : '/articles') + qs, method);
+          return;
+        }
       }
 
       // Trailing slash on /shiraz/* hubs → one-hop 301 (canonical without slash).
@@ -4291,8 +4311,10 @@ const server = http.createServer(async (req, res) => {
         // Candela / Titanium short aliases → 2026 KEEP (one-hop)
         '/shiraz/candela': '/shiraz/laser-candela-2026',
         '/shiraz/candela-laser': '/shiraz/laser-candela-2026',
+        '/shiraz/laser-candela': '/shiraz/laser-candela-2026',
         '/shiraz/titanium': '/shiraz/laser-titanium-2026',
         '/shiraz/titanium-laser': '/shiraz/laser-titanium-2026',
+        '/shiraz/laser-titanium': '/shiraz/laser-titanium-2026',
         // CO2 → fractional CO2 hub (incl. chain-killer لیزر-co2)
         '/services/co2-laser': '/shiraz/co2-fractional-laser',
         '/services/لیزر-co2': '/shiraz/co2-fractional-laser',
@@ -4386,7 +4408,7 @@ const server = http.createServer(async (req, res) => {
     // Legacy profile URLs without ?id= → home (before /doctor/:slug).
     if (
       (method === 'GET' || method === 'HEAD') &&
-      (pathname === '/profile.html' || pathname === '/profiles.html')
+      (pathname === '/profile.html' || pathname === '/profiles.html' || pathname === '/profile' || pathname === '/profiles')
     ) {
       const url = new URL(req.url || '/', 'http://localhost');
       const rawId = validQueryId(url.searchParams.get('id') || url.searchParams.get('clinic_id'));
@@ -4402,6 +4424,8 @@ const server = http.createServer(async (req, res) => {
       (method === 'GET' || method === 'HEAD') &&
       (pathname === '/profile.html' ||
         pathname === '/profiles.html' ||
+        pathname === '/profile' ||
+        pathname === '/profiles' ||
         pathname.startsWith('/doctor/'))
     ) {
       if (doctorApp) {

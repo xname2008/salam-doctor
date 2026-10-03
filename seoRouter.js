@@ -36,8 +36,10 @@ const {
 const SHIRAZ_HUB_ALIAS_TO_KEEP = Object.freeze({
   candela: 'laser-candela-2026',
   'candela-laser': 'laser-candela-2026',
+  'laser-candela': 'laser-candela-2026',
   titanium: 'laser-titanium-2026',
   'titanium-laser': 'laser-titanium-2026',
+  'laser-titanium': 'laser-titanium-2026',
 });
 
 const SITE_BASE = process.env.SITE_BASE || 'https://salam-doctor.com';

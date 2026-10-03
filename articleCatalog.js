@@ -12,14 +12,13 @@ const { formatPersianJalaliDate } = require('./persianDate');
 const PUBLISHED_COMMENT_RE = /<!--\s*article-published:\s*(\d{4}-\d{2}-\d{2})\s*-->/i;
 const JALALI_COMMENT_RE = /<!--\s*article-jalali:\s*([^-]+?)\s*-->/i;
 
-/** Slugs whose public KEEP is the extensionless /articles/{slug} URL. */
-const BARE_CANONICAL_ARTICLE_SLUGS = new Set(['botox-filler-guide']);
+/** Every static article KEEP is the extensionless /articles/{slug} URL. */
+const BARE_CANONICAL_ARTICLE_SLUGS = new Set(['*']);
 
 function articlePublicPath(slug) {
-  const clean = String(slug || '').trim();
+  const clean = String(slug || '').trim().replace(/\.html$/i, '');
   if (!clean) return '';
-  if (BARE_CANONICAL_ARTICLE_SLUGS.has(clean)) return `articles/${clean}`;
-  return `articles/${clean}.html`;
+  return `/articles/${clean}`;
 }
 
 function stripHtml(value) {

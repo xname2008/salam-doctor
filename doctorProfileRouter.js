@@ -152,6 +152,10 @@ function createDoctorProfileApp(handlers) {
   router.head('/profile.html', legacyProfileRedirectMiddleware);
   router.get('/profiles.html', legacyProfileRedirectMiddleware);
   router.head('/profiles.html', legacyProfileRedirectMiddleware);
+  router.get('/profile', legacyProfileRedirectMiddleware);
+  router.head('/profile', legacyProfileRedirectMiddleware);
+  router.get('/profiles', legacyProfileRedirectMiddleware);
+  router.head('/profiles', legacyProfileRedirectMiddleware);
 
   router.get(['/doctor', '/doctor/'], (req, res) => res.redirect(301, '/'));
   router.head(['/doctor', '/doctor/'], (req, res) => res.redirect(301, '/'));
@@ -176,7 +180,7 @@ function createDoctorProfileApp(handlers) {
 
   app.legacyProfileRedirect = function legacyProfileRedirect(req, res, next) {
     const path = String((req.path || req.url || '').split('?')[0]);
-    if (path === '/profile.html' || path === '/profiles.html') {
+    if (path === '/profile.html' || path === '/profiles.html' || path === '/profile' || path === '/profiles') {
       legacyProfileRedirectMiddleware(req, res);
       return;
     }

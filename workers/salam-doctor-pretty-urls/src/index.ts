@@ -70,6 +70,15 @@ export default {
     const url = new URL(request.url);
     const { pathname } = url;
 
+    const collapsedArticles = collapseDoubleArticlesPath(pathname);
+    if (collapsedArticles) {
+      return redirectTo(url, collapsedArticles);
+    }
+
+    if (pathname === '/profile.html' || pathname === '/profiles.html') {
+      return fetchOrigin(request);
+    }
+
     if (pathname.endsWith('.html')) {
       const keep = HTML_TO_KEEP[pathname];
       if (keep) {
@@ -111,6 +120,13 @@ export default {
     return fetchOrigin(request);
   },
 };
+
+function collapseDoubleArticlesPath(pathname: string): string | null {
+  const match = pathname.match(/^\/articles\/articles\/(.+)$/i);
+  if (!match) return null;
+  const rest = match[1].replace(/\/+$/, '').replace(/\.html$/i, '');
+  return rest ? `/articles/${rest}` : '/articles';
+}
 
 function redirectTo(url: URL, pathname: string): Response {
   const target = new URL(url.toString());
