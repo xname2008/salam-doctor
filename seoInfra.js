@@ -742,9 +742,7 @@ function localHubFaqPage(data, extraFaqs) {
   const { service, city } = data;
   const count = hubListedClinicCount(data);
   const listMode = isHubListMode(data);
-  const priceAnswer = service.minPrice
-    ? `هزینه ${service.name} در ${city} از حدود ${formatTomanFa(service.minPrice)} تومان شروع می‌شود و بسته به مرکز، تجهیزات و تعداد جلسات متغیر است.`
-    : `هزینه ${service.name} در ${city} بسته به مرکز، تجهیزات و تعداد جلسات متفاوت است؛ برای قیمت دقیق مشاوره رایگان بگیرید.`;
+  const priceAnswer = `هزینه ${service.name} در ${city} بسته به مرکز، تجهیزات و تعداد جلسات متفاوت است؛ برای قیمت دقیق مشاوره رایگان بگیرید.`;
 
   const custom = Array.isArray(extraFaqs)
     ? extraFaqs.filter((f) => f && f.q && f.a).map((f) => ({ name: f.q, text: f.a }))
@@ -898,10 +896,6 @@ function buildLocalHubSeoMeta(data, overrides = {}) {
   const count = hubListedClinicCount(data);
   const listMode = isHubListMode(data);
   const districtNames = (districts || []).slice(0, 4).map((d) => d.name).join('، ');
-  const priceBit = service.minPrice
-    ? ` قیمت از ${formatTomanFa(service.minPrice)} تومان.`
-    : '';
-
   const db = hubSeo || {};
 
   const defaultTitle = `بهترین مراکز ${service.name} در ${city} | قیمت و نوبت‌دهی | سلام دکتر`;
@@ -909,7 +903,7 @@ function buildLocalHubSeoMeta(data, overrides = {}) {
   const defaultDescription = listMode
     ? (`بهترین مراکز ${service.name} در ${city}` +
         (districtNames ? ` (${districtNames})` : '') +
-        `؛ ${count} مرکز فعال با تجهیزات اصل و دستگاه‌های تأیید‌شده.${priceBit} رزرو مشاوره رایگان.`)
+        `؛ ${count} مرکز فعال با تجهیزات اصل و دستگاه‌های تأیید‌شده. رزرو مشاوره رایگان.`)
     : count === 0
       ? `راهنمای ${service.name} در ${city}. معیارهای انتخاب مرکز معتبر، نکات هزینه و مشاوره رایگان با سلام دکتر.`
       : `لیست کلینیک‌های ${service.name} در ${city}. مقایسه مراکز معتبر + مشاوره رایگان با سلام دکتر.`;
@@ -1262,7 +1256,7 @@ async function collectSitemapEntries(deps) {
   // Core + static category hubs (allowlist; laser-hair.html excluded above).
   add('/', today, '1.0', 'daily');
   add('/about.html', today, '0.6', 'monthly');
-  add('/articles.html', today, '0.7', 'weekly');
+  add('/articles', today, '0.7', 'weekly');
   add('/faq.html', today, '0.5', 'monthly');
   add('/contact.html', today, '0.6', 'monthly');
   add('/clinic-promote.html', today, '0.7', 'weekly');

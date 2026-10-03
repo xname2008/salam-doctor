@@ -10,7 +10,7 @@ const path = require('path');
 const express = require('express');
 const { CITIES, localHubPath } = require('./local-seo-registry');
 const { HUB_SLUGS, PARENT_SLUGS } = require('./hub-slugs');
-const { hubLabelFa } = require('./hub-labels');
+const { HUB_LABELS_FA, hubLabelFa } = require('./hub-labels');
 const clinicSlug = require('./clinicSlug');
 
 const SITE_BASE = process.env.SITE_BASE || 'https://salam-doctor.com';
@@ -35,7 +35,7 @@ const POPULAR_CITY_SERVICE_LINKS = Object.freeze([
 
 const STATIC_PAGES = Object.freeze([
   { href: '/', label: 'صفحه اصلی' },
-  { href: '/articles.html', label: 'مقالات آموزشی' },
+  { href: '/articles', label: 'مقالات آموزشی' },
   { href: '/faq.html', label: 'سوالات متداول' },
   { href: '/about.html', label: 'درباره ما' },
   { href: '/category.html', label: 'دسته‌بندی خدمات' },

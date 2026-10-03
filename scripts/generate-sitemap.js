@@ -61,7 +61,7 @@ function isSampleClinicSlug(slug) {
 const STATIC_PAGES = [
   { path: '/', priority: '1.0', lastmod: '2026-05-31', changefreq: 'daily' },
   { path: '/about.html', priority: '0.6', lastmod: '2026-06-13', changefreq: 'monthly' },
-  { path: '/articles.html', priority: '0.7', lastmod: '2026-06-02', changefreq: 'weekly' },
+  { path: '/articles', priority: '0.7', lastmod: '2026-06-02', changefreq: 'weekly' },
   { path: '/faq.html', priority: '0.5', lastmod: '2026-06-13', changefreq: 'monthly' },
   { path: '/contact.html', priority: '0.6', lastmod: '2026-09-08', changefreq: 'monthly' },
   { path: '/clinic-promote.html', priority: '0.7', lastmod: '2026-09-10', changefreq: 'weekly' },
