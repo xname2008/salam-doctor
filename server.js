@@ -247,10 +247,10 @@ const HEADER_HTML = `<header class="topbar">
       <a href="/shiraz/femto-lasik">فمتولیزیک</a>
       <a href="/shiraz/prk">PRK</a>
       <a href="/articles">مقالات</a>
-      <a href="/products.html">محصولات زیبایی</a>
+      <a href="/products">محصولات زیبایی</a>
       <a href="/shiraz/pharmacy">داروخانه</a>
-      <a href="/faq.html">سوالات متداول</a>
-      <a href="/about.html">درباره ما</a>
+      <a href="/faq">سوالات متداول</a>
+      <a href="/about">درباره ما</a>
     </nav>
     <button id="nav-hamburger" class="nav-hamburger" aria-label="منو" aria-expanded="false" aria-controls="mobile-drawer">
       <span></span><span></span><span></span>
@@ -275,11 +275,11 @@ const DRAWER_HTML = `<div id="drawer-overlay" class="drawer-overlay" hidden></di
     <a href="/shiraz/lasik">لیزیک</a>
     <a href="/shiraz/femto-lasik">فمتولیزیک</a>
     <a href="/shiraz/prk">PRK</a>
-    <a href="/products.html">محصولات زیبایی</a>
+    <a href="/products">محصولات زیبایی</a>
     <a href="/shiraz/pharmacy">داروخانه</a>
-    <a href="/faq.html">سوالات متداول</a>
+    <a href="/faq">سوالات متداول</a>
       <a href="/articles">مقالات</a>
-    <a href="/about.html">درباره ما</a>
+    <a href="/about">درباره ما</a>
     <a href="tel:+989007000462" class="drawer-cta" dir="ltr" data-site-phone="support">پشتیبانی سایت: ۰۹۰۰۷۰۰۰۴۶۲</a>
   </div>
 </nav>`;
@@ -313,8 +313,8 @@ const FOOTER_HTML = `<footer>
         <h4>راهنمای بیماران</h4>
         <div class="footer-links">
           <a href="/articles">مقالات آموزشی</a>
-          <a href="/faq.html">سوالات متداول</a>
-          <a href="/about.html">درباره ما</a>
+          <a href="/faq">سوالات متداول</a>
+          <a href="/about">درباره ما</a>
           <a href="/sitemap">نقشه سایت</a>
         </div>
       </div>
@@ -4150,6 +4150,38 @@ const server = http.createServer(async (req, res) => {
         if (doubled) {
           const rest = doubled[1].replace(/\/+$/, '').replace(/\.html$/i, '');
           sendPermanentRedirect(res, (rest ? `/articles/${rest}` : '/articles') + qs, method);
+          return;
+        }
+      }
+
+      // Trailing slash on /articles/* and utility pages → one-hop 301.
+      // /articles/{slug}.html/ goes straight to /articles/{slug}.
+      if (rawPathOnly.length > 1 && rawPathOnly.endsWith('/')) {
+        const articleHtmlSlash = rawPathOnly.match(/^\/articles\/(.+)\.html\/+$/i);
+        if (articleHtmlSlash) {
+          const slug = articleHtmlSlash[1].replace(/\.html$/i, '');
+          const dest = slug === 'skin-rejuvenation-guide'
+            ? '/articles/botox-filler-guide'
+            : (slug ? `/articles/${slug}` : '/articles');
+          sendPermanentRedirect(res, dest + qs, method);
+          return;
+        }
+        const slashBare = rawPathOnly.replace(/\/+$/, '') || '/';
+        if (slashBare === '/articles/skin-rejuvenation-guide') {
+          sendPermanentRedirect(res, '/articles/botox-filler-guide' + qs, method);
+          return;
+        }
+        if (
+          slashBare === '/articles' ||
+          slashBare.startsWith('/articles/') ||
+          slashBare === '/about' ||
+          slashBare === '/category' ||
+          slashBare === '/clinic-promote' ||
+          slashBare === '/contact' ||
+          slashBare === '/faq' ||
+          slashBare === '/products'
+        ) {
+          sendPermanentRedirect(res, slashBare + qs, method);
           return;
         }
       }

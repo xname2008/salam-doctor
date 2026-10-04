@@ -36,9 +36,9 @@ const POPULAR_CITY_SERVICE_LINKS = Object.freeze([
 const STATIC_PAGES = Object.freeze([
   { href: '/', label: 'صفحه اصلی' },
   { href: '/articles', label: 'مقالات آموزشی' },
-  { href: '/faq.html', label: 'سوالات متداول' },
-  { href: '/about.html', label: 'درباره ما' },
-  { href: '/category.html', label: 'دسته‌بندی خدمات' },
+  { href: '/faq', label: 'سوالات متداول' },
+  { href: '/about', label: 'درباره ما' },
+  { href: '/category', label: 'دسته‌بندی خدمات' },
   { href: '/shiraz/hair-transplant', label: 'کاشت مو' },
   { href: '/shiraz/laser-hair-removal', label: 'لیزر موهای زائد' },
   { href: '/shiraz/skin-rejuvenation', label: 'جوانسازی پوست' },

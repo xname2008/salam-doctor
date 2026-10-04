@@ -408,7 +408,7 @@ function renderOnboardingCtaHtml() {
     `<h2 id="service-onboard-heading" class="service-onboard-title">پزشک یا مدیر کلینیک هستید؟</h2>` +
     `<p class="service-onboard-text">ثبت اطلاعات در سلام دکتر و معرفی مرکز خود به مراجعان جستجوگر.</p>` +
     `</div>` +
-    `<a class="btn btn-main" href="/clinic-promote.html">ثبت اطلاعات در سلام دکتر</a>` +
+    `<a class="btn btn-main" href="/clinic-promote">ثبت اطلاعات در سلام دکتر</a>` +
     `</aside>`
   );
 }

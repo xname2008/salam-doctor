@@ -58,8 +58,8 @@ window.applyPersianDigits = function applyPersianDigits(root) {
 
 function ensureNavMenuLinks() {
   var EXTRA_LINKS = [
-    { file: '/shiraz/pharmacy', label: 'داروخانه', afterFile: 'products.html' },
-    { file: 'faq.html', label: 'سوالات متداول', afterFile: '/shiraz/pharmacy' },
+    { file: '/shiraz/pharmacy', label: 'داروخانه', afterFile: '/products' },
+    { file: '/faq', label: 'سوالات متداول', afterFile: '/shiraz/pharmacy' },
   ];
 
   function hrefPrefix(container) {

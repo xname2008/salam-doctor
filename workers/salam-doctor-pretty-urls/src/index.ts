@@ -75,6 +75,11 @@ export default {
       return redirectTo(url, collapsedArticles);
     }
 
+    const slashTarget = trailingSlashToBare(pathname);
+    if (slashTarget) {
+      return redirectTo(url, slashTarget);
+    }
+
     if (pathname === '/profile.html' || pathname === '/profiles.html') {
       return fetchOrigin(request);
     }
@@ -120,6 +125,37 @@ export default {
     return fetchOrigin(request);
   },
 };
+
+const UTILITY_SLASH_PAGES = new Set([
+  '/about',
+  '/category',
+  '/clinic-promote',
+  '/contact',
+  '/faq',
+  '/products',
+]);
+
+/**
+ * One-hop trailing-slash 301 for /articles/* and the six utility pages.
+ * /articles/{slug}.html/ goes straight to /articles/{slug} (never via .html).
+ * Query string is preserved by redirectTo.
+ */
+function trailingSlashToBare(pathname: string): string | null {
+  if (!pathname.endsWith('/') || pathname.length <= 1) return null;
+
+  const articleHtml = pathname.match(/^\/articles\/(.+)\.html\/+$/i);
+  if (articleHtml) {
+    const slug = articleHtml[1].replace(/\/+$/, '').replace(/\.html$/i, '');
+    const path = slug ? `/articles/${slug}` : '/articles';
+    return BARE_STUB_TO_KEEP[path] || path;
+  }
+
+  const bare = pathname.replace(/\/+$/, '') || '/';
+  if (BARE_STUB_TO_KEEP[bare]) return BARE_STUB_TO_KEEP[bare];
+  if (bare === '/articles' || bare.startsWith('/articles/')) return bare;
+  if (UTILITY_SLASH_PAGES.has(bare)) return bare;
+  return null;
+}
 
 function collapseDoubleArticlesPath(pathname: string): string | null {
   const match = pathname.match(/^\/articles\/articles\/(.+)$/i);
