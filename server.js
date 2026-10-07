@@ -2349,6 +2349,10 @@ function injectProfileMeta(html, clinic, clinicId, overlay) {
     profileUrl: clinicSlug.clinicProfilePath(clinicId),
   });
 
+  if (isNahal) {
+    medicalEntity.image = '/clinics/114/Hero.webp';
+  }
+
   let out = injectHeadSeo(html, {
     title,
     description,
@@ -2368,6 +2372,20 @@ function injectProfileMeta(html, clinic, clinicId, overlay) {
     Number.isFinite(lng) ? lng : null,
     name
   );
+  if (isNahal) {
+    const nahalHero = '/clinics/114/Hero.webp';
+    const preload =
+      `<link rel="preload" href="${nahalHero}" as="image" type="image/webp" fetchpriority="high">`;
+    out = out.replace(/<!--\s*DYNAMIC_PROFILE_HERO_PRELOAD\s*-->/g, preload);
+    out = out.replace(
+      /(<img\b[^>]*\bid=["']clinic-image["'][^>]*\bsrc=["'])[^"']*(["'])/i,
+      `$1${nahalHero}$2`
+    );
+    out = out.replace(/\/assets\/images\/defaults\/clinic-default\.webp/g, nahalHero);
+    out = out.replace(/images\/sample-clinic-services\.webp/g, nahalHero.replace(/^\//, ''));
+  } else {
+    out = out.replace(/<!--\s*DYNAMIC_PROFILE_HERO_PRELOAD\s*-->/g, '');
+  }
   return out;
 }
 
@@ -2441,6 +2459,7 @@ function handleProfilePageById(req, res, clinicId, doctorData) {
       canonical: clinicProfileUrl(clinicId),
       ogImage: DEFAULT_OG_IMAGE,
     });
+    html = html.replace(/<!--\s*DYNAMIC_PROFILE_HERO_PRELOAD\s*-->/g, '');
     html = injectClinicContactPlaceholders(html, 'ثبت نشده', 'ثبت نشده');
     html = injectClinicMapPlaceholders(html, null, null, 'شیراز');
     html = injectProfileFaqs(html, defaultClinicProfileFaqs({ name: 'این مرکز', city: 'شیراز' }));

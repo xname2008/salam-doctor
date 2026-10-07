@@ -17,7 +17,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <!-- DYNAMIC_SEO_TAGS -->
   <!-- DYNAMIC_CLINIC_BOOTSTRAP -->
   <link rel="preload" href="assets/fonts/Vazirmatn-RD-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="images/sample-clinic-services.webp" as="image" type="image/webp">
+  <!-- DYNAMIC_PROFILE_HERO_PRELOAD -->
   <link rel="stylesheet" href="assets/css/shared.css?v=20260903b">
   <link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css?v=1">
   <link rel="stylesheet" href="assets/js/clinic-galleries.css?v=20260723f">
@@ -559,7 +559,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             >
               <img
                 id="clinic-image"
-                src="images/sample-clinic-services.webp"
+                src="/assets/images/defaults/clinic-default.webp"
                 alt="عکس کلینیک در شیراز"
                 width="1280"
                 height="720"
@@ -666,7 +666,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div class="profile-logo-frame" id="clinic-logo-frame" hidden>
                   <img
                     id="clinic-logo"
-                    src="images/sample-clinic-services.webp"
+                    src="/assets/images/defaults/clinic-default.webp"
                     alt="لوگوی کلینیک"
                     width="96"
                     height="96"
@@ -679,6 +679,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   <span class="profile-verified-badge">مرکز تایید شده</span>
                 </div>
               </div>
+              <p class="profile-listing-disclosure" style="margin:12px 0 0;font-size:.9rem;line-height:1.8;color:#475569">تیم سلام دکتر مراکز را حضوری بازدید می‌کند و قرارداد می‌بندد. مراکز برای فهرست‌شدن در سایت هزینه می‌پردازند و ترتیب نمایش به‌معنای توصیه یا تایید پزشکی نیست.</p>
               <div class="profile-meta">
                 <p id="clinic-address">
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -1743,7 +1744,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         var heroSrc = (media && media.hero)
           ? joinAsset(base, media.hero)
-          : (clinic.image || 'images/sample-clinic-services.webp');
+          : (clinic.image || '/assets/images/defaults/clinic-default.webp');
         if (clinicImage) {
           clinicImage.src = heroSrc;
           var heroAltName = String(clinic.name || '').trim() || 'مرکز درمانی';

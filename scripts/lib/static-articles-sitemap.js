@@ -50,8 +50,14 @@ function articleLoc(filename, origin) {
   return `${canonicalOrigin(origin)}/articles/${slug}`;
 }
 
+function dateModifiedFromHtml(html) {
+  const match = String(html || '').match(/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})"/);
+  return match ? match[1] : null;
+}
+
 /**
  * Read articlesDir and return metadata for each *.html file (sorted by name).
+ * Prefer on-page JSON-LD dateModified for <lastmod>; fall back to file mtime.
  * @param {string} articlesDir
  * @param {{ origin?: string }} [opts]
  * @returns {{ filename: string, slug: string, loc: string, mtime: Date, lastmod: string }[]}
@@ -65,13 +71,15 @@ function scanStaticArticles(articlesDir, opts = {}) {
     .map((entry) => {
       const fullPath = path.join(articlesDir, entry.name);
       const stat = fs.statSync(fullPath);
+      const html = fs.readFileSync(fullPath, 'utf8');
       const loc = articleLoc(entry.name, opts.origin);
+      const onPage = dateModifiedFromHtml(html);
       return {
         filename: entry.name,
         slug: entry.name.replace(/\.html$/i, ''),
         loc,
         mtime: stat.mtime,
-        lastmod: fmtDate(stat.mtime),
+        lastmod: onPage || fmtDate(stat.mtime),
       };
     })
     .filter((row) => row.loc)
@@ -103,12 +111,17 @@ function urlEntry(article, opts = {}) {
  * @param {{ priority?: string, changefreq?: string, lastmodMode?: 'today'|'mtime' }} [opts]
  */
 function buildArticleUrlBlocks(articles, opts = {}) {
-  const lastmodMode = opts.lastmodMode || 'today';
+  // Default: on-page dateModified (stored on article.lastmod by scanStaticArticles).
+  // --lastmod=today stamps deploy day; --lastmod=mtime keeps file mtime when no on-page date.
+  const lastmodMode = opts.lastmodMode || 'onpage';
   return articles.map((article) =>
     urlEntry(article, {
       priority: opts.priority,
       changefreq: opts.changefreq,
-      lastmod: lastmodMode === 'mtime' ? article.lastmod : today(),
+      lastmod:
+        lastmodMode === 'today'
+          ? today()
+          : article.lastmod || today(),
     }),
   );
 }

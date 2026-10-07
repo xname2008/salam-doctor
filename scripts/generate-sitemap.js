@@ -65,7 +65,6 @@ const STATIC_PAGES = [
   { path: '/faq', priority: '0.5', lastmod: '2026-06-13', changefreq: 'monthly' },
   { path: '/contact', priority: '0.6', lastmod: '2026-09-08', changefreq: 'monthly' },
   { path: '/clinic-promote', priority: '0.7', lastmod: '2026-09-10', changefreq: 'weekly' },
-  { path: '/category', priority: '0.6', lastmod: '2026-05-31', changefreq: 'weekly' },
   { path: '/products', priority: '0.6', lastmod: '2026-06-13', changefreq: 'weekly' },
   { path: '/shiraz', priority: '0.9', lastmod: '2026-09-10', changefreq: 'daily' },
   // products/eye remain utility .html (pharmacy → /shiraz/pharmacy)

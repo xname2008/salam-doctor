@@ -266,6 +266,13 @@ function buildSeoTagsHtml(opts) {
       `  <meta name="description" content="${escapeHtmlAttr(description)}">`
     );
   }
+  if (opts.robots) {
+    lines.push(
+      `  <meta name="robots" content="${escapeHtmlAttr(opts.robots)}">`
+    );
+  } else if (opts.noindex) {
+    lines.push(`  <meta name="robots" content="noindex,follow">`);
+  }
   if (!opts.skipCanonical) {
     lines.push(`  <link rel="canonical" href="${escapeHtmlAttr(canonical)}">`);
   }
@@ -1470,8 +1477,14 @@ function createSeoInfraHandlers(deps) {
       description: seo.description,
       canonical,
       ogImage: DEFAULT_OG,
+      robots: 'noindex,follow',
       jsonLd: [crumbs],
     });
+    try {
+      res.setHeader('X-Robots-Tag', 'noindex, follow');
+    } catch (_err) {
+      /* headers may already be sent */
+    }
     deps.sendHtml(res, 200, html);
   }
 

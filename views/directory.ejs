@@ -293,6 +293,7 @@
             سایر کلینیک‌های معتبر پوست و زیبایی <%= city %>
           </span>
           <h2 id="related-clinics-heading" class="text-xl md:text-2xl font-bold text-slate-900 mb-4">مراکز مرتبط</h2>
+          <p class="mb-4 text-sm leading-relaxed text-slate-600">تیم سلام دکتر مراکز را حضوری بازدید می‌کند و قرارداد می‌بندد. مراکز برای فهرست‌شدن در سایت هزینه می‌پردازند و ترتیب نمایش به‌معنای توصیه یا تایید پزشکی نیست.</p>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             <% relatedClinics.forEach(function(c) { %>
               <%- include('_clinic-card', { c: c, premium: c.isActive }) %>
@@ -363,6 +364,7 @@
 
       <!-- Clinic cards / featured banner (honest framing when thin inventory) -->
       <section aria-labelledby="all-clinics-heading">
+        <p class="mb-4 text-sm leading-relaxed text-slate-600">تیم سلام دکتر مراکز را حضوری بازدید می‌کند و قرارداد می‌بندد. مراکز برای فهرست‌شدن در سایت هزینه می‌پردازند و ترتیب نمایش به‌معنای توصیه یا تایید پزشکی نیست.</p>
         <% if (clinics.length === 1) { %>
           <h2 id="all-clinics-heading" class="sr-only">مرکز منتخب <%= service.name %> در <%= city %></h2>
           <%- include('_featured-clinic-banner', { c: clinics[0], service: service, city: city }) %>

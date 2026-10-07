@@ -25,7 +25,7 @@ function parseArgs(argv) {
     dryRun: false,
     articlesDir: path.join(__dirname, '..', 'articles'),
     out: path.join(__dirname, '..', 'sitemap-articles.xml'),
-    lastmodMode: 'mtime',
+    lastmodMode: 'onpage',
   };
 
   for (const arg of argv) {
@@ -34,7 +34,7 @@ function parseArgs(argv) {
     else if (arg.startsWith('--out=')) args.out = path.resolve(arg.split('=')[1]);
     else if (arg.startsWith('--lastmod=')) {
       const mode = arg.split('=')[1];
-      if (mode === 'mtime' || mode === 'today') args.lastmodMode = mode;
+      if (mode === 'mtime' || mode === 'today' || mode === 'onpage') args.lastmodMode = mode;
       else throw new Error(`Unknown --lastmod value: ${mode}`);
     } else if (arg === '--help' || arg === '-h') {
       args.help = true;
@@ -51,7 +51,7 @@ Options:
   --dry-run                 Print XML to stdout; do not write
   --articles-dir=PATH       Source directory (default: ./articles)
   --out=PATH                Output path (default: ./sitemap-articles.xml)
-  --lastmod=today|mtime     lastmod source (default: mtime)
+  --lastmod=onpage|today|mtime  lastmod source (default: onpage = JSON-LD dateModified)
   -h, --help                Show help
 
 IMPORTANT: This script NEVER writes sitemap.xml (pages).

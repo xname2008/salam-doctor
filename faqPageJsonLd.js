@@ -97,11 +97,27 @@ function defaultClinicProfileFaqs(ctx) {
   ];
 }
 
+const NAHAL_COST_FAQ_ANSWER =
+  'هزینه خدمات در کلینیک نهال به نوع خدمت، روش درمان، تعداد جلسات یا گرافت لازم، تجهیزات مرکز و طرح درمان بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.';
+
+function isNahalClinic(clinic, ctx) {
+  const id = Number(clinic && (clinic.id || clinic.clinic_id));
+  const slug = String((clinic && clinic.slug) || (ctx && ctx.slug) || '').trim();
+  const name = String((ctx && ctx.name) || (clinic && clinic.name) || '').trim();
+  return id === 114 || slug === 'nahal-clinic' || name === 'کلینیک نهال';
+}
+
 function clinicProfileFaqs(clinic, ctx) {
   const custom = clinic && Array.isArray(clinic.faqs) ? clinic.faqs : [];
   const normalized = normalizeFaqList(custom);
-  if (normalized.length) return normalized;
-  return defaultClinicProfileFaqs(ctx);
+  const faqs = normalized.length ? normalized : defaultClinicProfileFaqs(ctx);
+  if (!isNahalClinic(clinic, ctx)) return faqs;
+  return faqs.map((qa) => {
+    if (/^هزینه ویزیت و درمان در/.test(qa.question)) {
+      return { question: qa.question, answer: NAHAL_COST_FAQ_ANSWER };
+    }
+    return qa;
+  });
 }
 
 /**
@@ -137,4 +153,5 @@ module.exports = {
   defaultClinicProfileFaqs,
   clinicProfileFaqs,
   faqAccordionHtml,
+  NAHAL_COST_FAQ_ANSWER,
 };
