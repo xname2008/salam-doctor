@@ -874,7 +874,7 @@ function buildLocalHubDoctorItemList(data, canonical) {
  * LIST (>=3 clinics): MedicalClinic + ItemList + FAQ.
  * GUIDE (<3 real clinics): MedicalWebPage + FAQ only — never ItemList of 0/1.
  */
-function buildLocalHubJsonLd(data, canonical, extraFaqs, displayName) {
+function buildLocalHubJsonLd(data, canonical, extraFaqs, displayName, webPageDescription) {
   const listMode = isHubListMode(data);
   const faq = localHubFaqPage(data, extraFaqs);
   const crumbs = graphNodeStrip(localHubBreadcrumbList(data, canonical));
@@ -892,7 +892,9 @@ function buildLocalHubJsonLd(data, canonical, extraFaqs, displayName) {
       '@id': `${canonical}#webpage`,
       name: displayName || `${data.service.name} در ${data.city}`,
       url: canonical,
-      description: `راهنمای ${data.service.name} در ${data.city}؛ معیارهای انتخاب مرکز و مشاوره رایگان سلام دکتر.`,
+      description:
+        webPageDescription ||
+        `راهنمای ${data.service.name} در ${data.city}؛ معیارهای انتخاب مرکز و مشاوره رایگان سلام دکتر.`,
       inLanguage: 'fa-IR',
       isPartOf: { '@id': `${SITE_BASE}/#website` },
       publisher: { '@id': `${SITE_BASE}/#organization` },
@@ -906,6 +908,17 @@ function buildLocalHubJsonLd(data, canonical, extraFaqs, displayName) {
     '@context': 'https://schema.org',
     '@graph': graph,
   };
+}
+
+/** Root-absolute internal links carry no rel; everything else keeps noopener noreferrer. */
+function hubLinkTransform(tagName, attribs) {
+  const next = Object.assign({}, attribs);
+  if (/^\/(?!\/)/.test(String(next.href || ''))) {
+    delete next.rel;
+  } else {
+    next.rel = 'noopener noreferrer';
+  }
+  return { tagName, attribs: next };
 }
 
 function sanitizeHubSeoHtml(html) {
@@ -926,7 +939,7 @@ function sanitizeHubSeoHtml(html) {
     allowedSchemes: ['http', 'https', 'mailto', 'tel'],
     transformTags:
       typeof sanitizeHtml.simpleTransform === 'function'
-        ? { a: sanitizeHtml.simpleTransform('a', { rel: 'noopener noreferrer' }) }
+        ? { a: hubLinkTransform }
         : undefined,
   });
 }
@@ -1027,7 +1040,8 @@ function buildLocalHubSeo(data, overrides = {}) {
     data,
     meta.canonical,
     overrides.faqs,
-    meta.h1Title
+    meta.h1Title,
+    overrides.jsonLdDescription
   );
   const jsonLd = JSON.stringify(jsonLdObject);
   const faqEntity = jsonLdObject['@graph'].find((n) => n && n['@type'] === 'FAQPage');
@@ -1477,7 +1491,6 @@ function createSeoInfraHandlers(deps) {
       description: seo.description,
       canonical,
       ogImage: DEFAULT_OG,
-      robots: 'noindex,follow',
       jsonLd: [crumbs],
     });
     try {

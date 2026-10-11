@@ -952,6 +952,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
 
       function clinicProfileTitle(clinic) {
+        var id = Number(clinic && clinic.id);
+        var slug = String((clinic && clinic.slug) || '').trim();
+        if (id === 114 || slug === 'nahal-clinic') {
+          return 'کلینیک نهال شیراز | ستارخان، بین فرعی ۴ و ۶ | آدرس و نوبت';
+        }
         var displayName = clinicDisplayName(clinic);
         return displayName + ' شیراز | پوست، مو و زیبایی | آدرس و نوبت | سلام دکتر';
       }
@@ -964,7 +969,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         var id = Number(clinic && clinic.id);
         var slug = String((clinic && clinic.slug) || '').trim();
         if (id === 114 || slug === 'nahal-clinic') {
-          return 'آدرس، تلفن و نوبت‌دهی کلینیک نهال در شیراز (پوست، مو، زیبایی و کاشت مو). مشاهده جزئیات و رزرو از طریق سلام دکتر.';
+          return 'آدرس کلینیک نهال شیراز: ستارخان، بین فرعی ۴ و ۶. مسیریابی روی نقشه، راه‌های ارتباطی و درخواست نوبت برای پوست، مو، زیبایی و کاشت مو FIT و میکروگرافت.';
         }
         return null;
       }

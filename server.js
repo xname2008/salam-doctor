@@ -2259,13 +2259,14 @@ function injectProfileMeta(html, clinic, clinicId, overlay) {
   const localMods = resolveClinicLocalSeoModifiers(clinic, overlay);
   if (!localMods.city) localMods.city = 'شیراز';
   const nahalDescription =
-    'آدرس، تلفن و نوبت‌دهی کلینیک نهال در شیراز (پوست، مو، زیبایی و کاشت مو). مشاهده جزئیات و رزرو از طریق سلام دکتر.';
+    'آدرس کلینیک نهال شیراز: ستارخان، بین فرعی ۴ و ۶. مسیریابی روی نقشه، راه‌های ارتباطی و درخواست نوبت برای پوست، مو، زیبایی و کاشت مو FIT و میکروگرافت.';
+  const nahalTitle = 'کلینیک نهال شیراز | ستارخان، بین فرعی ۴ و ۶ | آدرس و نوبت';
   const seo = clinicSeo(name, {
     ...localMods,
     ...(isNahal ? { description: nahalDescription } : {}),
   });
-  const title = seo.title;
-  const ogTitle = seo.title;
+  const title = isNahal ? nahalTitle : seo.title;
+  const ogTitle = title;
   const display = resolveClinicDisplayContact(clinic, overlay);
   const address =
     display.addressRaw ||
