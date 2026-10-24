@@ -106,13 +106,14 @@ html_has "/about" 'سایت دکتر سلام (سلام دکتر) کلینیک�
 html_has "/shiraz/hair-transplant" 'href="/articles/best-hair-transplant-center-shiraz"' "L1 hair hub link"
 html_has "/shiraz/hair-transplant" 'راهنمای انتخاب بهترین مرکز کاشت مو در شیراز' "L1 hair hub anchor"
 # Intro is loaded client-side from /api/clinic-profile (and /clinic-intros/114.html).
+# Parse JSON so escaped quotes in the intro HTML don't false-fail grep.
 NINTRO=$(curl -sS -m 20 "$B/api/clinic-profile?clinic_id=114&$CB" || true)
-if echo "$NINTRO" | grep -qF 'href="/articles/best-hair-transplant-center-shiraz"'; then
+if printf '%s' "$NINTRO" | python3 -c 'import sys,json; d=json.load(sys.stdin); t=d.get("intro") or ""; sys.exit(0 if "/articles/best-hair-transplant-center-shiraz" in t else 1)'; then
   pass "L2 nahal link (api intro)"
 else
   failf "L2 nahal link missing in /api/clinic-profile?clinic_id=114"
 fi
-if echo "$NINTRO" | grep -qF 'راهنمای انتخاب مرکز کاشت مو در شیراز'; then
+if printf '%s' "$NINTRO" | python3 -c 'import sys,json; d=json.load(sys.stdin); t=d.get("intro") or ""; sys.exit(0 if "راهنمای انتخاب مرکز کاشت مو در شیراز" in t else 1)'; then
   pass "L2 nahal anchor (api intro)"
 else
   failf "L2 nahal anchor missing in api intro"
