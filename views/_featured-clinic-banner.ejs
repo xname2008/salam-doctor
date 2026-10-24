@@ -64,6 +64,7 @@
         <% } %>
       </div>
 
+      <% if (c.rating && c.rating.count > 0 && c.rating.value != null) { %>
       <div class="flex flex-wrap items-center gap-3 text-sm">
         <span class="inline-flex items-center gap-1.5">
           <span class="star-on tracking-wide" aria-label="امتیاز <%= c.rating.value %>">
@@ -73,6 +74,7 @@
           <span class="text-xs text-slate-400">(<%= c.rating.count %> نظر)</span>
         </span>
       </div>
+      <% } %>
 
       <dl class="grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
         <% if (c.address) { %>
@@ -95,7 +97,7 @@
 
       <div class="mt-auto flex flex-col gap-2 sm:flex-row sm:items-center">
         <a href="<%= ctaHref %>" class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-sky-500 px-5 py-3.5 text-sm font-extrabold text-white shadow-md shadow-sky-500/25 transition hover:bg-sky-600 hover:shadow-lg">
-          رزرو وقت و مشاوره رایگان
+          درخواست نوبت مشاوره
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <% if (c.phone) { %>

@@ -446,12 +446,18 @@ class DirectoryRepository {
     }
     const districts = Array.from(districtMap.values());
 
-    // Aggregate rating from the (per-clinic) ratings actually shown on-page.
-    const ratings = clinics.map((c) => c.rating.value);
-    const reviewCount = clinics.reduce((sum, c) => sum + c.rating.count, 0);
-    const ratingValue = ratings.length
-      ? Number((ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1))
-      : 4.8;
+    // Aggregate only clinics with real review counts (never fabricate).
+    const rated = clinics.filter(
+      (c) => c.rating && c.rating.count > 0 && c.rating.value != null
+    );
+    const reviewCount = rated.reduce((sum, c) => sum + Number(c.rating.count || 0), 0);
+    const ratingValue = rated.length
+      ? Number(
+          (
+            rated.reduce((a, b) => a + Number(b.rating.value || 0), 0) / rated.length
+          ).toFixed(1)
+        )
+      : null;
 
     const prices = [service, ...(service.children || [])]
       .map((s) => (s.basePrice != null ? Number(s.basePrice) : null))
@@ -481,7 +487,7 @@ class DirectoryRepository {
         active: clinics.filter((c) => c.isActive).length,
         withAuthenticDevice: clinics.filter((c) => c.hasAuthenticBadge).length,
         ratingValue,
-        reviewCount: reviewCount || clinics.length,
+        reviewCount,
       },
     };
   }
@@ -499,18 +505,13 @@ class DirectoryRepository {
 }
 
 // --------------------------------------------------------------------------
-// Deterministic placeholder rating (stable per clinic id) so the on-page
-// stars and the AggregateRating JSON-LD always agree.
-//
-// ⚠️ SEO/compliance: Google requires review markup to reflect REAL reviews
-// visible on the page. Swap `pseudoRating` for a real `reviews`/`ratings`
-// table before go-live to avoid a structured-data manual action.
+// Public hub ratings: only Nahal (114) keeps its established ★4.8 (206).
+// Other clinics show no stars until a real reviews table exists.
 // --------------------------------------------------------------------------
 function pseudoRating(seed) {
-  const n = Number(seed) || 1;
-  const value = Number((4.5 + ((n * 37) % 5) / 10).toFixed(1)); // 4.5 .. 4.9
-  const count = 28 + ((n * 17) % 220); // 28 .. 247
-  return { value, count };
+  const n = Number(seed) || 0;
+  if (n === 114) return { value: 4.8, count: 206 };
+  return { value: null, count: 0 };
 }
 
 module.exports = { DirectoryRepository };

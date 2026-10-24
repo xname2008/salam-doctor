@@ -29,6 +29,7 @@
       <% } %>
     </header>
 
+    <% if (c.rating && c.rating.count > 0 && c.rating.value != null) { %>
     <div class="flex items-center gap-2 text-sm">
       <span class="star-on text-sm tracking-wide" aria-label="امتیاز <%= c.rating.value %>">
         <% var cf = Math.floor(c.rating.value); for (var j = 1; j <= 5; j++) { %>
@@ -36,8 +37,9 @@
         <% } %>
       </span>
       <strong class="text-slate-800"><%= c.rating.value %></strong>
-      <span class="text-slate-400 text-xs">(<%= c.rating.count %>)</span>
+      <span class="text-slate-400 text-xs">(<%= c.rating.count %> نظر)</span>
     </div>
+    <% } %>
 
     <% if (c.address) { %>
       <address class="not-italic text-xs md:text-sm text-slate-500 leading-relaxed"><%= c.address %></address>

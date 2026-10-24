@@ -84,7 +84,7 @@ function buildLandingContext(pkg, clinic, req, deps) {
     city: pkg.city,
     defaultH1,
     defaultCtaPrimary: `رزرو ${pkg.label}`,
-    defaultCtaSecondary: 'مشاوره رایگان',
+    defaultCtaSecondary: 'درخواست نوبت مشاوره',
   });
   const { utm } = parseUtmFromRequest(req.query);
   const landingPath = req.baseLandingPath || req.path;

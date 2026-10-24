@@ -162,7 +162,7 @@ function sanitizeHubPageData(data) {
   );
   const ratingValue = ratings.length
     ? Number((ratings.reduce((a, b) => a + b, 0) / ratings.length).toFixed(1))
-    : 4.8;
+    : null;
 
   data.stats = {
     ...(data.stats || {}),
@@ -170,7 +170,7 @@ function sanitizeHubPageData(data) {
     active: active > 0 ? active : clinics.length,
     withAuthenticDevice: withAuth,
     ratingValue,
-    reviewCount: reviewCount || clinics.length,
+    reviewCount,
   };
 
   return data;

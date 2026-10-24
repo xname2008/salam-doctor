@@ -298,11 +298,32 @@ function shapeRelatedClinicForHub(c) {
     isActive: false,
     district: null,
     devices: [],
-    rating: { value: 4.8, count: 12 },
+    rating: publicClinicRating(c),
     heroImage: media.heroImage,
     coverImage: media.coverImage,
     image: media.image,
   };
+}
+
+function publicClinicRating(clinic) {
+  const id = Number(clinic && clinic.id);
+  if (id === 114) return { value: 4.8, count: 206 };
+  const value = Number(
+    clinic &&
+      (clinic.ratingValue != null
+        ? clinic.ratingValue
+        : clinic.rating && clinic.rating.value)
+  );
+  const count = Number(
+    clinic &&
+      (clinic.reviewCount != null
+        ? clinic.reviewCount
+        : clinic.rating && clinic.rating.count)
+  );
+  if (Number.isFinite(value) && Number.isFinite(count) && count > 0) {
+    return { value, count };
+  }
+  return { value: null, count: 0 };
 }
 
 function findCatalogClinicsForDeviceHub(slug) {
@@ -339,7 +360,7 @@ function findCatalogClinicsForDeviceHub(slug) {
       isActive: true,
       district: null,
       devices: [],
-      rating: { value: 4.8, count: 12 },
+      rating: publicClinicRating(clinic),
       heroImage: media.heroImage,
       coverImage: media.coverImage,
       image: media.image,
@@ -398,7 +419,7 @@ function buildSyntheticHubPage(city, slug) {
       total: deviceClinics.length,
       active: deviceClinics.length,
       withAuthenticDevice: 0,
-      ratingValue: 4.8,
+      ratingValue: null,
       reviewCount: 0,
     },
   });

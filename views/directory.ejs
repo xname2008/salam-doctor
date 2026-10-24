@@ -194,7 +194,7 @@
         </span>
         <span class="brand-name">سلام دکتر</span>
       </a>
-      <a href="tel:+989007000462" class="inline-flex items-center justify-center rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm px-4 py-2.5 transition-colors">مشاوره رایگان</a>
+      <a href="tel:+989007000462" class="inline-flex items-center justify-center rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-bold text-sm px-4 py-2.5 transition-colors">درخواست نوبت مشاوره</a>
     </div>
   </header>
 
@@ -217,42 +217,46 @@
 
       <%
         var rv = stats.ratingValue;
-        var fullStars = Math.floor(rv);
+        var rc = Number(stats.reviewCount || 0);
+        var showRating = rc > 0 && rv != null && rv !== '';
+        var fullStars = showRating ? Math.floor(Number(rv)) : 0;
         var thinInventory = (typeof activeClinicCount !== 'undefined'
           ? Number(activeClinicCount)
           : Number(stats.active || 0)) < 3;
+        var authenticCount = Number(stats.withAuthenticDevice || 0);
       %>
+      <% if (showRating) { %>
       <div class="inline-flex flex-wrap items-center gap-2 rounded-full bg-white border border-slate-200 px-4 py-2 text-sm shadow-sm">
         <span class="star-on text-base tracking-wide" aria-label="امتیاز <%= rv %> از ۵">
           <% for (var si = 1; si <= 5; si++) { %><span class="<%= si <= fullStars ? 'star-on' : 'star-off' %>">★</span><% } %>
         </span>
         <strong class="text-slate-800"><%= rv %></strong>
-        <span class="text-slate-500">(<%= stats.reviewCount %> نظر)</span>
+        <span class="text-slate-500">(<%= rc %> نظر)</span>
       </div>
+      <% } %>
 
-      <% if (thinInventory) { %>
-        <ul class="trust-badges" aria-label="مزایای سلام دکتر">
-          <li class="trust-badge">
-            <span class="trust-badge__icon" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
-            </span>
-            <span class="trust-badge__text">تضمین اصالت مجوز پزشکی</span>
-          </li>
-          <li class="trust-badge">
-            <span class="trust-badge__icon" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 19V5M8 19V9M12 19V7M16 19v-6M20 19V11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-            </span>
-            <span class="trust-badge__text">بررسی تخصصی تیم سلام دکتر</span>
-          </li>
-          <li class="trust-badge">
-            <span class="trust-badge__icon" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 16.9v.1a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h.1c1.1 0 2 .9 2.1 2a12.8 12.8 0 0 0 .7 2.8 2 2 0 0 1-.5 2.1L5.5 9.8a16 16 0 0 0 6 6l.9-.9a2 2 0 0 1 2.1-.5 12.8 12.8 0 0 0 2.8.7c1.1.1 2 1 2 2.1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </span>
-            <span class="trust-badge__text">مشاوره اولیه رایگان</span>
-          </li>
-        </ul>
-      <% } else { %>
-        <dl class="grid grid-cols-3 gap-3 md:gap-6 mt-6 max-w-xl">
+      <ul class="trust-badges" aria-label="مزایای سلام دکتر">
+        <li class="trust-badge">
+          <span class="trust-badge__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+          </span>
+          <span class="trust-badge__text">بازدید حضوری و قرارداد با مرکز</span>
+        </li>
+        <li class="trust-badge">
+          <span class="trust-badge__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 19V5M8 19V9M12 19V7M16 19v-6M20 19V11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <span class="trust-badge__text">معرفی مراکز، نه توصیه پزشکی</span>
+        </li>
+        <li class="trust-badge">
+          <span class="trust-badge__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M22 16.9v.1a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h.1c1.1 0 2 .9 2.1 2a12.8 12.8 0 0 0 .7 2.8 2 2 0 0 1-.5 2.1L5.5 9.8a16 16 0 0 0 6 6l.9-.9a2 2 0 0 1 2.1-.5 12.8 12.8 0 0 0 2.8.7c1.1.1 2 1 2 2.1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="trust-badge__text">درخواست نوبت مشاوره</span>
+        </li>
+      </ul>
+      <% if (!thinInventory) { %>
+        <dl class="grid grid-cols-<%= authenticCount > 0 ? 3 : 2 %> gap-3 md:gap-6 mt-6 max-w-xl">
           <div class="bg-white rounded-xl border border-slate-200 p-3 text-center">
             <dt class="text-xs text-slate-500">مراکز</dt>
             <dd class="text-xl md:text-2xl font-bold text-sky-600"><%= stats.total %></dd>
@@ -261,10 +265,12 @@
             <dt class="text-xs text-slate-500">فعال</dt>
             <dd class="text-xl md:text-2xl font-bold text-sky-600"><%= stats.active %></dd>
           </div>
+          <% if (authenticCount > 0) { %>
           <div class="bg-white rounded-xl border border-slate-200 p-3 text-center">
             <dt class="text-xs text-slate-500">دستگاه اصل</dt>
-            <dd class="text-xl md:text-2xl font-bold text-emerald-600"><%= stats.withAuthenticDevice %></dd>
+            <dd class="text-xl md:text-2xl font-bold text-emerald-600"><%= authenticCount %></dd>
           </div>
+          <% } %>
         </dl>
       <% } %>
 
@@ -283,7 +289,8 @@
     <% if (!clinics.length) { %>
       <section class="rounded-2xl border border-dashed border-slate-300 bg-white p-8 md:p-12 text-center text-slate-600" aria-live="polite">
         <p class="text-lg font-semibold text-slate-800">راهنمای <%= service.name %> در <%= city %></p>
-        <p class="mt-3 text-sm leading-relaxed">فهرست مراکز مستقیم این خدمت در حال تکمیل است. معیارهایی مانند مجوز، تجربه پزشک، نمونه کار و شفافیت هزینه را هنگام انتخاب مرکز بررسی کنید.</p>
+        <p class="mt-3 text-sm leading-relaxed">فهرست مراکز مستقیم این خدمت در حال تکمیل است. معیارهایی مانند مجوز، تجربه پزشک و نمونه کار را هنگام انتخاب مرکز بررسی کنید.</p>
+        <p class="mt-3 text-sm leading-relaxed">مراکز معرفی‌شده برای حضور در سلام دکتر هزینه پرداخت می‌کنند و ترتیب نمایش به معنای توصیه پزشکی نیست.</p>
         <p class="mt-4 text-sm"><a href="/clinic-promote" class="font-bold text-sky-600 hover:text-sky-700">ثبت مرکز در سلام دکتر</a></p>
       </section>
 
@@ -344,8 +351,12 @@
                 <td class="px-4 py-3 text-sky-700 font-medium"><%= districtName %></td>
                 <td class="px-4 py-3 text-emerald-700 text-xs md:text-sm"><%= authDevices %></td>
                 <td class="px-4 py-3 whitespace-nowrap">
+                  <% if (c.rating && c.rating.count > 0 && c.rating.value != null) { %>
                   <span class="star-on text-xs"><% var tf=Math.floor(c.rating.value); for(var t=1;t<=5;t++){ %><span class="<%= t<=tf?'star-on':'star-off' %>">★</span><% } %></span>
                   <span class="font-bold mr-1"><%= c.rating.value %></span>
+                  <% } else { %>
+                  <span class="text-slate-400">—</span>
+                  <% } %>
                 </td>
                 <td class="px-4 py-3 hidden sm:table-cell">
                   <% if (c.isActive) { %>
@@ -426,7 +437,7 @@
     <aside class="mt-10 rounded-2xl bg-slate-900 text-white p-6 md:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div>
         <h2 class="text-lg md:text-xl font-bold mb-1">نیاز به راهنمایی دارید؟</h2>
-        <p class="text-slate-300 text-sm">کارشناسان سلام دکتر بهترین مرکز <%= service.name %> را متناسب با شرایط شما معرفی می‌کنند.</p>
+        <p class="text-slate-300 text-sm">کارشناسان سلام دکتر فهرست مراکز <%= service.name %> را همراه با اطلاعات تماس در اختیار شما می‌گذارند؛ انتخاب نهایی با شما و پزشک معالج است.</p>
       </div>
       <a href="tel:+989007000462" class="inline-flex shrink-0 items-center justify-center rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold px-6 py-3 transition-colors">تماس فوری</a>
     </aside>

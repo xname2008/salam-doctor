@@ -1,160 +1,80 @@
 #!/usr/bin/env bash
-# Acceptance for docs/2026-10-24-rhinoplasty-redirects-titles-links.md
-set -euo pipefail
-B="${B:-https://salam-doctor.com}"
-CB="cb=$(date +%s)"
-fail=0
+# Acceptance for 2026-10-25 prompt. Usage: bash check.sh [base]
+B=${1:-https://salam-doctor.com}; F=0; T=$(mktemp -d)
+p(){ echo "PASS $1"; }; f(){ echo "FAIL $1"; F=1; }
+CLOSE='قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.'
+curl -s "$B/sitemap.xml?nc=$RANDOM" > $T/sm.xml
+python3 -c "import xml.dom.minidom as m;m.parse('$T/sm.xml')" && p "sitemap.xml valid" || f "sitemap.xml invalid"
+for s in skin-biopsy wart-cryotherapy; do
+  grep -A1 "<loc>$B/shiraz/$s</loc>" $T/sm.xml | grep -q '<lastmod>2026-10-25</lastmod>' && p "lastmod 2026-10-25 $s" || f "lastmod $s"
+done
+other=$(grep -A1 '<loc>' $T/sm.xml | grep -c '2026-10-25'); [ "$other" -le 2 ] && p "only 2 URLs have lastmod 2026-10-25 ($other)" || f "$other URLs bumped to 2026-10-25"
 
-pass() { echo "PASS $1"; }
-failf() { echo "FAIL $1"; fail=1; }
-
-# Follow redirects manually: report final status + hop count + final URL
-redir_check() {
-  local path="$1" expect="$2" label="$3"
-  local out hops final code
-  out=$(curl -sS -m 25 -o /dev/null -w '%{http_code} %{url_effective} %{num_redirects}' -L --max-redirs 5 "$B$path?$CB" || true)
-  code=$(echo "$out" | awk '{print $1}')
-  final=$(echo "$out" | awk '{print $2}' | sed "s/[?].*//")
-  hops=$(echo "$out" | awk '{print $3}')
-  # One-hop: first response must be 301 to expect
-  local first loc
-  first=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' -D - "$B$path?$CB" 2>/dev/null | tr -d '\r' | awk 'NR==1{print $2}')
-  loc=$(curl -sS -m 20 -o /dev/null -D - "$B$path?$CB" 2>/dev/null | tr -d '\r' | awk -F': ' 'tolower($1)=="location"{print $2; exit}')
-  loc_path=$(echo "$loc" | sed -E 's#https?://[^/]+##; s/[?].*//; s#/$##')
-  expect_norm=$(echo "$expect" | sed 's#/$##')
-  if [ "$first" = "301" ] && [ "$loc_path" = "$expect_norm" ]; then
-    pass "$label 301→$expect (1 hop)"
-  else
-    failf "$label got first=$first loc=$loc_path (want 301→$expect_norm) hops=$hops final=$final"
-  fi
+# --- 1. the two YMYL hubs ---
+audit(){ # slug minwords faqs
+python3 - "$B/shiraz/$1" "$2" "$3" <<'PY'
+import sys,re,json,urllib.request
+u,mw,nf=sys.argv[1],int(sys.argv[2]),int(sys.argv[3]);ok=True
+def out(c,m):
+  global ok; print(('PASS ' if c else 'FAIL ')+m); ok=ok and c
+r=urllib.request.urlopen(urllib.request.Request(u,headers={'User-Agent':'check'}));h=r.read().decode()
+out(r.status==200,f'{u} 200')
+out(f'rel="canonical" href="{u}"' in h,f'{u} canonical bare self')
+rb=re.findall(r'name="robots" content="([^"]*)',h); out(not any('noindex' in x for x in rb),f'{u} indexable')
+m=re.search(r'<main.*?</main>',h,re.S); b=m.group(0) if m else h
+t=' '.join(re.sub('<[^>]+>',' ',re.sub(r'<script.*?</script>|<style.*?</style>','',b,flags=re.S)).split())
+out(len(t.split())>=mw,f'{u} words {len(t.split())} >= {mw}')
+out(len(re.findall('<h2',b))>=5,f'{u} h2 {len(re.findall("<h2",b))} >= 5')
+vis=[' '.join(re.sub('<[^>]+>',' ',x).split()) for x in re.findall(r'<summary[^>]*>(.*?)</summary>',b,re.S)]
+out(len(vis)==nf,f'{u} visible FAQs {len(vis)} == {nf}')
+js=[]
+for s in re.findall(r'<script type="application/ld\+json">(.*?)</script>',h,re.S):
+  d=json.loads(s)
+  for x in (d.get('@graph',[d]) if isinstance(d,dict) else d):
+    if x.get('@type')=='FAQPage': js=x['mainEntity']
+q=[e['name'].strip() for e in js]
+out(q==vis,f'{u} FAQPage JSON-LD 1:1 with visible ({len(q)})')
+cost=[e for e in js if re.search('هزینه|قیمت',e['name'])]
+out(len(cost)>=1 and all(e['acceptedAnswer']['text'].strip().endswith('قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.') for e in cost),f'{u} cost answers end with closing sentence')
+full=re.sub('<[^>]+>',' ',h)
+out(not re.search(r'(قیمت|هزینه|تعرفه)[^.؛]{0,40}[0-9۰-۹]|تومان',full),f'{u} no price figures')
+out(not re.search(r'جلوگیری از اسکار|بدون (جای|اسکار)|خوش‌خیم است|سرطان نیست',full),f'{u} no scar/benign guarantees')
+if 'biopsy' in u: out('پاتولوژی' in full and 'پزشک معالج' in full,f'{u} diagnosis-by-pathology disclaimer')
+sys.exit(0 if ok else 1)
+PY
 }
+audit skin-biopsy 700 6 || F=1
+audit wart-cryotherapy 900 9 || F=1
 
-code_check() {
-  local path="$1" want="$2" label="$3"
-  local code
-  code=$(curl -sS -m 20 -o /dev/null -w '%{http_code}' "$B$path?$CB" || echo 000)
-  if [ "$code" = "$want" ]; then pass "$label $want"; else failf "$label got $code want $want"; fi
-}
+# --- 3. every /shiraz hub in sitemap ---
+grep -o "<loc>$B/shiraz[^<]*</loc>" $T/sm.xml | sed 's#</\?loc>##g' > $T/hubs
+echo "hubs: $(wc -l < $T/hubs)"
+while read u; do
+  h=$(curl -s "$u"); [ -z "$h" ] && { f "$u empty"; continue; }
+  bad=""
+  echo "$h" | grep -qE '\[cite|\[cite_start\]' && bad+=" cite-artifact"
+  echo "$h" | grep -qF 'مشاوره رایگان' && bad+=" مشاوره-رایگان"
+  echo "$h" | grep -qF 'مشاوره اولیه رایگان' && bad+=" مشاوره-اولیه-رایگان"
+  echo "$h" | grep -qF 'تضمین اصالت مجوز پزشکی' && bad+=" badge-تضمین"
+  echo "$h" | grep -qF 'بررسی تخصصی تیم سلام دکتر' && bad+=" badge-بررسی-تخصصی"
+  echo "$h" | grep -qE 'بررسی و (تأیید|تایید) شده|دستگاه‌های تأیید‌شده' && bad+=" device-verified-claim"
+  echo "$h" | grep -qE 'بهترین مرکز[^<]{0,40}را متناسب با شرایط شما معرفی' && bad+=" endorsement-cta"
+  echo "$h" | grep -qE '\(0 نظر\)' && bad+=" zero-review-rating"
+  echo "$h" | python3 -c "
+import sys,re,json
+h=sys.stdin.read();bad=0
+for s in re.findall(r'<script type=\"application/ld\+json\">(.*?)</script>',h,re.S):
+  for m in re.finditer(r'\"aggregateRating\"\s*:\s*\{[^}]*\}',s):
+    c=re.search(r'\"(reviewCount|ratingCount)\"\s*:\s*\"?(\d+)',m.group(0))
+    if not c or int(c.group(2))==0: bad=1
+sys.exit(bad)" || bad+=" AggregateRating-0"
+  echo "$h" | grep -qF 'بازدید حضوری و قرارداد با مرکز' || bad+=" no-new-badge"
+  echo "$h" | grep -qE 'هزینه پرداخت می‌کنند|پرداخت هزینه|ترتیب نمایش' || bad+=" no-paid-disclosure"
+  [ -z "$bad" ] && p "$u template" || f "$u:$bad"
+done < $T/hubs
 
-html_has() {
-  local path="$1" pat="$2" label="$3"
-  local n
-  n=$(curl -sS -m 25 "$B$path?$CB" | grep -cF -- "$pat" || true)
-  if [ "$n" -ge 1 ]; then pass "$label"; else failf "$label missing: $pat"; fi
-}
-
-html_lacks() {
-  local path="$1" pat="$2" label="$3"
-  local n
-  n=$(curl -sS -m 25 "$B$path?$CB" | grep -cF -- "$pat" || true)
-  if [ "$n" -eq 0 ]; then pass "$label"; else failf "$label still has: $pat ($n)"; fi
-}
-
-echo "=== 2026-10-24 rhinoplasty / redirects / titles / links ==="
-echo "BASE=$B"
-
-# --- §2 redirects ---
-redir_check "/services/qswitch" "/shiraz/qswitch" "R1 /services/qswitch"
-redir_check "/services/qswitch/" "/shiraz/qswitch" "R1b /services/qswitch/"
-redir_check "/articles/hair-loss-treatment-comparison" "/articles/mesotherapy-vs-prp-hair-loss" "R2 hair-loss bare"
-redir_check "/articles/hair-loss-treatment-comparison.html" "/articles/mesotherapy-vs-prp-hair-loss" "R2 hair-loss .html"
-redir_check "/articles/hair-loss-treatment-comparison/" "/articles/mesotherapy-vs-prp-hair-loss" "R2 hair-loss /"
-redir_check "/articles/skin-rejuvenation-guide" "/shiraz/skin-rejuvenation" "R3 skin-guide bare"
-redir_check "/articles/skin-rejuvenation-guide.html" "/shiraz/skin-rejuvenation" "R3 skin-guide .html"
-redir_check "/articles/skin-rejuvenation-guide/" "/shiraz/skin-rejuvenation" "R3 skin-guide /"
-
-code_check "/shiraz/qswitch" "200" "R1 dest /shiraz/qswitch"
-code_check "/articles/mesotherapy-vs-prp-hair-loss" "200" "R2 dest mesotherapy"
-code_check "/shiraz/skin-rejuvenation" "200" "R3 dest skin-rejuvenation"
-code_check "/articles/botox-filler-guide" "200" "R3 KEEP botox-filler-guide"
-
-# --- §1 rhinoplasty article ---
-RH="/articles/best-rhinoplasty-surgeon-shiraz"
-code_check "$RH" "200" "A1 bare article"
-html_has "$RH" 'انتخاب جراح بینی در شیراز: معیارها و سوالات جلسه مشاوره | سلام دکتر' "A1 title"
-html_has "$RH" 'انتخاب جراح بینی در شیراز: معیارها، سبک‌های جراحی و سوالات جلسه مشاوره' "A1 H1/headline"
-html_has "$RH" '۶. هزینه جراحی بینی به چه عواملی بستگی دارد؟' "A1 §6 heading"
-html_has "$RH" 'قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.' "A1 cost close"
-html_has "$RH" 'هزینه جراحی بینی در شیراز چقدر است؟' "A1 cost FAQ"
-html_has "$RH" '۲ آبان ۱۴۰۵' "A1 jalali date"
-html_has "$RH" 'datetime="2026-10-24"' "A1 datePublished"
-html_has "$RH" 'href="/articles/rhinoplasty-care-guide"' "A1 → care-guide"
-html_lacks "$RH" 'تاریخ انتشار:</p>' "A1 date not empty shell"
-# no number next to قیمت/هزینه/تعرفه/تومان in article body (rough)
-BODY=$(curl -sS -m 25 "$B$RH?$CB")
-if echo "$BODY" | grep -oE '.{0,12}(قیمت|هزینه|تعرفه|تومان).{0,12}' | grep -E '[0-9۰-۹]+' >/dev/null; then
-  failf "A1 priced number near cost words"
-else
-  pass "A1 no priced numbers near cost words"
-fi
-
-# reverse + hub + homepage
-html_has "/articles/rhinoplasty-care-guide" 'href="/articles/best-rhinoplasty-surgeon-shiraz"' "A1 care-guide reverse"
-html_has "/articles/rhinoplasty-care-guide" 'انتخاب جراح بینی در شیراز' "A1 care-guide anchor"
-html_has "/shiraz/rhinoplasty" 'href="/articles/best-rhinoplasty-surgeon-shiraz"' "A1 rhino hub link"
-html_has "/shiraz/rhinoplasty" 'راهنمای انتخاب جراح بینی در شیراز و سوالات جلسه مشاوره' "A1 rhino hub anchor"
-html_has "/" 'href="/articles/best-rhinoplasty-surgeon-shiraz"' "A1 homepage listing"
-
-# --- §3 titles ---
-html_has "/shiraz/light-therapy" 'نور درمانی در شیراز | لایت تراپی پوست، کاربردها و انتخاب مرکز' "T1 light-therapy title"
-html_has "/shiraz/light-therapy" 'نور درمانی (لایت تراپی) در شیراز برای آکنه، جوانسازی و التهاب پوست چگونه انجام می‌شود؟' "T1 light-therapy desc"
-html_lacks "/shiraz/light-therapy" 'لایت تراپی و نور درمانی در شیراز | کاربرد و انتخاب مرکز' "T1 old light-therapy title gone"
-html_has "/about" 'درباره سایت دکتر سلام | معرفی کلینیک‌های زیبایی شیراز' "T2 about title"
-html_has "/about" 'سایت دکتر سلام (سلام دکتر) کلینیک‌های پوست، مو و زیبایی شیراز را پس از بازدید حضوری تیم ما معرفی می‌کند.' "T2 about desc"
-
-# --- §4 hair-transplant links ---
-html_has "/shiraz/hair-transplant" 'href="/articles/best-hair-transplant-center-shiraz"' "L1 hair hub link"
-html_has "/shiraz/hair-transplant" 'راهنمای انتخاب بهترین مرکز کاشت مو در شیراز' "L1 hair hub anchor"
-# Intro is loaded client-side from /api/clinic-profile (and /clinic-intros/114.html).
-# Parse JSON so escaped quotes in the intro HTML don't false-fail grep.
-NINTRO=$(curl -sS -m 20 "$B/api/clinic-profile?clinic_id=114&$CB" || true)
-if printf '%s' "$NINTRO" | python3 -c 'import sys,json; d=json.load(sys.stdin); t=d.get("intro") or ""; sys.exit(0 if "/articles/best-hair-transplant-center-shiraz" in t else 1)'; then
-  pass "L2 nahal link (api intro)"
-else
-  failf "L2 nahal link missing in /api/clinic-profile?clinic_id=114"
-fi
-if printf '%s' "$NINTRO" | python3 -c 'import sys,json; d=json.load(sys.stdin); t=d.get("intro") or ""; sys.exit(0 if "راهنمای انتخاب مرکز کاشت مو در شیراز" in t else 1)'; then
-  pass "L2 nahal anchor (api intro)"
-else
-  failf "L2 nahal anchor missing in api intro"
-fi
-html_has "/clinic-intros/114.html" 'href="/articles/best-hair-transplant-center-shiraz"' "L2 nahal static intro file"
-html_has "/shiraz/laser-candela-2026" 'href="/articles/best-hair-transplant-center-shiraz"' "L3 candela link"
-html_has "/shiraz/laser-candela-2026" 'راهنمای انتخاب مرکز کاشت مو در شیراز' "L3 candela anchor"
-
-# --- catalog / sitemap cleanup ---
-SM=$(curl -sS -m 20 "$B/sitemap-articles.xml?$CB")
-if echo "$SM" | grep -q 'hair-loss-treatment-comparison'; then
-  failf "S1 sitemap still lists hair-loss-treatment-comparison"
-else
-  pass "S1 sitemap omits hair-loss-treatment-comparison"
-fi
-if echo "$SM" | grep -q 'best-rhinoplasty-surgeon-shiraz'; then
-  pass "S1 sitemap lists rhinoplasty article"
-else
-  failf "S1 sitemap missing rhinoplasty article"
-fi
-CAT=$(curl -sS -m 20 "$B/assets/js/articles-catalog.generated.js?$CB")
-if echo "$CAT" | grep -q 'hair-loss-treatment-comparison'; then
-  failf "S2 catalog still has hair-loss-treatment-comparison"
-else
-  pass "S2 catalog omits hair-loss-treatment-comparison"
-fi
-if echo "$CAT" | grep -q 'best-rhinoplasty-surgeon-shiraz'; then
-  pass "S2 catalog lists rhinoplasty article"
-else
-  failf "S2 catalog missing rhinoplasty article"
-fi
-html_has "/" 'href="/articles/mesotherapy-vs-prp-hair-loss"' "S3 homepage mesotherapy link"
-html_lacks "/" 'href="/articles/hair-loss-treatment-comparison"' "S3 homepage no old hair-loss href"
-
-# Nahal badge untouched
-html_has "/doctor/nahal-clinic" 'مرکز تایید شده' "G nahal badge kept"
-
-echo "=== done ==="
-if [ "$fail" -ne 0 ]; then
-  echo "RESULT FAIL"
-  exit 1
-fi
-echo "RESULT PASS"
-exit 0
+# --- Nahal untouched (card on hair-transplant hub renders server-side) ---
+curl -s "$B/shiraz/hair-transplant" | grep -qF '(206 نظر)' && p "Nahal card (206 نظر) still rendered" || f "Nahal rating changed/missing on /shiraz/hair-transplant"
+echo "INFO Nahal badge «تاییدشده سلام دکتر» is client-rendered; confirm visually on /doctor/nahal-clinic"
+for u in /uploads/seo-config.js /uploads/seoRouter.js; do c=$(curl -s -o /dev/null -w %{http_code} "$B$u"); [ "$c" != 200 ] && p "$u not served ($c)" || f "$u publicly served (source leak)"; done
+echo; [ $F = 0 ] && echo "ALL PASS" || echo "SOME FAIL"; exit $F
