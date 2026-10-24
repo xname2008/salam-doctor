@@ -15,9 +15,39 @@ const ARTICLE_CHANGEFREQ = 'monthly';
 /** Every static article sitemap <loc> is the extensionless KEEP. */
 const BARE_CANONICAL_ARTICLE_SLUGS = new Set(['*']);
 
+/**
+ * Never list these in sitemap-articles.xml (301 losers / noindex thin pages).
+ * hair-loss-treatment-comparison is parked + 301 → mesotherapy-vs-prp-hair-loss.
+ * body-contouring-clinic-guide is noindex,follow (thin-content mitigation).
+ */
+const SITEMAP_EXCLUDED_ARTICLE_SLUGS = new Set([
+  'hair-loss-treatment-comparison',
+  'body-contouring-clinic-guide',
+]);
+
 /** Matches any existing static-article <url> block in sitemap.xml. */
 const STATIC_ARTICLE_URL_BLOCK_RE =
   /\s*<url>[\s\S]*?<loc>[^<]*\/articles\/[^<]+(?:\.html)?<\/loc>[\s\S]*?<\/url>/gi;
+
+function robotsMetaContent(html) {
+  const match = String(html || '').match(
+    /<meta\s+name=["']robots["']\s+content=["']([^"']+)["']/i,
+  );
+  return match ? match[1].toLowerCase() : '';
+}
+
+function isNoindexRobots(html) {
+  const content = robotsMetaContent(html);
+  return content.split(/\s*,\s*/).some((token) => token === 'noindex');
+}
+
+function shouldIncludeInArticlesSitemap(slug, html) {
+  const key = String(slug || '').trim();
+  if (!key) return false;
+  if (SITEMAP_EXCLUDED_ARTICLE_SLUGS.has(key)) return false;
+  if (isNoindexRobots(html)) return false;
+  return true;
+}
 
 function canonicalOrigin(override) {
   return String(override || process.env.SITE_BASE || DEFAULT_ORIGIN).replace(/\/$/, '');
@@ -72,17 +102,19 @@ function scanStaticArticles(articlesDir, opts = {}) {
       const fullPath = path.join(articlesDir, entry.name);
       const stat = fs.statSync(fullPath);
       const html = fs.readFileSync(fullPath, 'utf8');
+      const slug = entry.name.replace(/\.html$/i, '');
+      if (!shouldIncludeInArticlesSitemap(slug, html)) return null;
       const loc = articleLoc(entry.name, opts.origin);
       const onPage = dateModifiedFromHtml(html);
       return {
         filename: entry.name,
-        slug: entry.name.replace(/\.html$/i, ''),
+        slug,
         loc,
         mtime: stat.mtime,
         lastmod: onPage || fmtDate(stat.mtime),
       };
     })
-    .filter((row) => row.loc)
+    .filter((row) => row && row.loc)
     .sort((a, b) => a.filename.localeCompare(b.filename, 'fa'));
 }
 
@@ -171,12 +203,16 @@ module.exports = {
   ARTICLE_PRIORITY,
   ARTICLE_CHANGEFREQ,
   BARE_CANONICAL_ARTICLE_SLUGS,
+  SITEMAP_EXCLUDED_ARTICLE_SLUGS,
   STATIC_ARTICLE_URL_BLOCK_RE,
   canonicalOrigin,
   xmlEscape,
   fmtDate,
   today,
   articleLoc,
+  robotsMetaContent,
+  isNoindexRobots,
+  shouldIncludeInArticlesSitemap,
   scanStaticArticles,
   urlEntry,
   buildArticleUrlBlocks,

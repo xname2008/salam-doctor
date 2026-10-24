@@ -185,6 +185,9 @@ function syncArticleDatesInHtml(html, isoDate, jalaliLabel) {
 /**
  * Scan articles directory, optionally write synced HTML, return catalog entries sorted newest-first.
  */
+/** 301 losers — never surface in the browser catalog even if the HTML returns. */
+const CATALOG_EXCLUDED_ARTICLE_SLUGS = new Set(['hair-loss-treatment-comparison']);
+
 function scanArticleCatalog(articlesDir, opts = {}) {
   const syncHtml = opts.syncHtml !== false;
   if (!articlesDir || !fs.existsSync(articlesDir)) return [];
@@ -195,6 +198,7 @@ function scanArticleCatalog(articlesDir, opts = {}) {
     .map((fileEntry) => {
       const filePath = path.join(articlesDir, fileEntry.name);
       const slug = fileEntry.name.replace(/\.html$/i, '');
+      if (CATALOG_EXCLUDED_ARTICLE_SLUGS.has(slug)) return null;
       const stat = fs.statSync(filePath);
       let html = fs.readFileSync(filePath, 'utf8');
       const datePublished = resolvePublishedDate(html, stat);
@@ -215,7 +219,8 @@ function scanArticleCatalog(articlesDir, opts = {}) {
       };
       if (jalaliLabel) catalogEntry.jalaliLabel = jalaliLabel;
       return catalogEntry;
-    });
+    })
+    .filter(Boolean);
 
   return sortEntriesByDate(entries);
 }
@@ -247,5 +252,6 @@ module.exports = {
   normalizeCoverPath,
   toIsoDateLocal,
   BARE_CANONICAL_ARTICLE_SLUGS,
+  CATALOG_EXCLUDED_ARTICLE_SLUGS,
   articlePublicPath,
 };
