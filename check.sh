@@ -105,8 +105,19 @@ html_has "/about" 'سایت دکتر سلام (سلام دکتر) کلینیک�
 # --- §4 hair-transplant links ---
 html_has "/shiraz/hair-transplant" 'href="/articles/best-hair-transplant-center-shiraz"' "L1 hair hub link"
 html_has "/shiraz/hair-transplant" 'راهنمای انتخاب بهترین مرکز کاشت مو در شیراز' "L1 hair hub anchor"
-html_has "/doctor/nahal-clinic" 'href="/articles/best-hair-transplant-center-shiraz"' "L2 nahal link"
-html_has "/doctor/nahal-clinic" 'راهنمای انتخاب مرکز کاشت مو در شیراز' "L2 nahal anchor"
+# Intro is loaded client-side from /api/clinic-profile (and /clinic-intros/114.html).
+NINTRO=$(curl -sS -m 20 "$B/api/clinic-profile?clinic_id=114&$CB" || true)
+if echo "$NINTRO" | grep -qF 'href="/articles/best-hair-transplant-center-shiraz"'; then
+  pass "L2 nahal link (api intro)"
+else
+  failf "L2 nahal link missing in /api/clinic-profile?clinic_id=114"
+fi
+if echo "$NINTRO" | grep -qF 'راهنمای انتخاب مرکز کاشت مو در شیراز'; then
+  pass "L2 nahal anchor (api intro)"
+else
+  failf "L2 nahal anchor missing in api intro"
+fi
+html_has "/clinic-intros/114.html" 'href="/articles/best-hair-transplant-center-shiraz"' "L2 nahal static intro file"
 html_has "/shiraz/laser-candela-2026" 'href="/articles/best-hair-transplant-center-shiraz"' "L3 candela link"
 html_has "/shiraz/laser-candela-2026" 'راهنمای انتخاب مرکز کاشت مو در شیراز' "L3 candela anchor"
 

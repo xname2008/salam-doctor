@@ -14,7 +14,16 @@ const PASSTHROUGH_EXACT = new Set([
   '/favicon.ico',
 ]);
 
-const PASSTHROUGH_PREFIXES = ['/api/', '/cdn-cgi/', '/services/', '/shiraz/', '/doctor/', '/tehran/'];
+const PASSTHROUGH_PREFIXES = [
+  '/api/',
+  '/cdn-cgi/',
+  '/services/',
+  '/shiraz/',
+  '/doctor/',
+  '/tehran/',
+  // Static clinic intros must keep .html — profile.js fetches /clinic-intros/{id}.html
+  '/clinic-intros/',
+];
 
 const ASSET_EXT =
   /\.(css|js|mjs|map|json|xml|txt|csv|pdf|png|jpe?g|gif|webp|avif|svg|ico|woff2?|ttf|eot|otf|mp4|webm|mp3|wav|zip|gz|wasm)$/i;
@@ -90,6 +99,10 @@ export default {
       const keep = HTML_TO_KEEP[pathname];
       if (keep) {
         return redirectTo(url, keep);
+      }
+      // Keep /clinic-intros/{id}.html as-is (profile.js fetches these; strip breaks them).
+      if (pathname.startsWith('/clinic-intros/')) {
+        return fetchOrigin(request);
       }
       return redirectHtmlToClean(url);
     }
