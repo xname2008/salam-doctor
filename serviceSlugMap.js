@@ -166,7 +166,8 @@ function resolveHubServiceSlug(raw) {
 /**
  * Service landings permanently consolidated onto /shiraz/* hubs.
  * Excluded from dynamic /services sitemap (canonical is the hub URL).
- * rf-virtue-endolift + qswitch intentionally omitted (light-therapy → /shiraz KEEP).
+ * rf-virtue-endolift intentionally omitted (light-therapy → /shiraz KEEP).
+ * qswitch consolidates to /shiraz/qswitch (one hop).
  */
 const SERVICES_REDIRECTED_TO_HUB = new Set([
   'botox',
@@ -180,6 +181,7 @@ const SERVICES_REDIRECTED_TO_HUB = new Set([
   'botox-filler',
   'deka-laser',
   'light-therapy',
+  'qswitch',
 ]);
 
 function serviceHubCanonicalPath(slug) {
@@ -195,6 +197,7 @@ function serviceHubCanonicalPath(slug) {
     'botox-filler': '/shiraz/injectables',
     'deka-laser': '/shiraz/laser-hair-removal',
     'light-therapy': '/shiraz/light-therapy',
+    qswitch: '/shiraz/qswitch',
   };
   return map[slug] || null;
 }

@@ -4240,14 +4240,20 @@ const server = http.createServer(async (req, res) => {
         if (articleHtmlSlash) {
           const slug = articleHtmlSlash[1].replace(/\.html$/i, '');
           const dest = slug === 'skin-rejuvenation-guide'
-            ? '/articles/botox-filler-guide'
-            : (slug ? `/articles/${slug}` : '/articles');
+            ? '/shiraz/skin-rejuvenation'
+            : slug === 'hair-loss-treatment-comparison'
+              ? '/articles/mesotherapy-vs-prp-hair-loss'
+              : (slug ? `/articles/${slug}` : '/articles');
           sendPermanentRedirect(res, dest + qs, method);
           return;
         }
         const slashBare = rawPathOnly.replace(/\/+$/, '') || '/';
         if (slashBare === '/articles/skin-rejuvenation-guide') {
-          sendPermanentRedirect(res, '/articles/botox-filler-guide' + qs, method);
+          sendPermanentRedirect(res, '/shiraz/skin-rejuvenation' + qs, method);
+          return;
+        }
+        if (slashBare === '/articles/hair-loss-treatment-comparison') {
+          sendPermanentRedirect(res, '/articles/mesotherapy-vs-prp-hair-loss' + qs, method);
           return;
         }
         if (
@@ -4289,7 +4295,15 @@ const server = http.createServer(async (req, res) => {
         decodedPath === '/articles/skin-rejuvenation-guide' ||
         decodedPath === '/articles/skin-rejuvenation-guide/'
       ) {
-        sendPermanentRedirect(res, '/articles/botox-filler-guide', method);
+        sendPermanentRedirect(res, '/shiraz/skin-rejuvenation', method);
+        return;
+      }
+      if (
+        decodedPath === '/articles/hair-loss-treatment-comparison.html' ||
+        decodedPath === '/articles/hair-loss-treatment-comparison' ||
+        decodedPath === '/articles/hair-loss-treatment-comparison/'
+      ) {
+        sendPermanentRedirect(res, '/articles/mesotherapy-vs-prp-hair-loss', method);
         return;
       }
 

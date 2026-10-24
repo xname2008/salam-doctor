@@ -5,6 +5,16 @@
 (function (root) {
   root.ARTICLES_CATALOG = [
   {
+    "slug": "best-rhinoplasty-surgeon-shiraz",
+    "title": "انتخاب جراح بینی در شیراز: معیارها، سبک‌های جراحی و سوالات جلسه مشاوره",
+    "summary": "پیش از انتخاب جراح بینی در شیراز چه چیزهایی را بررسی کنیم؟ معیارهای صلاحیت، سبک طبیعی یا فانتزی، رینوپلاستی باز و بسته، پیزو و پرسش‌هایی که باید در جلسه مشاوره بپرسید.",
+    "category": "جراحی بینی",
+    "cover_image": "assets/images/articles/rhinoplasti.webp",
+    "url": "/articles/best-rhinoplasty-surgeon-shiraz",
+    "datePublished": "2026-10-24",
+    "jalaliLabel": "۲ آبان ۱۴۰۵"
+  },
+  {
     "slug": "best-hair-transplant-center-shiraz",
     "title": "بهترین مرکز کاشت مو در شیراز را چطور انتخاب کنیم؟ معیارها، هزینه و سوالات مشاوره",
     "summary": "پیش از انتخاب مرکز کاشت مو در شیراز این‌ها را چک کنید: استعلام نظام پزشکی، روش مناسب، صداقت در تعداد گرافت، قرارداد کتبی، نشانه‌های هشدار و سوالات مشاوره.",
@@ -13,16 +23,6 @@
     "url": "/articles/best-hair-transplant-center-shiraz",
     "datePublished": "2026-10-03",
     "jalaliLabel": "۱۱ مهر ۱۴۰۵"
-  },
-  {
-    "slug": "hair-loss-treatment-comparison",
-    "title": "مقایسه مزوتراپی و PRP در درمان ریزش مو: اثربخشی، هزینه و ماندگاری",
-    "summary": "مزوتراپی مو چیست و چه تفاوتی با PRP دارد؟ مقایسه علمی اثربخشی، عوارض، هزینه و ماندگاری برای انتخاب بهترین روش درمان ریزش مو.",
-    "category": "ریزش مو",
-    "cover_image": "assets/images/articles/hair-loss-treatment-comparison-cover.webp",
-    "url": "/articles/hair-loss-treatment-comparison",
-    "datePublished": "2026-09-18",
-    "jalaliLabel": "۲۷ شهریور ۱۴۰۵"
   },
   {
     "slug": "botox-filler-guide",

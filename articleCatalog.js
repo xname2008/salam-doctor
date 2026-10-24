@@ -141,10 +141,15 @@ function syncArticleDatesInHtml(html, isoDate, jalaliLabel) {
         let nextAttrs = attrs
           .replace(/\sdatetime=["'][^"']*["']/gi, '')
           .replace(/\sdata-jalali-label=["'][^"']*["']/gi, '');
-        const jalaliAttr = jalaliLabel
-          ? ` data-jalali-label="${jalaliLabel.replace(/"/g, '&quot;')}"`
+        const visible =
+          jalaliLabel ||
+          formatPersianJalaliDate(isoDate) ||
+          '';
+        const jalaliAttr = visible
+          ? ` data-jalali-label="${visible.replace(/"/g, '&quot;')}"`
           : '';
-        return `${open}${nextAttrs} datetime="${isoDate}"${jalaliAttr}${close}${end}`;
+        // Keep a visible Jalali label in HTML so dates are never blank without JS.
+        return `${open}${nextAttrs} datetime="${isoDate}"${jalaliAttr}${close}${visible}${end}`;
       },
     );
   }
