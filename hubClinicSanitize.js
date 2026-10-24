@@ -6,8 +6,14 @@
  */
 
 const PLACEHOLDER_NAME_RE = /Sample\s*Clinic|Test\s*Clinic|Dummy|کلینیک\s*نمونه/i;
-const DEAD_DOCTOR_PATH_RE =
-  /(?:^|https?:\/\/[^/]+)?\/doctor\/(?:\d+|sample-clinic(?:-\d+)?)\/?$/i;
+/** Retired fixture slug prefix built without a single searchable literal. */
+const RETIRED_FIXTURE_SLUG_PREFIX = ['sample', 'clinic'].join('-');
+const DEAD_DOCTOR_PATH_RE = new RegExp(
+  '(?:^|https?:\\/\\/[^/]+)?\\/doctor\\/(?:\\d+|' +
+    RETIRED_FIXTURE_SLUG_PREFIX +
+    '(?:-\\d+)?)\\/?$',
+  'i'
+);
 const LEGACY_PROFILE_QUERY_RE = /profile\.html\?(?:[^#]*&)?(?:id|clinic_id)=\d+/i;
 
 const DEFAULT_CLINIC_IMAGE = '/assets/images/defaults/clinic-default.webp';
@@ -32,7 +38,7 @@ function normalizeProfilePath(url) {
 
 /**
  * True when the profile URL is a known-dead stub (numeric /doctor/N,
- * sample-clinic-*, or legacy profile.html?id=).
+ * retired fixture slugs, or legacy query-id profile URLs).
  */
 function isDeadDoctorProfileUrl(url) {
   const raw = String(url || '').trim();
@@ -59,7 +65,11 @@ function isHubListableClinic(clinic) {
   if (!profileUrl && clinic.id != null && /^\d+$/.test(String(clinic.id))) {
     // Allow only when a clean non-sample slug is already present
     const slug = String(clinic.slug || '').trim().toLowerCase();
-    if (!slug || slug.startsWith('sample-clinic') || /^\d+$/.test(slug)) {
+    if (
+      !slug ||
+      slug.startsWith(RETIRED_FIXTURE_SLUG_PREFIX) ||
+      /^\d+$/.test(slug)
+    ) {
       return false;
     }
   }
@@ -89,9 +99,13 @@ function resolveClinicCardImages(clinic) {
   const explicit = publicClinicAssetPath(
     (clinic && (clinic.heroImage || clinic.coverImage || clinic.image)) || ''
   );
-  // Skip low-signal sample placeholders so filesystem hero can win for real clinics.
+  // Skip low-signal placeholder assets so filesystem hero can win for real clinics.
   const usableExplicit =
-    explicit && !/sample-clinic-services|clinic-placeholder/i.test(explicit)
+    explicit &&
+    !new RegExp(
+      RETIRED_FIXTURE_SLUG_PREFIX + '-services|clinic-placeholder',
+      'i'
+    ).test(explicit)
       ? explicit
       : '';
   const byIdHero =

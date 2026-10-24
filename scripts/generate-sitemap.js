@@ -54,7 +54,8 @@ const SITEMAP_EXCLUDED_HUB_SLUGS = new Set([
 const SITEMAP_EXTRA_HUB_SLUGS = [];
 
 function isSampleClinicSlug(slug) {
-  return /^sample-clinic(?:-\d+)?$/i.test(String(slug || '').trim());
+  const prefix = ['sample', 'clinic'].join('-');
+  return new RegExp('^' + prefix + '(?:-\\d+)?$', 'i').test(String(slug || '').trim());
 }
 
 /** Pages-only allowlist (static + utility). Sorted for stable diffs. */

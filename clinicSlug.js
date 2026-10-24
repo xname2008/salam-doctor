@@ -178,7 +178,7 @@ function sanitizeSlug(raw, opts = {}) {
   const kept = [];
   for (const part of parts) {
     if (FILLER_WORDS.has(part)) {
-      // Keep "clinic" when paired with an id/number → sample-clinic-1
+      // Keep "clinic" when paired with an id/number (retired fixture style).
       if (!(part === 'clinic' && hasNumber)) continue;
     }
     if (part.length === 1 && !/^\d+$/.test(part)) continue;
@@ -291,7 +291,7 @@ function buildClinicSlug(clinic, used) {
     (clinic && (clinic.name || clinic.sliderTitle || clinic.brand)) ||
     (Number.isInteger(id) ? `clinic ${id}` : 'clinic');
 
-  // Prefer brand-like short name; for "Shiraz Sample Clinic 12" → sample-clinic-12
+  // Prefer brand-like short name from English/Persian display name.
   let base = sanitizeSlug(name);
   if (base === 'clinic' && Number.isInteger(id)) base = `clinic-${id}`;
   return uniqueSlug(base, Number.isInteger(id) ? id : 'x', set);
@@ -367,10 +367,21 @@ function ensureCache() {
 
 function registerClinics(clinics) {
   ensureCache();
+  let isRealClinic = null;
+  try {
+    ({ isRealClinic } = require('./realClinics'));
+  } catch (_err) {
+    isRealClinic = null;
+  }
   const used = new Set([...cache.byId.values()].map((s) => String(s).toLowerCase()));
   for (const clinic of clinics || []) {
     const id = Number(clinic && clinic.id);
     if (!Number.isInteger(id)) continue;
+
+    // Never publish fixture / sample clinics into the public slug map.
+    if (typeof isRealClinic === 'function' && !isRealClinic(clinic)) {
+      continue;
+    }
 
     const manual = MANUAL_BY_ID[id];
     if (manual && manual.slug) {
@@ -394,8 +405,35 @@ function registerClinics(clinics) {
   return cache;
 }
 
+function loadRealClinicGate() {
+  try {
+    return require('./realClinics');
+  } catch (_err) {
+    return null;
+  }
+}
+
+function isPublicClinicRef(clinicOrId) {
+  const gate = loadRealClinicGate();
+  if (!gate) return true;
+  if (typeof gate.isRealClinic === 'function') {
+    return gate.isRealClinic(clinicOrId);
+  }
+  if (typeof gate.isPublicDoctorId === 'function') {
+    const id =
+      clinicOrId && typeof clinicOrId === 'object'
+        ? clinicOrId.id != null
+          ? clinicOrId.id
+          : clinicOrId.clinic_id
+        : clinicOrId;
+    return gate.isPublicDoctorId(id);
+  }
+  return true;
+}
+
 function slugForClinic(clinicOrId) {
   ensureCache();
+  if (!isPublicClinicRef(clinicOrId)) return null;
   if (clinicOrId && typeof clinicOrId === 'object') {
     const id = Number(clinicOrId.id != null ? clinicOrId.id : clinicOrId.clinic_id);
     if (Number.isInteger(id) && MANUAL_BY_ID[id] && MANUAL_BY_ID[id].slug) {
@@ -415,17 +453,18 @@ function slugForClinic(clinicOrId) {
     return String(MANUAL_BY_ID[id].slug).toLowerCase();
   }
   if (cache.byId.has(id)) return cache.byId.get(id);
-  if (Number.isInteger(id) && id > 0) return `clinic-${id}`;
+  // Never invent /doctor/clinic-{n} stubs for unknown ids.
   return null;
 }
 
 /**
  * Canonical absolute path for a clinic profile: /doctor/{clean-slug}
- * Never returns legacy/transliterated forms.
+ * Never returns legacy/transliterated forms. Non-public clinics → /shiraz.
  */
 function canonicalDoctorPath(clinicOrId) {
+  if (!isPublicClinicRef(clinicOrId)) return '/shiraz';
   const slug = slugForClinic(clinicOrId);
-  if (!slug) return '/';
+  if (!slug) return '/shiraz';
   // Clean ASCII slugs need no encoding; keep path stable for Location headers.
   return `/doctor/${slug}`;
 }

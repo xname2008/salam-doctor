@@ -38,6 +38,12 @@ const {
   faqAccordionHtml,
   defaultClinicProfileFaqs,
 } = require('./faqPageJsonLd');
+const {
+  isRealClinic,
+  isRetiredFixtureId,
+  isSampleClinicSlug,
+  isPublicDoctorId,
+} = require('./realClinics');
 const { GTM_HEAD_HTML, GTM_BODY_HTML } = require('./scripts/gtm-snippets');
 const { formatPersianJalaliDate } = require('./persianDate');
 const {
@@ -178,20 +184,14 @@ try {
   createDoctorProfileApp = null;
   clinicSlug = {
     registerClinics() {},
-    clinicProfilePath(id) {
-      const n = typeof id === 'object' && id ? id.id : id;
-      return Number.isInteger(n) && n > 0 ? `/doctor/clinic-${n}` : '/';
+    clinicProfilePath() {
+      return '/shiraz';
     },
-    slugForClinic(id) {
-      const n = typeof id === 'object' && id ? id.id : id;
-      return Number.isInteger(n) && n > 0 ? `clinic-${n}` : null;
+    slugForClinic() {
+      return null;
     },
-    idFromSlug(slug) {
-      const m = String(slug || '')
-        .trim()
-        .toLowerCase()
-        .match(/^clinic-(\d+)$/);
-      return m ? Number(m[1]) : null;
+    idFromSlug() {
+      return null;
     },
     ensureCache() {},
   };
@@ -547,13 +547,43 @@ function sendNotFound(res, message) {
   sendText(res, 404, message || 'Not Found', { noindex: true });
 }
 
-function sendHtml(res, statusCode, html) {
+function sendHtml(res, statusCode, html, opts) {
   const body = String(html);
-  res.writeHead(statusCode, {
+  const headers = {
     'Content-Type': 'text/html; charset=utf-8',
     'Content-Length': Buffer.byteLength(body, 'utf8'),
-  });
+  };
+  if (opts && opts.noindex) {
+    headers['X-Robots-Tag'] = 'noindex, nofollow';
+  }
+  if (opts && opts.cacheControl) {
+    headers['Cache-Control'] = opts.cacheControl;
+  }
+  res.writeHead(statusCode, headers);
   res.end(body);
+}
+
+/** Minimal HTML 404/410 for doctor/profile — noindex, no canonical. */
+function sendDoctorGonePage(res, statusCode, titleFa) {
+  const code = statusCode === 410 ? 410 : 404;
+  const title = titleFa || (code === 410 ? 'پروفایل حذف شده' : 'پروفایل یافت نشد');
+  const html = `<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>${title} | سلام دکتر</title>
+</head>
+<body>
+  <main style="font-family:sans-serif;max-width:40rem;margin:3rem auto;padding:0 1rem;line-height:1.8">
+    <h1>${title}</h1>
+    <p>این آدرس مربوط به یک مرکز فعال در سلام دکتر نیست.</p>
+    <p><a href="/shiraz">بازگشت به راهنمای مراکز شیراز</a> · <a href="/">صفحه اصلی</a></p>
+  </main>
+</body>
+</html>`;
+  sendHtml(res, code, html, { noindex: true, cacheControl: 'public, max-age=300' });
 }
 
 function sendRedirect(res, location, method, statusCode) {
@@ -1523,15 +1553,16 @@ function ensureFeaturedSlots() {
     ensureNahalFeaturedImage(db);
 
     // Permanently deactivate English placeholder featured fixtures.
+    const retiredSlugNeedle = '%' + ['sample', 'clinic'].join('-') + '%';
     db.prepare(`
       UPDATE featured_clinics SET active = 0
       WHERE name LIKE '%Sample Clinic%'
          OR name LIKE '%Test Clinic%'
          OR name LIKE '%Dummy%'
          OR name LIKE '%کلینیک نمونه%'
-         OR IFNULL(link, '') LIKE '%sample-clinic%'
+         OR IFNULL(link, '') LIKE ?
          OR id LIKE 'featured-slot-%'
-    `).run();
+    `).run(retiredSlugNeedle);
 
     for (const slot of FEATURED_SLOT_DEFAULTS) {
       const link = normalizeFeaturedLink(slot.link);
@@ -2383,7 +2414,11 @@ function injectProfileMeta(html, clinic, clinicId, overlay) {
       `$1${nahalHero}$2`
     );
     out = out.replace(/\/assets\/images\/defaults\/clinic-default\.webp/g, nahalHero);
-    out = out.replace(/images\/sample-clinic-services\.webp/g, nahalHero.replace(/^\//, ''));
+    const legacyHeroRe = new RegExp(
+      'images\\/' + ['sample', 'clinic', 'services'].join('-') + '\\.webp',
+      'g'
+    );
+    out = out.replace(legacyHeroRe, nahalHero.replace(/^\//, ''));
   } else {
     out = out.replace(/<!--\s*DYNAMIC_PROFILE_HERO_PRELOAD\s*-->/g, '');
   }
@@ -2424,11 +2459,24 @@ function injectClinicBootstrap(html, payload) {
 
 function handleProfilePageById(req, res, clinicId, doctorData) {
   if (!Number.isInteger(clinicId) || clinicId <= 0) {
-    sendRedirect(res, '/', req.method || 'GET');
+    sendDoctorGonePage(res, 404);
     return;
   }
 
   clinicSlug.registerClinics(loadClinicsData());
+
+  const clinic =
+    (doctorData && doctorData.clinic) || loadClinicById(clinicId);
+
+  if (isRetiredFixtureId(clinicId) || isSampleClinicSlug(doctorData && doctorData.slug)) {
+    sendDoctorGonePage(res, 410, 'پروفایل حذف شده');
+    return;
+  }
+
+  if (!isRealClinic(clinic || { id: clinicId })) {
+    sendDoctorGonePage(res, 404);
+    return;
+  }
 
   let html;
   try {
@@ -2439,8 +2487,6 @@ function handleProfilePageById(req, res, clinicId, doctorData) {
     return;
   }
 
-  const clinic =
-    (doctorData && doctorData.clinic) || loadClinicById(clinicId);
   const slug =
     (doctorData && doctorData.slug) ||
     clinicSlug.slugForClinic(clinic || { id: clinicId });
@@ -2450,21 +2496,8 @@ function handleProfilePageById(req, res, clinicId, doctorData) {
     name: (doctorData && doctorData.name) || (clinic && (clinic.name || clinic.sliderTitle)) || null,
   });
 
-  if (clinic) {
-    const overlay = loadClinicOverlayForSeo(clinicId);
-    html = injectProfileMeta(html, clinic, clinicId, overlay);
-  } else {
-    html = injectHeadSeo(html, {
-      title: 'پروفایل کلینیک | سلام دکتر',
-      description: 'پروفایل کلینیک و پزشک - سلام دکتر',
-      canonical: clinicProfileUrl(clinicId),
-      ogImage: DEFAULT_OG_IMAGE,
-    });
-    html = html.replace(/<!--\s*DYNAMIC_PROFILE_HERO_PRELOAD\s*-->/g, '');
-    html = injectClinicContactPlaceholders(html, 'ثبت نشده', 'ثبت نشده');
-    html = injectClinicMapPlaceholders(html, null, null, 'شیراز');
-    html = injectProfileFaqs(html, defaultClinicProfileFaqs({ name: 'این مرکز', city: 'شیراز' }));
-  }
+  const overlay = loadClinicOverlayForSeo(clinicId);
+  html = injectProfileMeta(html, clinic, clinicId, overlay);
 
   res.writeHead(200, {
     'Content-Type': 'text/html; charset=utf-8',
@@ -2539,18 +2572,26 @@ async function tryHandleDoctorProfileNative(req, res, pathname, method) {
     const url = new URL(req.url || '/', 'http://localhost');
     const rawId = validQueryId(url.searchParams.get('id') || url.searchParams.get('clinic_id'));
     if (!rawId) {
-      sendPermanentRedirect(res, '/', method);
+      sendDoctorGonePage(res, 404);
       return true;
     }
     const id = Number.parseInt(rawId, 10);
     if (!Number.isInteger(id) || id <= 0) {
-      sendPermanentRedirect(res, '/', method);
+      sendDoctorGonePage(res, 404);
+      return true;
+    }
+    if (isRetiredFixtureId(id)) {
+      sendPermanentRedirect(res, '/shiraz', method);
       return true;
     }
     const clinic = loadClinicById(id);
+    if (!isRealClinic(clinic || { id })) {
+      sendDoctorGonePage(res, 404);
+      return true;
+    }
     const doctorSlug = clinicSlug.slugForClinic(clinic || { id });
-    if (!doctorSlug) {
-      sendPermanentRedirect(res, '/', method);
+    if (!doctorSlug || isSampleClinicSlug(doctorSlug) || /^clinic-\d+$/i.test(doctorSlug)) {
+      sendDoctorGonePage(res, 404);
       return true;
     }
     sendPermanentRedirect(res, `/doctor/${doctorSlug}`, method);
@@ -2561,37 +2602,51 @@ async function tryHandleDoctorProfileNative(req, res, pathname, method) {
 
   const slug = decodeDoctorSlugFromPath(pathname);
   if (!slug) {
-    sendPermanentRedirect(res, '/', method);
+    sendDoctorGonePage(res, 404);
     return true;
   }
 
-  if (slug.startsWith('sample-clinic')) {
-    sendPermanentRedirect(res, '/shiraz', method);
+  if (isSampleClinicSlug(slug)) {
+    sendDoctorGonePage(res, 410, 'پروفایل حذف شده');
     return true;
   }
 
   const id = await findClinicIdBySlug(slug);
   if (!id) {
     console.error(`[Doctor Route] Slug not found: ${slug}`);
-    sendNotFound(res, 'Profile not found');
+    sendDoctorGonePage(res, 404);
+    return true;
+  }
+
+  if (isRetiredFixtureId(id)) {
+    sendDoctorGonePage(res, 410, 'پروفایل حذف شده');
     return true;
   }
 
   const clinic = loadClinicById(id);
+  if (!isRealClinic(clinic || { id })) {
+    sendDoctorGonePage(res, 404);
+    return true;
+  }
+
   const doctorSlug = clinicSlug.slugForClinic(clinic || { id });
-  if (!doctorSlug) {
-    sendNotFound(res, 'Profile not found');
+  if (!doctorSlug || isSampleClinicSlug(doctorSlug)) {
+    sendDoctorGonePage(res, 404);
     return true;
   }
 
   const key = String(slug).trim().toLowerCase();
   if (key !== doctorSlug) {
-    // Direct 301 to clean slug — avoids clinic-:id intermediate hops
     sendPermanentRedirect(res, `/doctor/${doctorSlug}`, method);
     return true;
   }
 
-  handleProfilePageById(req, res, id);
+  handleProfilePageById(req, res, id, {
+    id,
+    slug: doctorSlug,
+    name: clinic && (clinic.name || clinic.sliderTitle),
+    clinic,
+  });
   return true;
 }
 
@@ -2918,6 +2973,10 @@ function handleGetClinicProfile(req, res) {
   const clinicId = Number.parseInt(raw, 10);
   if (!Number.isInteger(clinicId) || clinicId < 1) {
     sendRedirect(res, '/', method);
+    return;
+  }
+  if (!isPublicDoctorId(clinicId)) {
+    sendJson(res, 404, { error: 'Clinic not found', clinicId }, method, { noindex: true });
     return;
   }
   const catalogClinic = loadClinicById(clinicId);

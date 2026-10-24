@@ -518,7 +518,7 @@ document.addEventListener('DOMContentLoaded', function () {
     holder.innerHTML = filtered.map(function (clinic) {
       var name = escapeHtml((clinic.sliderTitle || clinic.name || '').trim());
       var tag = escapeHtml((clinic.sliderTagline || 'مرکز درمانی و زیبایی').trim());
-      var image = escapeHtml(clinic.image || 'images/sample-clinic-services.webp');
+      var image = escapeHtml(clinic.image || 'assets/images/defaults/clinic-default.webp');
       var profileUrl = (typeof window.clinicProfilePath === 'function')
         ? window.clinicProfilePath(clinic)
         : ('/doctor/clinic-' + encodeURIComponent(clinic.id));

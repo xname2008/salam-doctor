@@ -53,6 +53,7 @@ services:
       - ./assets/js/articles-catalog.generated.js:/app/assets/js/articles-catalog.generated.js
       - ./articles:/app/articles
       - ./doctorProfileRouter.js:/app/doctorProfileRouter.js:ro
+      - ./realClinics.js:/app/realClinics.js:ro
       - ./clinicSlug.js:/app/clinicSlug.js:ro
       - ./serviceSlugMap.js:/app/serviceSlugMap.js:ro
       - ./faqPageJsonLd.js:/app/faqPageJsonLd.js:ro

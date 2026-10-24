@@ -163,7 +163,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     mount.innerHTML = clinics.map(function (c, i) {
       var name = c.name || c.sliderTitle || ('مرکز ' + c.id);
       var tag = c.sliderTagline || c.address || '';
-      var img = c.image || '/images/sample-clinic-services.webp';
+      var img = c.image || '/assets/images/defaults/clinic-default.webp';
       var href = (typeof window.clinicProfilePath === 'function')
         ? window.clinicProfilePath(c)
         : ('/doctor/clinic-' + encodeURIComponent(c.id));

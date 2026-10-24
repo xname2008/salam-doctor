@@ -564,7 +564,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         var image = escapeHtml(clinic.image || 'images/clinic-placeholder.png');
         var profileUrl = (typeof window.clinicProfilePath === 'function')
           ? window.clinicProfilePath(clinic)
-          : ('/doctor/clinic-' + encodeURIComponent(clinic.id));
+          : (Number(clinic.id) === 114 ? '/doctor/nahal-clinic' : '/shiraz');
         return [
           '<article class="doctor-card">',
           '  <img src="' + image + '" alt="' + name + '">',

@@ -3,11 +3,11 @@
 /**
  * Express app for SEO doctor profile URLs.
  *
- *   GET /doctor/:slug              serve profile (or 301 to canonical)
- *   GET /profile.html?id=:id       301 → /doctor/:slug
+ *   GET /doctor/:slug              200 real clinic | 410 retired fixture | 404 unknown
+ *   GET /profile.html?id=:id       one-hop 301 to /doctor/:slug (real) or /shiraz (retired)
+ *                                  or 404 for unknown ids
  *
- * IMPORTANT: Mount this router BEFORE any express.static / wildcard / 404
- * handlers so extensionless /doctor/:slug paths are never intercepted.
+ * Mount BEFORE any express.static / wildcard / 404 handlers.
  */
 
 const express = require('express');
@@ -18,14 +18,19 @@ const {
   ensureCache,
   canonicalDoctorPath,
 } = require('./clinicSlug');
+const {
+  isRealClinic,
+  isRetiredFixtureId,
+  isSampleClinicSlug,
+  toPositiveInt,
+} = require('./realClinics');
 
 function parseLegacyId(req) {
   const raw = String((req.query && (req.query.id || req.query.clinic_id)) || '').trim();
   if (!raw) return null;
   const lower = raw.toLowerCase();
   if (lower === 'undefined' || lower === 'null' || lower === 'nan') return null;
-  const id = Number.parseInt(raw, 10);
-  return Number.isInteger(id) && id > 0 ? id : null;
+  return toPositiveInt(raw);
 }
 
 function decodeSlugParam(raw) {
@@ -44,6 +49,35 @@ function normalizeSlugKey(raw) {
 
 function redirect301(res, location) {
   return res.redirect(301, location);
+}
+
+function sendDoctorStatusPage(res, statusCode, titleFa) {
+  const code = statusCode === 410 ? 410 : 404;
+  const title = titleFa || (code === 410 ? 'پروفایل حذف شده' : 'پروفایل یافت نشد');
+  const html = `<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>${title} | سلام دکتر</title>
+</head>
+<body>
+  <main style="font-family:sans-serif;max-width:40rem;margin:3rem auto;padding:0 1rem;line-height:1.8">
+    <h1>${title}</h1>
+    <p>این آدرس مربوط به یک مرکز فعال در سلام دکتر نیست.</p>
+    <p><a href="/shiraz">بازگشت به راهنمای مراکز شیراز</a> · <a href="/">صفحه اصلی</a></p>
+  </main>
+</body>
+</html>`;
+  res
+    .status(code)
+    .set({
+      'Content-Type': 'text/html; charset=utf-8',
+      'X-Robots-Tag': 'noindex, nofollow',
+      'Cache-Control': 'public, max-age=300',
+    })
+    .send(html);
 }
 
 /**
@@ -82,23 +116,30 @@ function createDoctorProfileApp(handlers) {
     ensureCache();
     const id = parseLegacyId(req);
     if (!id) {
-      redirect301(res, '/');
+      sendDoctorStatusPage(res, 404);
       return;
     }
+
+    if (isRetiredFixtureId(id)) {
+      redirect301(res, '/shiraz');
+      return;
+    }
+
     const clinic = typeof loadClinicById === 'function' ? loadClinicById(id) : null;
+    if (!isRealClinic(clinic || { id })) {
+      sendDoctorStatusPage(res, 404);
+      return;
+    }
+
     const doctorSlug = slugForClinic(clinic || { id });
-    if (!doctorSlug) {
-      redirect301(res, '/');
+    if (!doctorSlug || isSampleClinicSlug(doctorSlug) || /^clinic-\d+$/i.test(doctorSlug)) {
+      sendDoctorStatusPage(res, 404);
       return;
     }
     return redirect301(res, `/doctor/${doctorSlug}`);
   }
 
-  /**
-   * GET /doctor/:slug — must be registered before static / wildcard handlers.
-   */
   async function doctorSlugHandler(req, res) {
-    // Explicit decode as required (Express may already decode; safe + idempotent for ASCII).
     let slug;
     try {
       slug = decodeURIComponent(req.params.slug || '').trim();
@@ -107,12 +148,13 @@ function createDoctorProfileApp(handlers) {
     }
 
     if (!slug) {
-      redirect301(res, '/');
+      sendDoctorStatusPage(res, 404);
       return;
     }
 
-    if (slug.startsWith('sample-clinic')) {
-      return redirect301(res, '/shiraz');
+    if (isSampleClinicSlug(slug)) {
+      sendDoctorStatusPage(res, 410, 'پروفایل حذف شده');
+      return;
     }
 
     const resolved = await resolveClinicIdFromSlug(slug, findClinicIdBySlug);
@@ -120,34 +162,41 @@ function createDoctorProfileApp(handlers) {
 
     if (!id) {
       console.error(`[Doctor Route] Slug not found: ${req.params.slug}`);
-      res.status(404).type('text/plain; charset=utf-8').send('Profile not found');
+      sendDoctorStatusPage(res, 404);
+      return;
+    }
+
+    if (isRetiredFixtureId(id)) {
+      sendDoctorStatusPage(res, 410, 'پروفایل حذف شده');
       return;
     }
 
     const clinic = typeof loadClinicById === 'function' ? loadClinicById(id) : null;
+    if (!isRealClinic(clinic || { id })) {
+      sendDoctorStatusPage(res, 404);
+      return;
+    }
+
+    const doctorSlug = slugForClinic(clinic || { id });
+    if (!doctorSlug || isSampleClinicSlug(doctorSlug)) {
+      sendDoctorStatusPage(res, 404);
+      return;
+    }
+
     const doctor = {
       id,
-      slug: slugForClinic(clinic || { id }),
+      slug: doctorSlug,
       name: clinic && (clinic.name || clinic.sliderTitle),
       clinic: clinic || null,
     };
 
-    if (!doctor.slug) {
-      console.error(`[Doctor Route] Slug not found: ${req.params.slug}`);
-      res.status(404).type('text/plain; charset=utf-8').send('Profile not found');
-      return;
-    }
-
-    // Legacy / non-canonical → single-hop 301 to clean slug
     if (!isCanonicalSlug(doctor, slug)) {
       return redirect301(res, `/doctor/${doctor.slug}`);
     }
 
-    // Found — render profile template with doctor data
     serveProfileById(req, res, id, doctor);
   }
 
-  // Register dynamic routes on the router BEFORE any catch-alls.
   router.get('/profile.html', legacyProfileRedirectMiddleware);
   router.head('/profile.html', legacyProfileRedirectMiddleware);
   router.get('/profiles.html', legacyProfileRedirectMiddleware);
@@ -167,16 +216,12 @@ function createDoctorProfileApp(handlers) {
     Promise.resolve(doctorSlugHandler(req, res)).catch(next);
   });
 
-  // Catch-all under /doctor only AFTER :slug — never serves static files here.
   router.use('/doctor', (req, res) => {
     console.error(`[Doctor Route] Slug not found: ${req.path || req.url}`);
-    res.status(404).type('text/plain; charset=utf-8').send('Profile not found');
+    sendDoctorStatusPage(res, 404);
   });
 
   app.use(router);
-
-  // Do NOT mount express.static on this app — parent http server handles /assets/
-  // after /doctor/ so extensionless doctor routes are never intercepted.
 
   app.legacyProfileRedirect = function legacyProfileRedirect(req, res, next) {
     const path = String((req.path || req.url || '').split('?')[0]);
@@ -197,4 +242,5 @@ module.exports = {
   resolveClinicIdFromSlug,
   redirect301,
   canonicalDoctorPath,
+  sendDoctorStatusPage,
 };

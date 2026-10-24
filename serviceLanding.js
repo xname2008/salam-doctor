@@ -126,7 +126,7 @@ registerAlias('لایت تراپی', 'light-therapy');
 
 function toAbsoluteAssetPath(src) {
   const raw = String(src || '').trim();
-  if (!raw) return '/images/sample-clinic-services.webp';
+  if (!raw) return '/assets/images/defaults/clinic-default.webp';
   if (/^(https?:|data:|blob:)/i.test(raw)) return raw;
   if (raw.startsWith('//')) return raw;
   return raw.charAt(0) === '/' ? raw : '/' + raw.replace(/^\/+/, '');
@@ -312,7 +312,7 @@ function findClinicsByServiceSlug(slug, deps) {
       id: Number(clinic.id),
       name: clinic.name || clinic.sliderTitle || `مرکز ${clinic.id}`,
       tagline: clinic.sliderTagline || clinic.address || '',
-      image: toAbsoluteAssetPath(clinic.image || 'images/sample-clinic-services.webp'),
+      image: toAbsoluteAssetPath(clinic.image || 'assets/images/defaults/clinic-default.webp'),
       address: clinic.address || '',
       link: clinicProfilePath(clinic),
       services: pageTags,
@@ -369,7 +369,7 @@ function findRelatedClinicsByCategory(meta, deps, excludeIds) {
       id: Number(clinic.id),
       name: clinic.name || clinic.sliderTitle || `مرکز ${clinic.id}`,
       tagline: clinic.sliderTagline || clinic.address || '',
-      image: toAbsoluteAssetPath(clinic.image || 'images/sample-clinic-services.webp'),
+      image: toAbsoluteAssetPath(clinic.image || 'assets/images/defaults/clinic-default.webp'),
       address: clinic.address || '',
       link: clinicProfilePath(clinic),
       services: [],

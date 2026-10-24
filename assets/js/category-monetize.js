@@ -251,7 +251,7 @@
         rank: index + 1,
         name: (c.sliderTitle || c.name || '').trim(),
         tagline: (c.sliderTagline || '').trim(),
-        image: c.image || 'images/sample-clinic-services.webp',
+        image: c.image || 'assets/images/defaults/clinic-default.webp',
         link: (typeof window.clinicProfilePath === 'function')
           ? window.clinicProfilePath(c.id)
           : ('/doctor/clinic-' + encodeURIComponent(c.id)),
@@ -333,7 +333,7 @@
     var badge = c.badge
       ? '<span class="featured-badge">' + escapeHtml(c.badge) + '</span>'
       : '';
-    var imgSrc = c.image || 'images/sample-clinic-services.webp';
+    var imgSrc = c.image || 'assets/images/defaults/clinic-default.webp';
     var href = clinicHref(categoryId, c);
     var trackAttrs =
       !c._fallback && c.id
@@ -387,7 +387,7 @@
     var badge = c.badge
       ? '<span class="featured-badge">' + escapeHtml(c.badge) + '</span>'
       : '';
-    var imgSrc = c.image || 'images/sample-clinic-services.webp';
+    var imgSrc = c.image || 'assets/images/defaults/clinic-default.webp';
     var href = clinicHref(categoryId, c);
     var trackAttrs =
       !c._fallback && c.id
@@ -498,7 +498,7 @@
   function buildClinicSlide(item) {
     var name = escapeHtml(item.name || item.title || '');
     var summary = escapeHtml(item.tagline || item.caption || '');
-    var image = escapeHtml(item.image || 'images/sample-clinic-services.webp');
+    var image = escapeHtml(item.image || 'assets/images/defaults/clinic-default.webp');
     var href =
       (typeof window.clinicProfilePath === 'function' && item.clinic_id
         ? window.clinicProfilePath(item.clinic_id)
