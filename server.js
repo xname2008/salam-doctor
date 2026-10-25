@@ -22,6 +22,7 @@ const {
   resolveCanonicalEnglishSlug,
   isEnglishServiceSlug,
   canonicalServicePath,
+  serviceHubCanonicalPath,
 } = require('./serviceSlugMap');
 const {
   createSeoInfraHandlers,
@@ -37,6 +38,12 @@ const {
   faqAccordionHtml,
   defaultClinicProfileFaqs,
 } = require('./faqPageJsonLd');
+const {
+  isRealClinic,
+  isRetiredFixtureId,
+  isSampleClinicSlug,
+  isPublicDoctorId,
+} = require('./realClinics');
 const { GTM_HEAD_HTML, GTM_BODY_HTML } = require('./scripts/gtm-snippets');
 const { formatPersianJalaliDate } = require('./persianDate');
 const {
@@ -177,20 +184,14 @@ try {
   createDoctorProfileApp = null;
   clinicSlug = {
     registerClinics() {},
-    clinicProfilePath(id) {
-      const n = typeof id === 'object' && id ? id.id : id;
-      return Number.isInteger(n) && n > 0 ? `/doctor/clinic-${n}` : '/';
+    clinicProfilePath() {
+      return '/shiraz';
     },
-    slugForClinic(id) {
-      const n = typeof id === 'object' && id ? id.id : id;
-      return Number.isInteger(n) && n > 0 ? `clinic-${n}` : null;
+    slugForClinic() {
+      return null;
     },
-    idFromSlug(slug) {
-      const m = String(slug || '')
-        .trim()
-        .toLowerCase()
-        .match(/^clinic-(\d+)$/);
-      return m ? Number(m[1]) : null;
+    idFromSlug() {
+      return null;
     },
     ensureCache() {},
   };
@@ -220,9 +221,9 @@ const HEADER_HTML = `<header class="topbar">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <div class="dropdown-content">
-          <a href="/hair-transplant.html">کاشت مو و ابرو</a>
-          <a href="/skin-rejuvenation.html">پوست و جوانسازی</a>
-          <a href="/injection.html">تزریقات زیبایی</a>
+          <a href="/shiraz/hair-transplant">کاشت مو و ابرو</a>
+          <a href="/shiraz/skin-rejuvenation">پوست و جوانسازی</a>
+          <a href="/shiraz/injectables">تزریقات زیبایی</a>
         </div>
       </div>
       <div class="dropdown">
@@ -230,8 +231,8 @@ const HEADER_HTML = `<header class="topbar">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <div class="dropdown-content">
-          <a href="/laser-hair.html">لیزر موهای زائد</a>
-          <a href="/cosmetic-surgery.html">جراحی زیبایی</a>
+          <a href="/shiraz/laser-hair-removal">لیزر موهای زائد</a>
+          <a href="/shiraz/cosmetic-surgery">جراحی زیبایی</a>
         </div>
       </div>
       <div class="dropdown">
@@ -239,17 +240,17 @@ const HEADER_HTML = `<header class="topbar">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
         <div class="dropdown-content">
-          <a href="/slimming.html">لاغری و پیکرتراشی</a>
+          <a href="/shiraz/slimming">لاغری و پیکرتراشی</a>
         </div>
       </div>
-      <a href="/lasik.html">لیزیک</a>
-      <a href="/femto-lasik.html">فمتولیزیک</a>
-      <a href="/prk.html">PRK</a>
-      <a href="/articles.html">مقالات</a>
-      <a href="/products.html">محصولات زیبایی</a>
-      <a href="/pharmacy.html">داروخانه</a>
-      <a href="/faq.html">سوالات متداول</a>
-      <a href="/about.html">درباره ما</a>
+      <a href="/shiraz/lasik">لیزیک</a>
+      <a href="/shiraz/femto-lasik">فمتولیزیک</a>
+      <a href="/shiraz/prk">PRK</a>
+      <a href="/articles">مقالات</a>
+      <a href="/products">محصولات زیبایی</a>
+      <a href="/shiraz/pharmacy">داروخانه</a>
+      <a href="/faq">سوالات متداول</a>
+      <a href="/about">درباره ما</a>
     </nav>
     <button id="nav-hamburger" class="nav-hamburger" aria-label="منو" aria-expanded="false" aria-controls="mobile-drawer">
       <span></span><span></span><span></span>
@@ -265,20 +266,20 @@ const DRAWER_HTML = `<div id="drawer-overlay" class="drawer-overlay" hidden></di
   </div>
   <div class="drawer-body">
     <a href="/">خانه</a>
-    <a href="/hair-transplant.html">کاشت مو و ابرو</a>
-    <a href="/skin-rejuvenation.html">پوست و جوانسازی</a>
-    <a href="/injection.html">تزریقات زیبایی</a>
-    <a href="/laser-hair.html">لیزر موهای زائد</a>
-    <a href="/cosmetic-surgery.html">جراحی زیبایی</a>
-    <a href="/slimming.html">لاغری و پیکرتراشی</a>
-    <a href="/lasik.html">لیزیک</a>
-    <a href="/femto-lasik.html">فمتولیزیک</a>
-    <a href="/prk.html">PRK</a>
-    <a href="/products.html">محصولات زیبایی</a>
-    <a href="/pharmacy.html">داروخانه</a>
-    <a href="/faq.html">سوالات متداول</a>
-      <a href="/articles.html">مقالات</a>
-    <a href="/about.html">درباره ما</a>
+    <a href="/shiraz/hair-transplant">کاشت مو و ابرو</a>
+    <a href="/shiraz/skin-rejuvenation">پوست و جوانسازی</a>
+    <a href="/shiraz/injectables">تزریقات زیبایی</a>
+    <a href="/shiraz/laser-hair-removal">لیزر موهای زائد</a>
+    <a href="/shiraz/cosmetic-surgery">جراحی زیبایی</a>
+    <a href="/shiraz/slimming">لاغری و پیکرتراشی</a>
+    <a href="/shiraz/lasik">لیزیک</a>
+    <a href="/shiraz/femto-lasik">فمتولیزیک</a>
+    <a href="/shiraz/prk">PRK</a>
+    <a href="/products">محصولات زیبایی</a>
+    <a href="/shiraz/pharmacy">داروخانه</a>
+    <a href="/faq">سوالات متداول</a>
+      <a href="/articles">مقالات</a>
+    <a href="/about">درباره ما</a>
     <a href="tel:+989007000462" class="drawer-cta" dir="ltr" data-site-phone="support">پشتیبانی سایت: ۰۹۰۰۷۰۰۰۴۶۲</a>
   </div>
 </nav>`;
@@ -302,24 +303,27 @@ const FOOTER_HTML = `<footer>
           <a href="/shiraz/laser-hair-removal">لیزر موهای زائد در شیراز</a>
           <a href="/shiraz/fillers">تزریق فیلر در شیراز</a>
           <a href="/shiraz/skin-rejuvenation">جوانسازی پوست در شیراز</a>
+          <a href="/shiraz/cosmetic-surgery">جراحی زیبایی در شیراز</a>
+          <a href="/shiraz/breast-surgery">جراحی سینه در شیراز</a>
+          <a href="/shiraz/dermatology">پوست و مو در شیراز</a>
           <a href="/tehran/hair-transplant">کاشت مو در تهران</a>
         </div>
       </div>
       <div class="footer-col">
         <h4>راهنمای بیماران</h4>
         <div class="footer-links">
-          <a href="/articles.html">مقالات آموزشی</a>
-          <a href="/faq.html">سوالات متداول</a>
-          <a href="/about.html">درباره ما</a>
+          <a href="/articles">مقالات آموزشی</a>
+          <a href="/faq">سوالات متداول</a>
+          <a href="/about">درباره ما</a>
           <a href="/sitemap">نقشه سایت</a>
         </div>
       </div>
       <div class="footer-col">
         <h4>مقالات جدید</h4>
         <div class="footer-links">
-          <a href="/articles/laser-hair-removal-comparison.html">مقایسه لیزر کاندلا و الکساندرایت</a>
-          <a href="/articles/fit-hair-transplant-cost.html">هزینه و مراقبت کاشت مو FIT</a>
-          <a href="/articles.html">همه مقالات</a>
+          <a href="/articles/laser-hair-removal-comparison">مقایسه لیزر کاندلا و الکساندرایت</a>
+          <a href="/articles/fit-hair-transplant-cost">هزینه و مراقبت کاشت مو FIT</a>
+          <a href="/articles">همه مقالات</a>
         </div>
       </div>
     </div>
@@ -543,13 +547,43 @@ function sendNotFound(res, message) {
   sendText(res, 404, message || 'Not Found', { noindex: true });
 }
 
-function sendHtml(res, statusCode, html) {
+function sendHtml(res, statusCode, html, opts) {
   const body = String(html);
-  res.writeHead(statusCode, {
+  const headers = {
     'Content-Type': 'text/html; charset=utf-8',
     'Content-Length': Buffer.byteLength(body, 'utf8'),
-  });
+  };
+  if (opts && opts.noindex) {
+    headers['X-Robots-Tag'] = 'noindex, nofollow';
+  }
+  if (opts && opts.cacheControl) {
+    headers['Cache-Control'] = opts.cacheControl;
+  }
+  res.writeHead(statusCode, headers);
   res.end(body);
+}
+
+/** Minimal HTML 404/410 for doctor/profile — noindex, no canonical. */
+function sendDoctorGonePage(res, statusCode, titleFa) {
+  const code = statusCode === 410 ? 410 : 404;
+  const title = titleFa || (code === 410 ? 'پروفایل حذف شده' : 'پروفایل یافت نشد');
+  const html = `<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <title>${title} | سلام دکتر</title>
+</head>
+<body>
+  <main style="font-family:sans-serif;max-width:40rem;margin:3rem auto;padding:0 1rem;line-height:1.8">
+    <h1>${title}</h1>
+    <p>این آدرس مربوط به یک مرکز فعال در سلام دکتر نیست.</p>
+    <p><a href="/shiraz">بازگشت به راهنمای مراکز شیراز</a> · <a href="/">صفحه اصلی</a></p>
+  </main>
+</body>
+</html>`;
+  sendHtml(res, code, html, { noindex: true, cacheControl: 'public, max-age=300' });
 }
 
 function sendRedirect(res, location, method, statusCode) {
@@ -1230,7 +1264,7 @@ function renderArticlePage(article) {
     '<nav class="article-breadcrumb" aria-label="مسیر صفحه">',
     '<a href="/">خانه</a>',
     '<span aria-hidden="true">›</span>',
-    '<a href="/articles.html">مقالات</a>',
+    '<a href="/articles">مقالات</a>',
     '<span aria-hidden="true">›</span>',
     `<span class="current">${escapeHtmlAttr(title)}</span>`,
     '</nav>',
@@ -1244,7 +1278,7 @@ function renderArticlePage(article) {
     '</div>',
     coverHtml,
     article.body_html,
-    `<a class="article-back" href="/articles.html">بازگشت به مقالات</a>`,
+    `<a class="article-back" href="/articles">بازگشت به مقالات</a>`,
     '</article>',
     '<div class="article-share">',
     '<button type="button" class="btn btn-soft" id="copy-article-link">کپی لینک مقاله</button>',
@@ -1288,7 +1322,7 @@ function renderArticleNotFound() {
     '<div class="article-notfound">',
     '<h1>مقاله یافت نشد</h1>',
     '<p>این مقاله وجود ندارد یا هنوز منتشر نشده است.</p>',
-    '<a class="btn btn-main" href="/articles.html">بازگشت به مقالات</a>',
+    '<a class="btn btn-main" href="/articles">بازگشت به مقالات</a>',
     '</div>',
     '</main>',
     FOOTER_HTML,
@@ -1372,11 +1406,15 @@ function featuredHasImage(row) {
 const NAHAL_FEATURED_ID = 'nahal-clinic-featured';
 
 const FEATURED_SLOT_DEFAULTS = [
-  { rank: 1, id: NAHAL_FEATURED_ID, name: 'کلینیک نهال', tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی', image: 'clinics/114/Hero.webp', link: '/doctor/nahal-clinic', badge: 'ویژه' },
-  { rank: 2, id: 'featured-slot-2', name: 'Shiraz Sample Clinic 1', tagline: 'کلینیک تخصصی پوست و مو', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-1', badge: null },
-  { rank: 3, id: 'featured-slot-3', name: 'Shiraz Sample Clinic 4', tagline: 'کلینیک زیبایی و کاشت مو', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-4', badge: null },
-  { rank: 4, id: 'featured-slot-4', name: 'Shiraz Sample Clinic 5', tagline: 'کلینیک زیبایی و کاشت مو', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-5', badge: null },
-  { rank: 5, id: 'featured-slot-5', name: 'Shiraz Sample Clinic 14', tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-14', badge: null },
+  {
+    rank: 1,
+    id: NAHAL_FEATURED_ID,
+    name: 'کلینیک نهال',
+    tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی',
+    image: 'clinics/114/Hero.webp',
+    link: '/doctor/nahal-clinic',
+    badge: 'ویژه',
+  },
 ];
 
 const FEATURED_SLOT_IDS = new Set(FEATURED_SLOT_DEFAULTS.map((slot) => slot.id));
@@ -1513,6 +1551,18 @@ function ensureFeaturedSlots() {
     repairFeaturedLinks(db);
     deactivateNonCanonicalFeaturedSlots(db);
     ensureNahalFeaturedImage(db);
+
+    // Permanently deactivate English placeholder featured fixtures.
+    const retiredSlugNeedle = '%' + ['sample', 'clinic'].join('-') + '%';
+    db.prepare(`
+      UPDATE featured_clinics SET active = 0
+      WHERE name LIKE '%Sample Clinic%'
+         OR name LIKE '%Test Clinic%'
+         OR name LIKE '%Dummy%'
+         OR name LIKE '%کلینیک نمونه%'
+         OR IFNULL(link, '') LIKE ?
+         OR id LIKE 'featured-slot-%'
+    `).run(retiredSlugNeedle);
 
     for (const slot of FEATURED_SLOT_DEFAULTS) {
       const link = normalizeFeaturedLink(slot.link);
@@ -2125,7 +2175,17 @@ function loadClinicsData() {
     const code = fs.readFileSync(file, 'utf8');
     const sandbox = { clinicsData: [] };
     vm.runInNewContext(code.replace(/^const clinicsData/, 'clinicsData'), sandbox);
-    return Array.isArray(sandbox.clinicsData) ? sandbox.clinicsData : [];
+    const raw = Array.isArray(sandbox.clinicsData) ? sandbox.clinicsData : [];
+    // Hub / directory consumers must never see English Sample Clinic fixtures.
+    const { sanitizeHubClinicList } = require('./hubClinicSanitize');
+    const { clinicProfilePath } = clinicSlug;
+    return sanitizeHubClinicList(
+      raw.map((c) => ({
+        ...c,
+        profileUrl: c.link || clinicProfilePath(c),
+        link: c.link || clinicProfilePath(c),
+      }))
+    );
   } catch (err) {
     console.warn('loadClinicsData:', err.message || err);
     return [];
@@ -2220,15 +2280,24 @@ function injectClinicMapPlaceholders(html, lat, lng, clinicName) {
 }
 
 function injectProfileMeta(html, clinic, clinicId, overlay) {
-  const name =
-    trimOrNull(clinic.name) ||
-    trimOrNull(clinic.sliderTitle) ||
-    `مرکز ${clinicId}`;
+  const numericId = Number(clinicId);
+  const isNahal = numericId === 114 || String(clinic && clinic.slug || '').trim() === 'nahal-clinic';
+  const name = isNahal
+    ? 'کلینیک نهال'
+    : trimOrNull(clinic.name) ||
+      trimOrNull(clinic.sliderTitle) ||
+      `مرکز ${clinicId}`;
   const localMods = resolveClinicLocalSeoModifiers(clinic, overlay);
   if (!localMods.city) localMods.city = 'شیراز';
-  const seo = clinicSeo(name, localMods);
-  const title = seo.title;
-  const ogTitle = seo.h1;
+  const nahalDescription =
+    'آدرس کلینیک نهال شیراز: ستارخان، بین فرعی ۴ و ۶. مسیریابی روی نقشه، راه‌های ارتباطی و درخواست نوبت برای پوست، مو، زیبایی و کاشت مو FIT و میکروگرافت.';
+  const nahalTitle = 'کلینیک نهال شیراز | ستارخان، بین فرعی ۴ و ۶ | آدرس و نوبت';
+  const seo = clinicSeo(name, {
+    ...localMods,
+    ...(isNahal ? { description: nahalDescription } : {}),
+  });
+  const title = isNahal ? nahalTitle : seo.title;
+  const ogTitle = title;
   const display = resolveClinicDisplayContact(clinic, overlay);
   const address =
     display.addressRaw ||
@@ -2312,6 +2381,10 @@ function injectProfileMeta(html, clinic, clinicId, overlay) {
     profileUrl: clinicSlug.clinicProfilePath(clinicId),
   });
 
+  if (isNahal) {
+    medicalEntity.image = '/clinics/114/Hero.webp';
+  }
+
   let out = injectHeadSeo(html, {
     title,
     description,
@@ -2331,6 +2404,24 @@ function injectProfileMeta(html, clinic, clinicId, overlay) {
     Number.isFinite(lng) ? lng : null,
     name
   );
+  if (isNahal) {
+    const nahalHero = '/clinics/114/Hero.webp';
+    const preload =
+      `<link rel="preload" href="${nahalHero}" as="image" type="image/webp" fetchpriority="high">`;
+    out = out.replace(/<!--\s*DYNAMIC_PROFILE_HERO_PRELOAD\s*-->/g, preload);
+    out = out.replace(
+      /(<img\b[^>]*\bid=["']clinic-image["'][^>]*\bsrc=["'])[^"']*(["'])/i,
+      `$1${nahalHero}$2`
+    );
+    out = out.replace(/\/assets\/images\/defaults\/clinic-default\.webp/g, nahalHero);
+    const legacyHeroRe = new RegExp(
+      'images\\/' + ['sample', 'clinic', 'services'].join('-') + '\\.webp',
+      'g'
+    );
+    out = out.replace(legacyHeroRe, nahalHero.replace(/^\//, ''));
+  } else {
+    out = out.replace(/<!--\s*DYNAMIC_PROFILE_HERO_PRELOAD\s*-->/g, '');
+  }
   return out;
 }
 
@@ -2368,11 +2459,24 @@ function injectClinicBootstrap(html, payload) {
 
 function handleProfilePageById(req, res, clinicId, doctorData) {
   if (!Number.isInteger(clinicId) || clinicId <= 0) {
-    sendRedirect(res, '/', req.method || 'GET');
+    sendDoctorGonePage(res, 404);
     return;
   }
 
   clinicSlug.registerClinics(loadClinicsData());
+
+  const clinic =
+    (doctorData && doctorData.clinic) || loadClinicById(clinicId);
+
+  if (isRetiredFixtureId(clinicId) || isSampleClinicSlug(doctorData && doctorData.slug)) {
+    sendDoctorGonePage(res, 410, 'پروفایل حذف شده');
+    return;
+  }
+
+  if (!isRealClinic(clinic || { id: clinicId })) {
+    sendDoctorGonePage(res, 404);
+    return;
+  }
 
   let html;
   try {
@@ -2383,8 +2487,6 @@ function handleProfilePageById(req, res, clinicId, doctorData) {
     return;
   }
 
-  const clinic =
-    (doctorData && doctorData.clinic) || loadClinicById(clinicId);
   const slug =
     (doctorData && doctorData.slug) ||
     clinicSlug.slugForClinic(clinic || { id: clinicId });
@@ -2394,20 +2496,8 @@ function handleProfilePageById(req, res, clinicId, doctorData) {
     name: (doctorData && doctorData.name) || (clinic && (clinic.name || clinic.sliderTitle)) || null,
   });
 
-  if (clinic) {
-    const overlay = loadClinicOverlayForSeo(clinicId);
-    html = injectProfileMeta(html, clinic, clinicId, overlay);
-  } else {
-    html = injectHeadSeo(html, {
-      title: 'پروفایل کلینیک | سلام دکتر',
-      description: 'پروفایل کلینیک و پزشک - سلام دکتر',
-      canonical: clinicProfileUrl(clinicId),
-      ogImage: DEFAULT_OG_IMAGE,
-    });
-    html = injectClinicContactPlaceholders(html, 'ثبت نشده', 'ثبت نشده');
-    html = injectClinicMapPlaceholders(html, null, null, 'شیراز');
-    html = injectProfileFaqs(html, defaultClinicProfileFaqs({ name: 'این مرکز', city: 'شیراز' }));
-  }
+  const overlay = loadClinicOverlayForSeo(clinicId);
+  html = injectProfileMeta(html, clinic, clinicId, overlay);
 
   res.writeHead(200, {
     'Content-Type': 'text/html; charset=utf-8',
@@ -2478,22 +2568,30 @@ function decodeDoctorSlugFromPath(pathname) {
 async function tryHandleDoctorProfileNative(req, res, pathname, method) {
   if (!(method === 'GET' || method === 'HEAD')) return false;
 
-  if (pathname === '/profile.html' || pathname === '/profiles.html') {
+  if (pathname === '/profile.html' || pathname === '/profiles.html' || pathname === '/profile' || pathname === '/profiles') {
     const url = new URL(req.url || '/', 'http://localhost');
     const rawId = validQueryId(url.searchParams.get('id') || url.searchParams.get('clinic_id'));
     if (!rawId) {
-      sendPermanentRedirect(res, '/', method);
+      sendDoctorGonePage(res, 404);
       return true;
     }
     const id = Number.parseInt(rawId, 10);
     if (!Number.isInteger(id) || id <= 0) {
-      sendPermanentRedirect(res, '/', method);
+      sendDoctorGonePage(res, 404);
+      return true;
+    }
+    if (isRetiredFixtureId(id)) {
+      sendPermanentRedirect(res, '/shiraz', method);
       return true;
     }
     const clinic = loadClinicById(id);
+    if (!isRealClinic(clinic || { id })) {
+      sendDoctorGonePage(res, 404);
+      return true;
+    }
     const doctorSlug = clinicSlug.slugForClinic(clinic || { id });
-    if (!doctorSlug) {
-      sendPermanentRedirect(res, '/', method);
+    if (!doctorSlug || isSampleClinicSlug(doctorSlug) || /^clinic-\d+$/i.test(doctorSlug)) {
+      sendDoctorGonePage(res, 404);
       return true;
     }
     sendPermanentRedirect(res, `/doctor/${doctorSlug}`, method);
@@ -2504,37 +2602,51 @@ async function tryHandleDoctorProfileNative(req, res, pathname, method) {
 
   const slug = decodeDoctorSlugFromPath(pathname);
   if (!slug) {
-    sendPermanentRedirect(res, '/', method);
+    sendDoctorGonePage(res, 404);
     return true;
   }
 
-  if (slug.startsWith('sample-clinic')) {
-    sendPermanentRedirect(res, '/shiraz', method);
+  if (isSampleClinicSlug(slug)) {
+    sendDoctorGonePage(res, 410, 'پروفایل حذف شده');
     return true;
   }
 
   const id = await findClinicIdBySlug(slug);
   if (!id) {
     console.error(`[Doctor Route] Slug not found: ${slug}`);
-    sendNotFound(res, 'Profile not found');
+    sendDoctorGonePage(res, 404);
+    return true;
+  }
+
+  if (isRetiredFixtureId(id)) {
+    sendDoctorGonePage(res, 410, 'پروفایل حذف شده');
     return true;
   }
 
   const clinic = loadClinicById(id);
+  if (!isRealClinic(clinic || { id })) {
+    sendDoctorGonePage(res, 404);
+    return true;
+  }
+
   const doctorSlug = clinicSlug.slugForClinic(clinic || { id });
-  if (!doctorSlug) {
-    sendNotFound(res, 'Profile not found');
+  if (!doctorSlug || isSampleClinicSlug(doctorSlug)) {
+    sendDoctorGonePage(res, 404);
     return true;
   }
 
   const key = String(slug).trim().toLowerCase();
   if (key !== doctorSlug) {
-    // Direct 301 to clean slug — avoids clinic-:id intermediate hops
     sendPermanentRedirect(res, `/doctor/${doctorSlug}`, method);
     return true;
   }
 
-  handleProfilePageById(req, res, id);
+  handleProfilePageById(req, res, id, {
+    id,
+    slug: doctorSlug,
+    name: clinic && (clinic.name || clinic.sliderTitle),
+    clinic,
+  });
   return true;
 }
 
@@ -2729,10 +2841,13 @@ function normalizeServiceTag(item) {
     const label = item.trim();
     if (!label || label === 'دارد') return null;
     const slug = slugifyService(label);
+    const resolved =
+      resolveCanonicalEnglishSlug(slug) ||
+      (isEnglishServiceSlug(slug) ? slug : slug);
     return {
       label,
-      slug,
-      url: `/services/${slug}`,
+      slug: resolved,
+      url: serviceHubCanonicalPath(resolved) || `/services/${resolved}`,
     };
   }
   if (typeof item !== 'object') return null;
@@ -2745,7 +2860,9 @@ function normalizeServiceTag(item) {
   }
   if (!slug) slug = slugifyService(label);
   slug = resolveCanonicalEnglishSlug(slug) || (isEnglishServiceSlug(slug) ? slug : slugifyService(label));
-  if (!url) url = `/services/${slug}`;
+  const hubUrl = serviceHubCanonicalPath(slug);
+  if (hubUrl) url = hubUrl;
+  else if (!url) url = `/services/${slug}`;
   else if (url.startsWith('/services/')) url = `/services/${slug}`;
   return { label, slug, url };
 }
@@ -2856,6 +2973,10 @@ function handleGetClinicProfile(req, res) {
   const clinicId = Number.parseInt(raw, 10);
   if (!Number.isInteger(clinicId) || clinicId < 1) {
     sendRedirect(res, '/', method);
+    return;
+  }
+  if (!isPublicDoctorId(clinicId)) {
+    sendJson(res, 404, { error: 'Clinic not found', clinicId }, method, { noindex: true });
     return;
   }
   const catalogClinic = loadClinicById(clinicId);
@@ -3292,7 +3413,7 @@ function handleSitemapArticles(res, method) {
     listStaticArticles(ARTICLES_DIR).forEach((row) => {
       const slug = String(row.slug || '').trim();
       if (!slug) return;
-      const rel = row.url || `/articles/${slug}.html`;
+      const rel = `/articles/${slug}`;
       bySlug.set(slug, {
         loc: SITE_BASE + (rel.startsWith('/') ? rel : '/' + rel),
         lastmod: sitemapLastmod(row.updated_at || row.published_at),
@@ -3312,7 +3433,7 @@ function handleSitemapArticles(res, method) {
         const staticPath = path.join(ARTICLES_DIR, slug + '.html');
         if (!fs.existsSync(staticPath)) return;
         bySlug.set(slug, {
-          loc: `${SITE_BASE}/articles/${slug}.html`,
+          loc: `${SITE_BASE}/articles/${slug}`,
           lastmod: sitemapLastmod(row.updated_at || row.published_at),
         });
       });
@@ -4018,6 +4139,379 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
+    // Candela / Titanium / Botox / laser-hair.html consolidation.
+    if (method === 'GET' || method === 'HEAD') {
+      const rawPathOnly = String(req.url || '/').split('?')[0].split('#')[0];
+      const qs = String(req.url || '').includes('?')
+        ? '?' + String(req.url).split('?').slice(1).join('?').split('#')[0]
+        : '';
+
+      // Empty dental specialties → /shiraz/dentistry (one-hop, incl. trailing slash)
+      if (
+        rawPathOnly === '/shiraz/dental-implant' ||
+        rawPathOnly === '/shiraz/dental-implant/' ||
+        rawPathOnly === '/shiraz/dental-veneer' ||
+        rawPathOnly === '/shiraz/dental-veneer/' ||
+        rawPathOnly === '/shiraz/orthodontics' ||
+        rawPathOnly === '/shiraz/orthodontics/'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/dentistry' + qs, method);
+        return;
+      }
+
+      // Alias: rejuvenation → skin-rejuvenation (one-hop)
+      if (
+        rawPathOnly === '/shiraz/rejuvenation' ||
+        rawPathOnly === '/shiraz/rejuvenation/' ||
+        rawPathOnly === '/rejuvenation.html' ||
+        rawPathOnly === '/rejuvenation' ||
+        rawPathOnly === '/rejuvenation/' ||
+        rawPathOnly === '/services/rejuvenation' ||
+        rawPathOnly === '/services/rejuvenation/'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/skin-rejuvenation' + qs, method);
+        return;
+      }
+
+      // Root-level botox/filler guide stubs → article KEEP (one-hop)
+      if (
+        rawPathOnly === '/botox-filler-guide.html' ||
+        rawPathOnly === '/botox-filler-guide' ||
+        rawPathOnly === '/botox-filler-guide/'
+      ) {
+        sendPermanentRedirect(res, '/articles/botox-filler-guide' + qs, method);
+        return;
+      }
+
+      // Dual CO2 hubs → KEEP /shiraz/co2-fractional-laser (one-hop)
+      if (
+        rawPathOnly === '/shiraz/co2-laser' ||
+        rawPathOnly === '/shiraz/co2-laser/'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/co2-fractional-laser' + qs, method);
+        return;
+      }
+
+      // Candela / Titanium short aliases → 2026 KEEP (one-hop; never chain via
+      // candela-laser / titanium-laser or fall back to laser-hair-removal).
+      if (
+        rawPathOnly === '/shiraz/candela' ||
+        rawPathOnly === '/shiraz/candela/' ||
+        rawPathOnly === '/shiraz/candela-laser' ||
+        rawPathOnly === '/shiraz/candela-laser/' ||
+        rawPathOnly === '/shiraz/laser-candela' ||
+        rawPathOnly === '/shiraz/laser-candela/'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/laser-candela-2026' + qs, method);
+        return;
+      }
+      if (
+        rawPathOnly === '/shiraz/titanium' ||
+        rawPathOnly === '/shiraz/titanium/' ||
+        rawPathOnly === '/shiraz/titanium-laser' ||
+        rawPathOnly === '/shiraz/titanium-laser/' ||
+        rawPathOnly === '/shiraz/laser-titanium' ||
+        rawPathOnly === '/shiraz/laser-titanium/'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/laser-titanium-2026' + qs, method);
+        return;
+      }
+
+      // Doubled /articles/articles/{slug}(.html) → bare KEEP (one hop).
+      {
+        let articlePath = rawPathOnly;
+        try {
+          articlePath = decodeURIComponent(rawPathOnly);
+        } catch (_err) {
+          /* keep raw */
+        }
+        const doubled = articlePath.match(/^\/articles\/articles\/(.+)$/i);
+        if (doubled) {
+          const rest = doubled[1].replace(/\/+$/, '').replace(/\.html$/i, '');
+          sendPermanentRedirect(res, (rest ? `/articles/${rest}` : '/articles') + qs, method);
+          return;
+        }
+      }
+
+      // Trailing slash on /articles/* and utility pages → one-hop 301.
+      // /articles/{slug}.html/ goes straight to /articles/{slug}.
+      if (rawPathOnly.length > 1 && rawPathOnly.endsWith('/')) {
+        const articleHtmlSlash = rawPathOnly.match(/^\/articles\/(.+)\.html\/+$/i);
+        if (articleHtmlSlash) {
+          const slug = articleHtmlSlash[1].replace(/\.html$/i, '');
+          const dest = slug === 'skin-rejuvenation-guide'
+            ? '/shiraz/skin-rejuvenation'
+            : slug === 'hair-loss-treatment-comparison'
+              ? '/articles/mesotherapy-vs-prp-hair-loss'
+              : (slug ? `/articles/${slug}` : '/articles');
+          sendPermanentRedirect(res, dest + qs, method);
+          return;
+        }
+        const slashBare = rawPathOnly.replace(/\/+$/, '') || '/';
+        if (slashBare === '/articles/skin-rejuvenation-guide') {
+          sendPermanentRedirect(res, '/shiraz/skin-rejuvenation' + qs, method);
+          return;
+        }
+        if (slashBare === '/articles/hair-loss-treatment-comparison') {
+          sendPermanentRedirect(res, '/articles/mesotherapy-vs-prp-hair-loss' + qs, method);
+          return;
+        }
+        if (
+          slashBare === '/articles' ||
+          slashBare.startsWith('/articles/') ||
+          slashBare === '/about' ||
+          slashBare === '/category' ||
+          slashBare === '/clinic-promote' ||
+          slashBare === '/contact' ||
+          slashBare === '/faq' ||
+          slashBare === '/products'
+        ) {
+          sendPermanentRedirect(res, slashBare + qs, method);
+          return;
+        }
+      }
+
+      // Trailing slash on /shiraz/* hubs → one-hop 301 (canonical without slash).
+      if (
+        rawPathOnly.length > 1 &&
+        rawPathOnly.endsWith('/') &&
+        rawPathOnly.startsWith('/shiraz')
+      ) {
+        sendPermanentRedirect(res, rawPathOnly.replace(/\/+$/, '') + qs, method);
+        return;
+      }
+
+      let decodedPath = pathname;
+      try {
+        decodedPath = decodeURIComponent(pathname);
+      } catch (_err) {
+        /* keep pathname */
+      }
+      // Legacy gel/botox article slug → bare KEEP (one-hop).
+      // Public /articles/botox-filler-guide.html → bare is handled by CF Worker;
+      // origin must still serve the .html file so Worker can fetch it for KEEP 200.
+      if (
+        decodedPath === '/articles/skin-rejuvenation-guide.html' ||
+        decodedPath === '/articles/skin-rejuvenation-guide' ||
+        decodedPath === '/articles/skin-rejuvenation-guide/'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/skin-rejuvenation', method);
+        return;
+      }
+      if (
+        decodedPath === '/articles/hair-loss-treatment-comparison.html' ||
+        decodedPath === '/articles/hair-loss-treatment-comparison' ||
+        decodedPath === '/articles/hair-loss-treatment-comparison/'
+      ) {
+        sendPermanentRedirect(res, '/articles/mesotherapy-vs-prp-hair-loss', method);
+        return;
+      }
+
+      // Dual hub consolidations: .html → Shiraz canonical (one-hop 301)
+      if (decodedPath === '/laser-hair.html') {
+        sendPermanentRedirect(res, '/shiraz/laser-hair-removal', method);
+        return;
+      }
+      if (decodedPath === '/cosmetic-surgery.html') {
+        sendPermanentRedirect(res, '/shiraz/cosmetic-surgery', method);
+        return;
+      }
+      if (decodedPath === '/hair-transplant.html') {
+        sendPermanentRedirect(res, '/shiraz/hair-transplant', method);
+        return;
+      }
+      if (decodedPath === '/skin-rejuvenation.html') {
+        sendPermanentRedirect(res, '/shiraz/skin-rejuvenation', method);
+        return;
+      }
+      if (decodedPath === '/injection.html') {
+        sendPermanentRedirect(res, '/shiraz/injectables', method);
+        return;
+      }
+      if (decodedPath === '/slimming.html') {
+        sendPermanentRedirect(res, '/shiraz/slimming', method);
+        return;
+      }
+      if (decodedPath === '/rhinoplasty.html') {
+        sendPermanentRedirect(res, '/shiraz/rhinoplasty', method);
+        return;
+      }
+      if (decodedPath === '/lasik.html') {
+        sendPermanentRedirect(res, '/shiraz/lasik', method);
+        return;
+      }
+      if (decodedPath === '/femto-lasik.html') {
+        sendPermanentRedirect(res, '/shiraz/femto-lasik', method);
+        return;
+      }
+      if (decodedPath === '/prk.html') {
+        sendPermanentRedirect(res, '/shiraz/prk', method);
+        return;
+      }
+      if (decodedPath === '/pharmacy.html') {
+        sendPermanentRedirect(res, '/shiraz/pharmacy', method);
+        return;
+      }
+      if (decodedPath === '/botox.html') {
+        sendPermanentRedirect(res, '/shiraz/botox', method);
+        return;
+      }
+      if (decodedPath === '/facial.html') {
+        sendPermanentRedirect(res, '/shiraz/facial', method);
+        return;
+      }
+      if (decodedPath === '/light-therapy.html') {
+        sendPermanentRedirect(res, '/shiraz/light-therapy', method);
+        return;
+      }
+
+      // Bare root stubs (CF .html-strip leftovers) → /shiraz KEEP (never 404)
+      const bareStubHubRedirects = {
+        '/laser-hair': '/shiraz/laser-hair-removal',
+        '/skin-rejuvenation': '/shiraz/skin-rejuvenation',
+        '/slimming': '/shiraz/slimming',
+        '/injection': '/shiraz/injectables',
+        '/hair-transplant': '/shiraz/hair-transplant',
+        '/cosmetic-surgery': '/shiraz/cosmetic-surgery',
+        '/botox': '/shiraz/botox',
+        '/facial': '/shiraz/facial',
+        '/light-therapy': '/shiraz/light-therapy',
+      };
+      const bareStubKey = decodedPath.replace(/\/+$/, '') || decodedPath;
+      if (bareStubHubRedirects[bareStubKey]) {
+        sendPermanentRedirect(res, bareStubHubRedirects[bareStubKey], method);
+        return;
+      }
+
+      if (
+        decodedPath === '/services/candela-laser' ||
+        /^\/services\/.*کندلا.*/i.test(decodedPath)
+      ) {
+        sendPermanentRedirect(res, '/shiraz/laser-candela-2026', method);
+        return;
+      }
+      if (
+        decodedPath === '/services/titanium-laser' ||
+        /^\/services\/.*تیتانیوم.*/i.test(decodedPath)
+      ) {
+        sendPermanentRedirect(res, '/shiraz/laser-titanium-2026', method);
+        return;
+      }
+      // Botox → /shiraz/botox only (Persian aliases must not chain via /services/botox).
+      // Exact paths only — do NOT match بوتاکس-و-فیلر (botox-filler stays separate).
+      if (
+        decodedPath === '/services/botox' ||
+        decodedPath === '/services/بوتاکس' ||
+        decodedPath === '/services/تزریق-بوتاکس'
+      ) {
+        sendPermanentRedirect(res, '/shiraz/botox', method);
+        return;
+      }
+
+      // Soft-404 recovery + equity: losers → Shiraz KEEP (one hop).
+      // Alias→English chains also collapse via serviceSlugRedirectMiddleware.
+      const soft404HubRedirects = {
+        '/services/light-therapy': '/shiraz/light-therapy',
+        '/services/نور-درمانی': '/shiraz/light-therapy',
+        '/services/نوردرمانی': '/shiraz/light-therapy',
+        '/services/لایت-تراپی': '/shiraz/light-therapy',
+        '/services/لایتتراپی': '/shiraz/light-therapy',
+        '/services/فتوتراپی': '/shiraz/light-therapy',
+        '/services/برداشتن-خال': '/shiraz/mole-removal',
+        '/services/برداشت-خال-و': '/shiraz/mole-removal',
+        '/services/فیشیال': '/shiraz/facial',
+        '/services/فیشیال-و-پاکسازی-پوست': '/shiraz/facial',
+        '/services/برطرف-کردن-منافذ-باز-پوست': '/shiraz/pore-treatment',
+        '/services/درمان-منافذ-صورت': '/shiraz/pore-treatment',
+        // GSC pore ghosts
+        '/services/منافذ': '/shiraz/pore-treatment',
+        '/services/درمان-منافذ': '/shiraz/pore-treatment',
+        '/services/درمان-منافذ-باز': '/shiraz/pore-treatment',
+        '/services/منافذ-باز-پوست': '/shiraz/pore-treatment',
+        '/services/بوکال-فت': '/shiraz/buccal-fat',
+        '/services/لیفت-صورت-بوکال-فت': '/shiraz/buccal-fat',
+        // Wrong-slug guesses → KEEP hubs (GSC soft 404s)
+        '/shiraz/pores': '/shiraz/pore-treatment',
+        '/shiraz/buccal-fat-removal': '/shiraz/buccal-fat',
+        // Candela / Titanium short aliases → 2026 KEEP (one-hop)
+        '/shiraz/candela': '/shiraz/laser-candela-2026',
+        '/shiraz/candela-laser': '/shiraz/laser-candela-2026',
+        '/shiraz/laser-candela': '/shiraz/laser-candela-2026',
+        '/shiraz/titanium': '/shiraz/laser-titanium-2026',
+        '/shiraz/titanium-laser': '/shiraz/laser-titanium-2026',
+        '/shiraz/laser-titanium': '/shiraz/laser-titanium-2026',
+        // CO2 → fractional CO2 hub (incl. chain-killer لیزر-co2)
+        '/services/co2-laser': '/shiraz/co2-fractional-laser',
+        '/services/لیزر-co2': '/shiraz/co2-fractional-laser',
+        '/services/لیزرco2': '/shiraz/co2-fractional-laser',
+        '/services/لیزر-فرکشنالco2': '/shiraz/co2-fractional-laser',
+        // Fotona → fotona hub (NOT hair-removal)
+        '/services/fotona-laser': '/shiraz/fotona-laser',
+        '/services/لیزر-فوتونا': '/shiraz/fotona-laser',
+        '/services/فوتونا': '/shiraz/fotona-laser',
+        '/shiraz/فوتونا': '/shiraz/fotona-laser',
+        '/shiraz/لیزر-فوتونا': '/shiraz/fotona-laser',
+        // Soft-404: مزوژل و بوتاکس → botox hub (exact path only)
+        '/services/مزوژل-و-بوتاکس': '/shiraz/botox',
+        // Competing /services 200s → KEEP hubs
+        '/services/hair-transplant-fit': '/shiraz/micro-fit-hair-transplant',
+        '/services/fit': '/shiraz/micro-fit-hair-transplant',
+        '/services/fit-method': '/shiraz/micro-fit-hair-transplant',
+        '/services/کاشت-مو-fit': '/shiraz/micro-fit-hair-transplant',
+        '/services/hifu-doublo-gold': '/shiraz/hifu-doublo-gold',
+        '/services/هایفو-دابلو-گلد': '/shiraz/hifu-doublo-gold',
+        '/services/هایفو': '/shiraz/hifu-doublo-gold',
+        '/services/eyebrow-beard-transplant': '/shiraz/eyebrow-transplant',
+        '/services/کاشت-ابرو-و-ریش': '/shiraz/eyebrow-transplant',
+        '/services/کاشت-ابرو': '/shiraz/eyebrow-transplant',
+        '/services/botox-filler': '/shiraz/injectables',
+        '/services/بوتاکس-و-فیلر': '/shiraz/injectables',
+        '/services/فیلر': '/shiraz/injectables',
+        '/services/deka-laser': '/shiraz/laser-hair-removal',
+        '/services/لیزر-دکا': '/shiraz/laser-hair-removal',
+        // GSC category ghosts
+        '/services/کاشت-مو': '/shiraz/hair-transplant',
+        '/services/لیزر-موهای-زائد': '/shiraz/laser-hair-removal',
+        // Hair-method ghosts (GSC)
+        '/services/sut': '/shiraz/hair-transplant',
+        '/services/fue': '/shiraz/hair-transplant',
+        '/services/fut': '/shiraz/hair-transplant',
+        '/services/fue-fut': '/shiraz/hair-transplant',
+        '/services/کاشت-مو-sut': '/shiraz/hair-transplant',
+        '/services/کاشت-مو-fue': '/shiraz/hair-transplant',
+        '/services/کاشت-مو-fut': '/shiraz/hair-transplant',
+        '/services/میکروگرافت': '/shiraz/micro-fit-hair-transplant',
+        '/services/micrograft': '/shiraz/micro-fit-hair-transplant',
+        // Soft-404 batch B — new Shiraz landings
+        '/services/جراحی-سینه': '/shiraz/breast-surgery',
+        '/services/پیرسینگ-گوش': '/shiraz/ear-piercing',
+        '/services/درمان-زگیل-تناسلی-با-کرایو-تراپی-و-لیزر-درمانی':
+          '/shiraz/wart-cryotherapy',
+        '/services/نمونه-برداری-پوستی': '/shiraz/skin-biopsy',
+        // Face/neck lift soft-404 → rejuvenation category (not a new thin hub)
+        '/services/جوان-سازی-و-لیفت-صورت-و-گردن': '/shiraz/skin-rejuvenation',
+        // IPL / pico hair → laser hair Shiraz hub
+        '/services/پیکو-لیزر-مو-های-زائد-با-فناوری-پیشرفته-ipl':
+          '/shiraz/laser-hair-removal',
+        // Slimming / body contouring → static category page
+        '/services/لاغری': '/shiraz/slimming',
+        '/services/پیکرتراشی': '/shiraz/slimming',
+        '/services/اسلیمینگ': '/shiraz/slimming',
+        '/shiraz/لاغری': '/shiraz/slimming',
+        '/shiraz/پیکرتراشی': '/shiraz/slimming',
+        '/shiraz/اسلیمینگ': '/shiraz/slimming',
+        '/shiraz/body-contouring': '/shiraz/slimming',
+        // Double-chin soft-404s → HIFU Doublo Gold
+        '/services/ساکشن-غبغب': '/shiraz/hifu-doublo-gold',
+        '/services/لیفت-غبغب': '/shiraz/hifu-doublo-gold',
+      };
+      const soft404Dest = soft404HubRedirects[decodedPath];
+      if (soft404Dest) {
+        sendPermanentRedirect(res, soft404Dest, method);
+        return;
+      }
+    }
+
     // Bare /index.html → canonical home (no duplicate URL).
     if (
       (method === 'GET' || method === 'HEAD') &&
@@ -4039,7 +4533,7 @@ const server = http.createServer(async (req, res) => {
     // Legacy profile URLs without ?id= → home (before /doctor/:slug).
     if (
       (method === 'GET' || method === 'HEAD') &&
-      (pathname === '/profile.html' || pathname === '/profiles.html')
+      (pathname === '/profile.html' || pathname === '/profiles.html' || pathname === '/profile' || pathname === '/profiles')
     ) {
       const url = new URL(req.url || '/', 'http://localhost');
       const rawId = validQueryId(url.searchParams.get('id') || url.searchParams.get('clinic_id'));
@@ -4055,6 +4549,8 @@ const server = http.createServer(async (req, res) => {
       (method === 'GET' || method === 'HEAD') &&
       (pathname === '/profile.html' ||
         pathname === '/profiles.html' ||
+        pathname === '/profile' ||
+        pathname === '/profiles' ||
         pathname.startsWith('/doctor/'))
     ) {
       if (doctorApp) {

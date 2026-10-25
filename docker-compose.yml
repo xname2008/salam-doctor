@@ -45,6 +45,7 @@ services:
       # Persist admin-edited intros so nginx and the backend share the same files
       - ./clinic-intros:/app/clinic-intros
       - ./rhinoplasty.html:/app/rhinoplasty.html:ro
+      - ./hair-loss-treatment.html:/app/hair-loss-treatment.html:ro
       - ./server.js:/app/server.js:ro
       - ./persianDate.js:/app/persianDate.js:ro
       - ./articleCatalog.js:/app/articleCatalog.js:ro
@@ -52,6 +53,7 @@ services:
       - ./assets/js/articles-catalog.generated.js:/app/assets/js/articles-catalog.generated.js
       - ./articles:/app/articles
       - ./doctorProfileRouter.js:/app/doctorProfileRouter.js:ro
+      - ./realClinics.js:/app/realClinics.js:ro
       - ./clinicSlug.js:/app/clinicSlug.js:ro
       - ./serviceSlugMap.js:/app/serviceSlugMap.js:ro
       - ./faqPageJsonLd.js:/app/faqPageJsonLd.js:ro
@@ -73,10 +75,13 @@ services:
       - ./serviceLanding.js:/app/serviceLanding.js:ro
       - ./siteSettings.js:/app/siteSettings.js:ro
       - ./seoInfra.js:/app/seoInfra.js:ro
+      - ./htmlSitemap.js:/app/htmlSitemap.js:ro
+      - ./hubClinicSanitize.js:/app/hubClinicSanitize.js:ro
       - ./breadcrumb.js:/app/breadcrumb.js:ro
       - ./utils:/app/utils:ro
       - ./scripts/gtm-snippets.js:/app/scripts/gtm-snippets.js:ro
       - ./seoRouter.js:/app/seoRouter.js:ro
+      - ./hub-slugs.js:/app/hub-slugs.js:ro
       - ./searchRouter.js:/app/searchRouter.js:ro
       - ./search-index.js:/app/search-index.js:ro
       - ./DirectoryRepository.js:/app/DirectoryRepository.js:ro

@@ -58,8 +58,8 @@ window.applyPersianDigits = function applyPersianDigits(root) {
 
 function ensureNavMenuLinks() {
   var EXTRA_LINKS = [
-    { file: 'pharmacy.html', label: 'داروخانه', afterFile: 'products.html' },
-    { file: 'faq.html', label: 'سوالات متداول', afterFile: 'pharmacy.html' },
+    { file: '/shiraz/pharmacy', label: 'داروخانه', afterFile: '/products' },
+    { file: '/faq', label: 'سوالات متداول', afterFile: '/shiraz/pharmacy' },
   ];
 
   function hrefPrefix(container) {
@@ -85,6 +85,11 @@ function ensureNavMenuLinks() {
     return link;
   }
 
+  function linkHref(prefix, file) {
+    if (String(file || '').charAt(0) === '/') return file;
+    return (prefix || '') + file;
+  }
+
   function patchContainer(container) {
     if (!container) return;
     var prefix = hrefPrefix(container);
@@ -92,7 +97,7 @@ function ensureNavMenuLinks() {
       if (hasLink(container, item.file)) return;
       var anchor = findAnchor(container, item.afterFile);
       if (!anchor) return;
-      insertAfter(anchor, prefix + item.file, item.label);
+      insertAfter(anchor, linkHref(prefix, item.file), item.label);
     });
   }
 
@@ -106,7 +111,7 @@ function ensureNavMenuLinks() {
       if (hasLink(topMenu, item.file)) return;
       var anchor = findAnchor(topMenu, item.afterFile);
       if (!anchor) return;
-      insertAfter(anchor, menuPrefix + item.file, item.label);
+      insertAfter(anchor, linkHref(menuPrefix, item.file), item.label);
     });
   }
 }
@@ -396,8 +401,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var CHAT_QUICK_REPLIES = [
       {
-        q: 'آیا مشاوره رایگان است؟',
-        a: 'بله. مشاوره اولیه و معرفی مرکز در سلام دکتر کاملاً رایگان است. هزینه درمان در خود مرکز انتخاب‌شده مشخص می‌شود.'
+        q: 'آیا جلسه مشاوره هزینه دارد؟',
+        a: 'شرایط جلسه مشاوره را هر مرکز خودش تعیین می‌کند. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.'
       },
       {
         q: 'چطور مرکز مناسب معرفی می‌شود؟',
@@ -721,7 +726,7 @@ document.addEventListener('DOMContentLoaded', function () {
     holder.innerHTML = filtered.map(function (clinic) {
       var name = escapeHtml((clinic.sliderTitle || clinic.name || '').trim());
       var tag = escapeHtml((clinic.sliderTagline || 'مرکز درمانی و زیبایی').trim());
-      var image = escapeHtml(clinic.image || 'images/sample-clinic-services.webp');
+      var image = escapeHtml(clinic.image || 'assets/images/defaults/clinic-default.webp');
       var profileUrl = (typeof window.clinicProfilePath === 'function')
         ? window.clinicProfilePath(clinic)
         : ('/doctor/clinic-' + encodeURIComponent(clinic.id));

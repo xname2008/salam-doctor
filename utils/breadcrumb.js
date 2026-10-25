@@ -62,29 +62,44 @@ const SPECIALTY_HUB_HINTS = [
     keywords: ['لاغری', 'پیکرتراشی', 'کرایو', 'slimming'],
   },
   {
+    slug: 'rhinoplasty',
+    name: 'جراحی بینی',
+    keywords: ['رینوپلاستی', 'جراحی بینی', 'بینی', 'rhinoplasty'],
+  },
+  {
+    slug: 'lasik',
+    name: 'لیزیک',
+    keywords: ['لیزیک', 'lasik'],
+  },
+  {
+    slug: 'femto-lasik',
+    name: 'فمتولیزیک',
+    keywords: ['فمتولیزیک', 'femto'],
+  },
+  {
+    slug: 'prk',
+    name: 'پی‌آر‌کی',
+    keywords: ['prk', 'پی آر کی'],
+  },
+  {
+    slug: 'pharmacy',
+    name: 'داروخانه',
+    keywords: ['داروخانه', 'دارو', 'مکمل', 'pharmacy'],
+  },
+  {
     slug: 'hifu-doublo-gold',
     name: 'هایفو',
     keywords: ['هایفو', 'hifu', 'دابلو'],
   },
   {
     slug: 'co2-fractional-laser',
-    name: 'لیزر CO2',
-    keywords: ['co2', 'سی او دو', 'فراکشنال'],
+    name: 'لیزر CO2 فرکشنال',
+    keywords: ['co2', 'سی او دو', 'فراکشنال', 'فرکشنال', 'جای جوش', 'اسکار', 'co2-laser'],
   },
   {
-    slug: 'dental-implant',
-    name: 'ایمپلنت دندان',
-    keywords: ['ایمپلنت', 'dental-implant'],
-  },
-  {
-    slug: 'orthodontics',
-    name: 'ارتودنسی',
-    keywords: ['ارتودنسی', 'orthodont'],
-  },
-  {
-    slug: 'dental-veneer',
-    name: 'ونیر دندان',
-    keywords: ['ونیر', 'لمینت', 'veneer'],
+    slug: 'dentistry',
+    name: 'دندانپزشکی',
+    keywords: ['ایمپلنت', 'dental-implant', 'ارتودنسی', 'orthodont', 'ونیر', 'لمینت', 'veneer', 'دندان'],
   },
 ];
 

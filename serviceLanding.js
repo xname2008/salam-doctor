@@ -1,6 +1,7 @@
 /**
  * Dynamic /services/:slug landing pages.
- * Canonical routes are English-only (e.g. /services/botox, /services/qswitch).
+ * Canonical routes are English-only (e.g. /services/qswitch).
+ * Note: /shiraz/botox 301 → /shiraz/botox (see server.js consolidation).
  * Persian / alias slugs 301 via Express middleware (serviceSlugMap).
  */
 'use strict';
@@ -9,6 +10,7 @@ const path = require('path');
 const fs = require('fs');
 const express = require('express');
 const { clinicProfilePath } = require('./clinicSlug');
+const { sanitizeHubClinicList, isHubListableClinic } = require('./hubClinicSanitize');
 const {
   CANONICAL_SERVICE_SLUGS,
   decodeSlug,
@@ -39,7 +41,7 @@ const SERVICE_LANDINGS = {
     label: 'DEKA',
     title: 'مراکز لیزر DEKA در شیراز',
     description:
-      'کلینیک‌ها و مراکز زیبایی شیراز که خدمات لیزر با دستگاه‌های DEKA ارائه می‌دهند. برای مشاوره رایگان و انتخاب مرکز مناسب با سلام دکتر در ارتباط باشید.',
+      'کلینیک‌ها و مراکز زیبایی شیراز که خدمات لیزر با دستگاه‌های DEKA ارائه می‌دهند. برای درخواست نوبت مشاوره و انتخاب مرکز مناسب با سلام دکتر در ارتباط باشید.',
   },
   'candela-laser': {
     label: 'CANDELA',
@@ -79,9 +81,10 @@ const SERVICE_LANDINGS = {
   },
   botox: {
     label: 'بوتاکس',
-    title: 'مراکز تزریق بوتاکس در شیراز',
+    title: 'بهترین مراکز تزریق بوتاکس در شیراز | قیمت و نوبت‌دهی | سلام دکتر',
+    h1: 'بهترین مراکز تزریق بوتاکس در شیراز',
     description:
-      'کلینیک‌های ارائه‌دهنده تزریق بوتاکس در شیراز، انتخاب‌شده برای مقایسه و مشاوره رایگان سلام دکتر.',
+      'لیست کلینیک‌های تزریق بوتاکس در شیراز. معرفی مراکزی که تیم سلام دکتر حضوری از آن‌ها بازدید کرده است.',
   },
   'eyebrow-beard-transplant': {
     label: 'کاشت ابرو و ریش',
@@ -105,7 +108,7 @@ const SERVICE_LANDINGS = {
     label: 'نور درمانی',
     title: 'لایت تراپی و نور درمانی در شیراز | بهترین کلینیک‌ها | سلام دکتر',
     description:
-      'لیست کلینیک‌های لایت تراپی و نور درمانی در شیراز برای جوانسازی، لک و التهاب پوست. مقایسه مراکز معتبر + مشاوره رایگان با سلام دکتر.',
+      'لیست کلینیک‌های لایت تراپی و نور درمانی در شیراز برای جوانسازی، لک و التهاب پوست. معرفی مراکزی که تیم سلام دکتر حضوری از آن‌ها بازدید کرده است.',
     parentCategory: 'skin-aesthetic',
     intro:
       'نور درمانی (لایت تراپی) روشی غیرتهاجمی برای بهبود بافت پوست، کاهش التهاب و کمک به درمان برخی لک‌هاست. در شیراز معمولاً در کلینیک‌های پوست و زیبایی انجام می‌شود و انتخاب دستگاه و پروتکل درمانی بر اساس نوع پوست و هدف درمان تعیین می‌گردد.',
@@ -123,7 +126,7 @@ registerAlias('لایت تراپی', 'light-therapy');
 
 function toAbsoluteAssetPath(src) {
   const raw = String(src || '').trim();
-  if (!raw) return '/images/sample-clinic-services.webp';
+  if (!raw) return '/assets/images/defaults/clinic-default.webp';
   if (/^(https?:|data:|blob:)/i.test(raw)) return raw;
   if (raw.startsWith('//')) return raw;
   return raw.charAt(0) === '/' ? raw : '/' + raw.replace(/^\/+/, '');
@@ -155,7 +158,7 @@ function titleFromSlug(slug) {
   return {
     label,
     title: `مراکز ${label} در شیراز`,
-    description: `فهرست مراکز درمانی و زیبایی شیراز مرتبط با «${label}». برای مشاوره رایگان با سلام دکتر تماس بگیرید.`,
+    description: `فهرست مراکز درمانی و زیبایی شیراز مرتبط با «${label}». برای درخواست نوبت مشاوره با سلام دکتر تماس بگیرید.`,
   };
 }
 
@@ -249,7 +252,7 @@ function buildServiceFaqItems(meta) {
     },
     {
       q: `کدام مراکز ${label} را ارائه می‌دهند؟`,
-      a: `در همین صفحه فهرست مراکز مرتبط با «${label}» یا دسته پوست و زیبایی را می‌بینید. برای جزئیات، آدرس و راه‌های ارتباطی روی هر مرکز کلیک کنید یا از دکمه مشاوره رایگان استفاده کنید.`,
+      a: `در همین صفحه فهرست مراکز مرتبط با «${label}» یا دسته پوست و زیبایی را می‌بینید. برای جزئیات، آدرس و راه‌های ارتباطی روی هر مرکز کلیک کنید یا از دکمه درخواست نوبت مشاوره استفاده کنید.`,
     },
     {
       q: `چطور مرکز مناسب برای ${label} را انتخاب کنیم؟`,
@@ -309,7 +312,7 @@ function findClinicsByServiceSlug(slug, deps) {
       id: Number(clinic.id),
       name: clinic.name || clinic.sliderTitle || `مرکز ${clinic.id}`,
       tagline: clinic.sliderTagline || clinic.address || '',
-      image: toAbsoluteAssetPath(clinic.image || 'images/sample-clinic-services.webp'),
+      image: toAbsoluteAssetPath(clinic.image || 'assets/images/defaults/clinic-default.webp'),
       address: clinic.address || '',
       link: clinicProfilePath(clinic),
       services: pageTags,
@@ -355,13 +358,18 @@ function findRelatedClinicsByCategory(meta, deps, excludeIds) {
 
   for (const clinic of clinics) {
     if (!clinic || clinic.id == null || exclude.has(Number(clinic.id))) continue;
+    if (!isHubListableClinic({
+      ...clinic,
+      profileUrl: clinic.link || clinicProfilePath(clinic),
+      link: clinic.link || clinicProfilePath(clinic),
+    })) continue;
     const haystack = clinicHaystack(clinic);
     if (!keywords.some((kw) => haystack.includes(kw))) continue;
     matched.push({
       id: Number(clinic.id),
       name: clinic.name || clinic.sliderTitle || `مرکز ${clinic.id}`,
       tagline: clinic.sliderTagline || clinic.address || '',
-      image: toAbsoluteAssetPath(clinic.image || 'images/sample-clinic-services.webp'),
+      image: toAbsoluteAssetPath(clinic.image || 'assets/images/defaults/clinic-default.webp'),
       address: clinic.address || '',
       link: clinicProfilePath(clinic),
       services: [],
@@ -374,7 +382,7 @@ function findRelatedClinicsByCategory(meta, deps, excludeIds) {
     return String(a.name).localeCompare(String(b.name), 'fa');
   });
 
-  return { clinics: matched.slice(0, 4), badge: category.badge };
+  return { clinics: sanitizeHubClinicList(matched.slice(0, 4)), badge: category.badge };
 }
 
 function loadClinicsDataViaDeps(deps) {
@@ -400,7 +408,7 @@ function renderOnboardingCtaHtml() {
     `<h2 id="service-onboard-heading" class="service-onboard-title">پزشک یا مدیر کلینیک هستید؟</h2>` +
     `<p class="service-onboard-text">ثبت اطلاعات در سلام دکتر و معرفی مرکز خود به مراجعان جستجوگر.</p>` +
     `</div>` +
-    `<a class="btn btn-main" href="/clinic-promote.html">ثبت اطلاعات در سلام دکتر</a>` +
+    `<a class="btn btn-main" href="/clinic-promote">ثبت اطلاعات در سلام دکتر</a>` +
     `</aside>`
   );
 }
@@ -491,6 +499,7 @@ function renderServicePage(slug, deps) {
   const faqItems = buildServiceFaqItems(meta);
   let faqJson = buildFaqPageJsonLd(faqItems);
   const curated = SERVICE_LANDINGS[meta.slug];
+  let seoH1 = (curated && curated.h1) || meta.title || seoTitle;
   const hasCuratedSeo = Boolean(curated && (curated.title || curated.description));
   if (!hasCuratedSeo) {
     try {
@@ -498,11 +507,13 @@ function renderServicePage(slug, deps) {
       const built = seo.serviceSeo(meta.label || meta.title);
       seoTitle = built.title;
       seoDescription = built.description;
+      seoH1 = built.title;
       breadcrumbJson = seo.serviceBreadcrumbs(meta);
     } catch (_err) {
       /* optional */
     }
   } else {
+    seoH1 = curated.h1 || curated.title || seoTitle;
     try {
       const seo = require('./seoInfra');
       breadcrumbJson = seo.serviceBreadcrumbs(meta);
@@ -514,7 +525,7 @@ function renderServicePage(slug, deps) {
   let html = template
     .replace(/\{\{SLUG\}\}/g, escapeHtml(meta.slug))
     .replace(/\{\{LABEL\}\}/g, escapeHtml(meta.label))
-    .replace(/\{\{TITLE\}\}/g, escapeHtml(seoTitle))
+    .replace(/\{\{TITLE\}\}/g, escapeHtml(seoH1))
     .replace(/\{\{DESCRIPTION\}\}/g, escapeHtml(seoDescription))
     .replace(/\{\{CANONICAL\}\}/g, escapeHtml(canonical))
     .replace(/\{\{OG_IMAGE\}\}/g, escapeHtml(deps.ogImage))

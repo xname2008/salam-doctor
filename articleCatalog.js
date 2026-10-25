@@ -12,6 +12,15 @@ const { formatPersianJalaliDate } = require('./persianDate');
 const PUBLISHED_COMMENT_RE = /<!--\s*article-published:\s*(\d{4}-\d{2}-\d{2})\s*-->/i;
 const JALALI_COMMENT_RE = /<!--\s*article-jalali:\s*([^-]+?)\s*-->/i;
 
+/** Every static article KEEP is the extensionless /articles/{slug} URL. */
+const BARE_CANONICAL_ARTICLE_SLUGS = new Set(['*']);
+
+function articlePublicPath(slug) {
+  const clean = String(slug || '').trim().replace(/\.html$/i, '');
+  if (!clean) return '';
+  return `/articles/${clean}`;
+}
+
 function stripHtml(value) {
   return String(value || '').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
 }
@@ -111,7 +120,7 @@ function parseArticleMetadata(html, slug) {
     summary,
     category,
     cover_image: normalizeCoverPath(coverImage),
-    url: `articles/${slug}.html`,
+    url: articlePublicPath(slug),
   };
 }
 
@@ -122,8 +131,16 @@ function syncArticleDatesInHtml(html, isoDate, jalaliLabel) {
   if (!isoDate) return html;
   let out = String(html);
 
+  // Keep an explicit newer dateModified (e.g. content expansions) instead of
+  // forcing it back to datePublished on every articles:sync.
+  const existingModified = firstMatch(html, [/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})"/]);
+  const modifiedIso =
+    existingModified && String(existingModified) >= String(isoDate)
+      ? String(existingModified)
+      : isoDate;
+
   out = out.replace(/"datePublished"\s*:\s*"[^"]*"/g, `"datePublished": "${isoDate}"`);
-  out = out.replace(/"dateModified"\s*:\s*"[^"]*"/g, `"dateModified": "${isoDate}"`);
+  out = out.replace(/"dateModified"\s*:\s*"[^"]*"/g, `"dateModified": "${modifiedIso}"`);
 
   if (/<time[^>]*itemprop=["']datePublished["']/i.test(out)) {
     out = out.replace(
@@ -132,10 +149,15 @@ function syncArticleDatesInHtml(html, isoDate, jalaliLabel) {
         let nextAttrs = attrs
           .replace(/\sdatetime=["'][^"']*["']/gi, '')
           .replace(/\sdata-jalali-label=["'][^"']*["']/gi, '');
-        const jalaliAttr = jalaliLabel
-          ? ` data-jalali-label="${jalaliLabel.replace(/"/g, '&quot;')}"`
+        const visible =
+          jalaliLabel ||
+          formatPersianJalaliDate(isoDate) ||
+          '';
+        const jalaliAttr = visible
+          ? ` data-jalali-label="${visible.replace(/"/g, '&quot;')}"`
           : '';
-        return `${open}${nextAttrs} datetime="${isoDate}"${jalaliAttr}${close}${end}`;
+        // Keep a visible Jalali label in HTML so dates are never blank without JS.
+        return `${open}${nextAttrs} datetime="${isoDate}"${jalaliAttr}${close}${visible}${end}`;
       },
     );
   }
@@ -171,6 +193,9 @@ function syncArticleDatesInHtml(html, isoDate, jalaliLabel) {
 /**
  * Scan articles directory, optionally write synced HTML, return catalog entries sorted newest-first.
  */
+/** 301 losers — never surface in the browser catalog even if the HTML returns. */
+const CATALOG_EXCLUDED_ARTICLE_SLUGS = new Set(['hair-loss-treatment-comparison']);
+
 function scanArticleCatalog(articlesDir, opts = {}) {
   const syncHtml = opts.syncHtml !== false;
   if (!articlesDir || !fs.existsSync(articlesDir)) return [];
@@ -181,6 +206,7 @@ function scanArticleCatalog(articlesDir, opts = {}) {
     .map((fileEntry) => {
       const filePath = path.join(articlesDir, fileEntry.name);
       const slug = fileEntry.name.replace(/\.html$/i, '');
+      if (CATALOG_EXCLUDED_ARTICLE_SLUGS.has(slug)) return null;
       const stat = fs.statSync(filePath);
       let html = fs.readFileSync(filePath, 'utf8');
       const datePublished = resolvePublishedDate(html, stat);
@@ -201,7 +227,8 @@ function scanArticleCatalog(articlesDir, opts = {}) {
       };
       if (jalaliLabel) catalogEntry.jalaliLabel = jalaliLabel;
       return catalogEntry;
-    });
+    })
+    .filter(Boolean);
 
   return sortEntriesByDate(entries);
 }
@@ -232,4 +259,7 @@ module.exports = {
   writeGeneratedCatalogJs,
   normalizeCoverPath,
   toIsoDateLocal,
+  BARE_CANONICAL_ARTICLE_SLUGS,
+  CATALOG_EXCLUDED_ARTICLE_SLUGS,
+  articlePublicPath,
 };

@@ -59,7 +59,7 @@
       summary: a.summary || '',
       category: a.category || '',
       cover_image: a.cover_image || '',
-      url: a.url || (a.slug ? 'articles/' + a.slug + '.html' : ''),
+      url: a.url || (a.slug ? '/articles/' + a.slug : ''),
       datePublished: iso,
       jalaliLabel: jalali,
       dateLabel: jalali || formatPersianJalaliDate(iso),
@@ -87,12 +87,12 @@
 
   var LATEST_ARTICLES = loadCatalog();
 
-  function resolveUrl(article, base) {
-    var href = article.url || ('articles/' + article.slug + '.html');
-    if (!base) return href;
-    if (base === 'articles/') return href.replace(/^articles\//, '');
-    if (base === '../') return '../' + href.replace(/^\//, '');
-    return base.replace(/\/?$/, '/') + href.replace(/^\//, '');
+  function resolveUrl(article) {
+    var href = String(article.url || ('/articles/' + article.slug));
+    if (/^https?:\/\//i.test(href)) return href.replace(/\.html$/i, '');
+    href = href.replace(/^\.\.?\//, '').replace(/\.html$/i, '');
+    if (href.charAt(0) !== '/') href = '/' + href;
+    return href;
   }
 
   function dateSortKey(iso) {
@@ -225,9 +225,7 @@
       '<ul class="list-none m-0 p-0 space-y-0">' +
       list +
       '</ul>' +
-      '<a href="' +
-      escapeHtml((opts.base || '../') + 'articles.html') +
-      '" class="mt-4 inline-flex text-xs font-bold text-sky-700 hover:text-sky-800">همه مقالات ←</a>' +
+      '<a href="/articles" class="mt-4 inline-flex text-xs font-bold text-sky-700 hover:text-sky-800">همه مقالات ←</a>' +
       '</div>'
     );
   }

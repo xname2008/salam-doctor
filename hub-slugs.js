@@ -35,20 +35,34 @@ const HUB_SLUGS = [
   'laser-hair-removal',
   'cosmetic-surgery',
   'slimming',
+  'rhinoplasty',
+  'lasik',
+  'femto-lasik',
+  'prk',
+  'pharmacy',
   'botox',
   'fillers',
   'mesotherapy',
-  'dental-implant',
-  'orthodontics',
-  'dental-veneer',
+  // dental-implant / orthodontics / dental-veneer → 301 /shiraz/dentistry (empty inventory)
   // —— Long-tail (Hair / Laser / Skin / HIFU) ——
   'hair-transplant-installment',
   'micro-fit-hair-transplant',
   'laser-candela-2026',
+  'laser-titanium-2026',
   'mens-laser-shiraz',
   'co2-fractional-laser',
+  'fotona-laser',
   'hifu-doublo-gold',
   'light-therapy',
+  'mole-removal',
+  'facial',
+  'pore-treatment',
+  'buccal-fat',
+  // Soft-404 batch B
+  'breast-surgery',
+  'ear-piercing',
+  'wart-cryotherapy',
+  'skin-biopsy',
 ];
 
 function hubPriority(slug) {

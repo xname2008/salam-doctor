@@ -36,7 +36,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
   <header class="topbar">
     <div class="container topbar-row">
-      <a href="/index.html" class="brand" aria-label="سلام دکتر — صفحه اصلی">
+      <a href="/" class="brand" aria-label="سلام دکتر — صفحه اصلی">
         <span class="logo logo-heart-beat" aria-hidden="true">
           <img src="/images/logo-heart.svg" alt="" width="40" height="40">
         </span>
@@ -163,7 +163,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     mount.innerHTML = clinics.map(function (c, i) {
       var name = c.name || c.sliderTitle || ('مرکز ' + c.id);
       var tag = c.sliderTagline || c.address || '';
-      var img = c.image || '/images/sample-clinic-services.webp';
+      var img = c.image || '/assets/images/defaults/clinic-default.webp';
       var href = (typeof window.clinicProfilePath === 'function')
         ? window.clinicProfilePath(c)
         : ('/doctor/clinic-' + encodeURIComponent(c.id));

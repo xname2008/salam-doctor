@@ -1,24 +1,24 @@
 #!/usr/bin/env bash
-# Regenerate sitemap.xml from the live DB via the backend container (has
-# @prisma/client + DATABASE_URL). The host sitemap.xml is bind-mounted rw so
-# the file nginx serves is updated in place. No image rebuild needed.
-#
-#   bash scripts/generate-sitemap-docker.sh --dry-run   # preview, writes nothing
-#   bash scripts/generate-sitemap-docker.sh             # write sitemap.xml
+# Regenerate pages-only sitemap.xml inside the backend container (Prisma + hubs).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-echo "Generating canonical sitemap.xml inside Docker..."
-docker compose run --rm --no-deps \
-  -v "$(pwd)/scripts/generate-sitemap.js:/app/scripts/generate-sitemap.js:ro" \
-  -v "$(pwd)/scripts/lib/static-articles-sitemap.js:/app/scripts/lib/static-articles-sitemap.js:ro" \
-  -v "$(pwd)/hub-slugs.js:/app/hub-slugs.js:ro" \
-  -v "$(pwd)/articles:/app/articles:ro" \
-  -v "$(pwd)/sitemap.xml:/app/sitemap.xml:rw" \
-  -e "SITE_BASE=${SITE_BASE:-https://salam-doctor.com}" \
-  backend node scripts/generate-sitemap.js "$@"
+SITE_BASE="${SITE_BASE:-https://salam-doctor.com}"
+export SITE_BASE
 
-echo
-echo "Verify (should be 200, no redirect, and list /shiraz/* URLs):"
-echo "  curl -sI https://salam-doctor.ir/sitemap.xml | head -1"
-echo "  grep -c '<loc>https://salam-doctor.ir/shiraz/' sitemap.xml"
+echo "Generating pages sitemap.xml..."
+
+if ! docker ps --format '{{.Names}}' 2>/dev/null | grep -qx 'salam-doctor-backend'; then
+  echo "salam-doctor-backend not running; generating on host..."
+  node scripts/generate-sitemap.js "$@"
+else
+  docker exec salam-doctor-backend mkdir -p /app/scripts/lib
+  # Only copy non-mounted scripts (hub-slugs.js / clinicSlug.js are already volume-mounted).
+  docker cp scripts/generate-sitemap.js salam-doctor-backend:/app/scripts/generate-sitemap.js
+  docker exec -e SITE_BASE="$SITE_BASE" salam-doctor-backend node scripts/generate-sitemap.js "$@"
+  docker cp salam-doctor-backend:/app/sitemap.xml ./sitemap.xml
+fi
+
+echo "Wrote ./sitemap.xml"
+echo "  loc count: $(grep -c '<loc>' sitemap.xml || true)"
+grep -E 'laser-hair-removal|/shiraz/botox' sitemap.xml || true

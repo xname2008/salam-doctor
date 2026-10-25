@@ -28,7 +28,7 @@ function escapeHtml(value) {
 
 function toAbsoluteAsset(siteBase, src) {
   const raw = String(src || '').trim();
-  if (!raw) return `${siteBase}/images/sample-clinic-services.webp`;
+  if (!raw) return `${siteBase}/assets/images/defaults/clinic-default.webp`;
   if (/^(https?:|data:)/i.test(raw)) return raw;
   return siteBase + (raw.startsWith('/') ? raw : `/${raw}`);
 }
@@ -84,7 +84,7 @@ function buildLandingContext(pkg, clinic, req, deps) {
     city: pkg.city,
     defaultH1,
     defaultCtaPrimary: `رزرو ${pkg.label}`,
-    defaultCtaSecondary: 'مشاوره رایگان',
+    defaultCtaSecondary: 'درخواست نوبت مشاوره',
   });
   const { utm } = parseUtmFromRequest(req.query);
   const landingPath = req.baseLandingPath || req.path;
