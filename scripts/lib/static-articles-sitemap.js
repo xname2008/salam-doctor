@@ -18,11 +18,9 @@ const BARE_CANONICAL_ARTICLE_SLUGS = new Set(['*']);
 /**
  * Never list these in sitemap-articles.xml (301 losers / noindex thin pages).
  * hair-loss-treatment-comparison is parked + 301 → mesotherapy-vs-prp-hair-loss.
- * body-contouring-clinic-guide is noindex,follow (thin-content mitigation).
  */
 const SITEMAP_EXCLUDED_ARTICLE_SLUGS = new Set([
   'hair-loss-treatment-comparison',
-  'body-contouring-clinic-guide',
 ]);
 
 /** Matches any existing static-article <url> block in sitemap.xml. */

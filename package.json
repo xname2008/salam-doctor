@@ -14,6 +14,7 @@
     "sitemap:articles": "node scripts/update-sitemap-articles.js",
     "articles:sync": "node scripts/sync-article-catalog.js && node scripts/update-sitemap-articles.js",
     "sitemap": "node scripts/generate-sitemap.js && node scripts/update-sitemap-articles.js && node scripts/sync-article-catalog.js",
+    "seo:audit": "node scripts/seo-audit.js",
     "audit:gtm": "node scripts/audit-gtm.js",
     "audit:gtm:fix": "node scripts/audit-gtm.js --fix",
     "gallery:dev": "vite",

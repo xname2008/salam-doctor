@@ -957,7 +957,7 @@ function buildLocalHubSeoMeta(data, overrides = {}) {
   const districtNames = (districts || []).slice(0, 4).map((d) => d.name).join('، ');
   const db = hubSeo || {};
 
-  const defaultTitle = `بهترین مراکز ${service.name} در ${city} | قیمت و نوبت‌دهی | سلام دکتر`;
+  const defaultTitle = `بهترین مراکز ${service.name} در ${city} | نوبت‌دهی | سلام دکتر`;
   const defaultH1 = `بهترین مراکز ${service.name} در ${city}`;
   const defaultDescription = listMode
     ? (`بهترین مراکز ${service.name} در ${city}` +

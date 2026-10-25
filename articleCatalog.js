@@ -131,8 +131,16 @@ function syncArticleDatesInHtml(html, isoDate, jalaliLabel) {
   if (!isoDate) return html;
   let out = String(html);
 
+  // Keep an explicit newer dateModified (e.g. content expansions) instead of
+  // forcing it back to datePublished on every articles:sync.
+  const existingModified = firstMatch(html, [/"dateModified"\s*:\s*"(\d{4}-\d{2}-\d{2})"/]);
+  const modifiedIso =
+    existingModified && String(existingModified) >= String(isoDate)
+      ? String(existingModified)
+      : isoDate;
+
   out = out.replace(/"datePublished"\s*:\s*"[^"]*"/g, `"datePublished": "${isoDate}"`);
-  out = out.replace(/"dateModified"\s*:\s*"[^"]*"/g, `"dateModified": "${isoDate}"`);
+  out = out.replace(/"dateModified"\s*:\s*"[^"]*"/g, `"dateModified": "${modifiedIso}"`);
 
   if (/<time[^>]*itemprop=["']datePublished["']/i.test(out)) {
     out = out.replace(
