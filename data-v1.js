@@ -4,7 +4,7 @@ const clinicsData = [
     "name": "کلینیک تخصصی پوست و مو ترنج",
     "address": "شیراز،بلوار آزادی،نبش کوچه 15،ساختمان طوبی،طبقه اول",
     "phone": "07132298510-09038990120",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "تشخیص ودرمان بیماری های پوستی",
       "جوان سازس پوست",
@@ -29,7 +29,7 @@ const clinicsData = [
     "name": "کلینیک تخصصی پوست، مو و زیبایی ایرسا",
     "address": "شیراز، خیابان قصردشت، روبروی بیمارستان قلب کوثر",
     "phone": "09309172070 – 07136353031",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "درمان مشکلات و عارضه های پوستی",
       "رفع جای جوش",
@@ -54,7 +54,7 @@ const clinicsData = [
     "name": "مرکز پارسامهر",
     "address": "شیراز، عفیف آباد، روبروی کوچه 18، ساختمان السید طبقه چهارم، کلینیک تخصصی پوست، مو، زیبایی و لیزر پارسا مهر",
     "phone": "09391400104 – 07136484042",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "دارد",
       "کاشت مو",
@@ -67,7 +67,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی وکاشت مو رخ",
     "address": "شیراز، خیابان زرگری، ساختمان میرداماد 1، طبقه چهارم",
     "phone": "07136263864 – 09177016483",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "مرکز تخصصی کاشت مو"
     ]
@@ -77,7 +77,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی و کاشت مو دکتر متقی",
     "address": "شیراز، پل معالی آباد، ساختمان الف، طبقه 10",
     "phone": "07136365050 – 09193767342 – 09193767351",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "کاشت مو",
       "تزریق انواع فیلر",
@@ -95,7 +95,7 @@ const clinicsData = [
     "name": "مرکز فوق تخصصی شیراز کاشت",
     "address": "شیراز، بلوار چمران، بیمارستان مرکزی",
     "phone": "09172260013",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "متخصص کاشت مو"
     ]
@@ -105,7 +105,7 @@ const clinicsData = [
     "name": "لیزر شیراز",
     "address": "بین قصردشت 28 و 30",
     "phone": "09363489473",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "لیزر رفع موهای زائد"
     ]
@@ -115,7 +115,7 @@ const clinicsData = [
     "name": "مرکز سیب سرخ",
     "address": "ستارخان، حدفاصل خیابان ولیعصر و کوچه 14، روبروی مجتمع بهاران، ساختمان محمد رسول الله، طبقه 3",
     "phone": "071362658828 – 09176080857 – 09170450083",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "فیشیال",
       "تزریق ژل",
@@ -131,7 +131,7 @@ const clinicsData = [
     "name": "کلینیک کاشت مو، پوست، لیزر و زیبایی پارسه شیراز",
     "address": "شیراز، میدان مطهری، ابتدای قدوسی شرقی",
     "phone": "07136284000 – 07136284001 – 07136284002 – 07136285535 – 09171000291",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "پاکسازی پوست(میکرودرم",
       "هیدرودرم)",
@@ -157,7 +157,7 @@ const clinicsData = [
     "name": "مرکز سمر",
     "address": "خیابان قدوسی غربی، نرسیده به همت، ساختمان ملک، طبقه 4",
     "phone": "07191009092",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "فیشیال و پاکسازی پوست",
       "کاشت مو",
@@ -170,7 +170,7 @@ const clinicsData = [
     "name": "مرکز هیرا",
     "address": "معالی آباد، جنب شیرینی آلما، ساختمان طوبی 4، طبقه 8، واحد 16",
     "phone": "07138422290 – 09171887184",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "فیشیال و پاکسازی پوست",
       "فیشیال تخصصیو پلاژن تراپی همراه با هیدرودرمی",
@@ -192,7 +192,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی آرمانی",
     "address": "شیراز،قدوسی غربی،جنب کوچه ۱۲،ساختمان علیا،طبقه ۳",
     "phone": "07136313856",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "کاشت مو و ابرو با استفاده از روش های نوین مانندFUE و FUT برای ترمیم موهای از دست رفته",
       "تزریق فیلر و بوتاکس",
@@ -219,7 +219,7 @@ const clinicsData = [
     "name": "کلینیک دی",
     "address": "شیراز،معالی آباد،نبش خیابان پزشکان،طبقه اول،واحد۱۱٬۱۲٬۱۳",
     "phone": "09176090290-09378787431-09338490911-07136342020-07136341414-07136341313",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "سونوگرافی پوست",
       "نور درمانی",
@@ -265,7 +265,7 @@ const clinicsData = [
     "name": "کلینیک دکتر صالح",
     "address": "قصردشت،نبش کوچه ۸۰",
     "phone": "07136260000-07136261111",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "فیشیال",
       "کاشت مو و ابرو",
@@ -296,7 +296,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی و کاشت مو دنسا",
     "address": "شیراز،قصردشت",
     "phone": "09047212331",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "کاشت تخصصی مو و ابرو"
     ]
@@ -306,7 +306,7 @@ const clinicsData = [
     "name": "کلینیک پوست و کاشت مو ارغوان",
     "address": "قصردشت،نرسیده به چهار راه زرگری،بعد از کوچه ۵۵،ساختمان رایمون،طبقه پنجم",
     "phone": "",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": []
   },
   {
@@ -314,7 +314,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی ورا",
     "address": "شیراز،ستار خان،نبش کوچه ۵،ساختمان افشان،طبقه ۳،واحد۵",
     "phone": "09170522542",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "درمان لک های پوستی و کک مک",
       "تزریق فیلر و بوتاکس",
@@ -331,7 +331,7 @@ const clinicsData = [
     "name": "کلینیک لاغری و زیبایی بوژان",
     "address": "شیراز،خیابان خاکشناسی،نبش کوچه ۴",
     "phone": "07132275937-07132275938-07132275939",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "برطرف کردن منافذ باز پوست",
       "کاشت مو",
@@ -351,7 +351,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی مهسا",
     "address": "شهرک گلستان،بلوار علامه امینی،نبش کوچه ۶،ساختمان زعفران ۳،طبقه اول",
     "phone": "",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": []
   },
   {
@@ -359,7 +359,7 @@ const clinicsData = [
     "name": "کلینیک لیزر،زیبایی و لاغری ترنم",
     "address": "همت جنوبی،بین کوچه ۴ الف و ۶،ساختمان پارس،طبقه اول،واحد ۳",
     "phone": "07136321179-09174003594",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "فیشیال و پاکسازی پوست",
       "کاشت مو",
@@ -382,7 +382,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی مهدخت",
     "address": "شیراز،فرهنگ شهر،نبش کوچه ۴۴،ساختمان دیپلمات،طبقه۳،واحد۹",
     "phone": "09170008792-09170008791-09170005371",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "تزریق ژل",
       "فیلرو بوتاکس",
@@ -399,7 +399,7 @@ const clinicsData = [
     "name": "کلینیک نونا",
     "address": "شیراز، فرهنگ شهر، شهیدان گرامی (سجادیه دوم)، بعد از کوچه ۱۷، روبروی کوچه ۴، ساختمان اورنگ، طبقه ۲ ، واحد ۲",
     "phone": "",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "فیشیال و پاکسازی",
       "تزریق فیلر بادی و صورت",
@@ -430,7 +430,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی پوست و مو آتریسا",
     "address": "شیراز، معالی آباد، مجمتع پارمین",
     "phone": "09171202932",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "فیشیال",
       "درمان کک مک",
@@ -449,7 +449,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی دکتر جلایی",
     "address": "شیراز، معالی آباد، روبروی دوستان، ساختمان قصر 2، واحد 1",
     "phone": "09129179169_07136342424_07136341010",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "فیشیال",
       "تزریق ژل",
@@ -469,7 +469,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی مون فیس",
     "address": "شیراز، معالی‌آباد، کوچه ۳ شریعتی، مجتمع پزشکی رها، طبقه ۴، واحد ۱ و ۳",
     "phone": "09176066604 – 07136358772",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "رفع لک",
       "تیرگی و خشکی پوست",
@@ -485,7 +485,7 @@ const clinicsData = [
     "name": "کلینیک مو و زیبایی آریان",
     "address": "شیراز، ستارخان، نبش کوچه ۹، ساختمان آریان، طبقه دوم",
     "phone": "07136491605 07136491604",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "کاشت مو",
       "ابرو",
@@ -506,7 +506,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی پرنیان",
     "address": "شیراز، قدوسی غربی خیابان شهید سبحانی،مجتمع امیریه۳، کلینیک پرنیان",
     "phone": "09176887124-09337796961",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "کاشت مو",
       "ابرو و ریش",
@@ -524,7 +524,7 @@ const clinicsData = [
     "name": "کلینیک زیبایی ماه",
     "address": "شیراز، معالی آباد، بین خلبانان و دوستان، نبش کوچه بیست و سوم، مجتمع تجاری اهورا، طبقه چهارم، واحد 44 و 45",
     "phone": "07136341677 - 07136341679",
-    "image": "images/sample-clinic-services.webp",
+    "image": "assets/images/defaults/clinic-default.webp",
     "services": [
       "درمان منافذ صورت",
       "نمونه برداری پوستی",

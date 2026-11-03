@@ -10,7 +10,7 @@ const path = require('path');
 const express = require('express');
 const { CITIES, localHubPath } = require('./local-seo-registry');
 const { HUB_SLUGS, PARENT_SLUGS } = require('./hub-slugs');
-const { hubLabelFa } = require('./hub-labels');
+const { HUB_LABELS_FA, hubLabelFa } = require('./hub-labels');
 const clinicSlug = require('./clinicSlug');
 
 const SITE_BASE = process.env.SITE_BASE || 'https://salam-doctor.com';
@@ -26,20 +26,24 @@ const POPULAR_CITY_SERVICE_LINKS = Object.freeze([
   { href: '/shiraz/fillers', label: 'تزریق فیلر در شیراز' },
   { href: '/shiraz/skin-rejuvenation', label: 'جوانسازی پوست در شیراز' },
   { href: '/shiraz/cosmetic-surgery', label: 'جراحی زیبایی در شیراز' },
+  { href: '/shiraz/breast-surgery', label: 'جراحی سینه در شیراز' },
+  { href: '/shiraz/dermatology', label: 'پوست و مو در شیراز' },
+  { href: '/shiraz/ear-piercing', label: 'پیرسینگ گوش در شیراز' },
   { href: '/tehran/hair-transplant', label: 'کاشت مو در تهران' },
   { href: '/tehran/laser-hair-removal', label: 'لیزر موهای زائد در تهران' },
 ]);
 
 const STATIC_PAGES = Object.freeze([
   { href: '/', label: 'صفحه اصلی' },
-  { href: '/articles.html', label: 'مقالات آموزشی' },
-  { href: '/faq.html', label: 'سوالات متداول' },
-  { href: '/about.html', label: 'درباره ما' },
-  { href: '/category.html', label: 'دسته‌بندی خدمات' },
-  { href: '/hair-transplant.html', label: 'کاشت مو' },
-  { href: '/laser-hair.html', label: 'لیزر موهای زائد' },
-  { href: '/skin-rejuvenation.html', label: 'جوانسازی پوست' },
-  { href: '/injection.html', label: 'تزریقات زیبایی' },
+  { href: '/articles', label: 'مقالات آموزشی' },
+  { href: '/faq', label: 'سوالات متداول' },
+  { href: '/about', label: 'درباره ما' },
+  { href: '/category', label: 'دسته‌بندی خدمات' },
+  { href: '/shiraz/hair-transplant', label: 'کاشت مو' },
+  { href: '/shiraz/laser-hair-removal', label: 'لیزر موهای زائد' },
+  { href: '/shiraz/skin-rejuvenation', label: 'جوانسازی پوست' },
+  { href: '/shiraz/injectables', label: 'تزریقات زیبایی' },
+  { href: '/shiraz/cosmetic-surgery', label: 'جراحی زیبایی' },
   { href: '/search', label: 'جستجو' },
 ]);
 

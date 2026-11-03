@@ -13,7 +13,8 @@ try {
       clinicOrId && typeof clinicOrId === 'object'
         ? Number(clinicOrId.id != null ? clinicOrId.id : clinicOrId.clinic_id)
         : Number(clinicOrId);
-    return Number.isInteger(id) && id > 0 ? `/doctor/clinic-${id}` : '/';
+    if (id === 114) return '/doctor/nahal-clinic';
+    return '/shiraz';
   };
 }
 
@@ -121,7 +122,7 @@ function pickKeyServices(clinic, limit) {
         'clinics/114/Hero.webp'
       : (clinic && clinic.image) ||
         (row.image && String(row.image).trim()) ||
-        'images/sample-clinic-services.webp';
+        'assets/images/defaults/clinic-default.webp';
   const link = clinicProfilePath(row.clinic_id);
   return {
     id: row.id,

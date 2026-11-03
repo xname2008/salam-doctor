@@ -209,7 +209,7 @@ def build_landing_context(
     else:
         pricing_packages = pricing  # type: ignore[assignment]
 
-    image = str(clinic.get("image") or "/images/sample-clinic-services.webp")
+    image = str(clinic.get("image") or "/assets/images/defaults/clinic-default.webp")
     if not image.startswith("http"):
         image = site_base.rstrip("/") + ("/" + image.lstrip("/"))
 

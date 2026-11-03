@@ -6,7 +6,7 @@
  *
  * Examples:
  *   klynyk-nhal-kasht-mv-fit-v-mykrvgraft  →  nahal-clinic
- *   shiraz-sample-clinic-1-…               →  sample-clinic-1
+ *   long Shiraz Sample Clinic brands       →  short retired fixture slugs
  *
  * Legacy transliterated slugs + clinic-{id} are recorded for 301 redirects.
  *

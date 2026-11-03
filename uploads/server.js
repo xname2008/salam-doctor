@@ -785,11 +785,7 @@ function featuredHasImage(row) {
 const NAHAL_FEATURED_ID = 'nahal-clinic-featured';
 
 const FEATURED_SLOT_DEFAULTS = [
-  { rank: 1, id: NAHAL_FEATURED_ID, name: 'کلینیک نهال', tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی', image: 'images/nahal-reception.webp', link: 'profile.html?id=114', badge: 'ویژه' },
-  { rank: 2, id: 'featured-slot-2', name: 'کلینیک ترنج', tagline: 'کلینیک تخصصی پوست و مو', image: 'images/toranj.webp', link: 'profile.html?id=101', badge: null },
-  { rank: 3, id: 'featured-slot-3', name: 'کلینیک رخ', tagline: 'کلینیک زیبایی و کاشت مو', image: 'images/rokh.webp', link: 'profile.html?id=104', badge: null },
-  { rank: 4, id: 'featured-slot-4', name: 'کلینیک دکتر متقی', tagline: 'کلینیک زیبایی و کاشت مو', image: 'images/motaqi.webp', link: 'profile.html?id=105', badge: null },
-  { rank: 5, id: 'featured-slot-5', name: 'کلینیک دکتر صالح', tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی', image: 'images/clinic-saleh.png', link: 'profile.html?id=115', badge: null },
+  { rank: 1, id: NAHAL_FEATURED_ID, name: 'کلینیک نهال', tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی', image: 'clinics/114/Hero.webp', link: '/doctor/nahal-clinic', badge: 'ویژه' },
 ];
 
 const FEATURED_SLOT_IDS = new Set(FEATURED_SLOT_DEFAULTS.map((slot) => slot.id));
@@ -1448,7 +1444,9 @@ function loadClinicById(clinicId) {
 }
 
 function clinicProfileUrl(clinicId) {
-  return `${SITE_BASE}/profile.html?id=${encodeURIComponent(clinicId)}`;
+  // Prefer canonical doctor path; legacy query URLs 301 at the edge.
+  if (Number(clinicId) === 114) return `${SITE_BASE}/doctor/nahal-clinic`;
+  return `${SITE_BASE}/shiraz`;
 }
 
 function clinicShareImage(clinic, clinicId) {
@@ -2317,7 +2315,7 @@ async function start() {
     console.log('API:  POST /api/consultation  GET /api/leads  GET /api/health');
     console.log('Monetization: GET /api/featured  GET /api/ads  GET /api/*/click');
     console.log('Articles: GET /api/articles  GET /api/articles/:slug  GET /article/:slug  GET /sitemap-articles.xml');
-    console.log('Profiles: GET /profile.html?id=…  GET /profiles.html → redirect (share meta injected server-side)');
+    console.log('Profiles: GET /doctor/:slug  (legacy query-id profile URLs → 301)');
     console.log('Admin: /api/admin/featured  /api/admin/ads  /api/admin/clinic-profiles  /api/admin/clinics-catalog  /api/admin/articles  /api/admin/upload  /api/admin/reports/*');
     console.log('Chat: /socket.io/');
     if (seoApp) {

@@ -1,0 +1,126 @@
+# ===========================================================================
+# Shiraz Beauty — application stack
+# ---------------------------------------------------------------------------
+# Own project name, network, volume and host ports, so it never collides with
+# the salam-doctor stack (80/443).
+#
+#   cp .env.example .env   # then edit the secrets
+#   docker compose -p shirazbeauty up -d --build
+#
+#   web  -> http://localhost:3010   and   https://shirazbeauty.ir
+#   api  -> http://localhost:8010/docs
+#   db   -> localhost:5442
+#
+# `web` and `api` also join the salam-doctor nginx network so the TLS
+# terminator can reach them by container name (see
+# ../deploy/clinic-sites.d/shirazbeauty.ir.conf).
+#
+# Hot-reload development server on :3011 instead of the production build:
+#   docker compose -p shirazbeauty --profile dev up -d web-dev
+# ===========================================================================
+
+name: shirazbeauty
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: shirazbeauty-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-shirazbeauty}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-shirazbeauty}
+      POSTGRES_DB: ${POSTGRES_DB:-shirazbeauty}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+    ports:
+      - "5442:5432"
+    volumes:
+      # Keep the historical volume name so existing clinic data is preserved.
+      - shirazbeauty_app_pg:/var/lib/postgresql/data
+    networks:
+      - shirazbeauty-net
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-shirazbeauty} -d ${POSTGRES_DB:-shirazbeauty}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  api:
+    build:
+      context: ./backend
+    container_name: shirazbeauty-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      DEBUG: ${DEBUG:-true}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-shirazbeauty}:${POSTGRES_PASSWORD:-shirazbeauty}@db:5432/${POSTGRES_DB:-shirazbeauty}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3010,https://shirazbeauty.ir}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-me-in-production}
+      SMS_PROVIDER: ${SMS_PROVIDER:-kavenegar}
+      SMS_API_KEY: ${SMS_API_KEY:-mock}
+      SMS_OTP_TEMPLATE: ${SMS_OTP_TEMPLATE:-}
+    command:
+      ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    volumes:
+      - ./backend:/srv
+    ports:
+      - "8010:8000"
+    networks:
+      - shirazbeauty-net
+      - salam-doctor-net
+
+  # Production build — this is what shirazbeauty.ir serves.
+  web:
+    build:
+      context: ./frontend
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://shirazbeauty.ir/api/v1}
+    container_name: shirazbeauty-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports:
+      - "3010:3000"
+    networks:
+      - shirazbeauty-net
+      - salam-doctor-net
+
+  # Hot-reload server for local development; not part of the default stack.
+  web-dev:
+    profiles: ["dev"]
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: shirazbeauty-web-dev
+    restart: unless-stopped
+    environment:
+      NEXT_TELEMETRY_DISABLED: "1"
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL_DEV:-http://localhost:8010/api/v1}
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - ./frontend:/srv
+      - /srv/node_modules
+      - /srv/.next
+    ports:
+      - "3011:3000"
+    networks:
+      - shirazbeauty-net
+
+networks:
+  shirazbeauty-net:
+    name: shirazbeauty-net
+    driver: bridge
+  # Created by the salam-doctor stack; this is where nginx (TLS) lives.
+  salam-doctor-net:
+    external: true
+    name: salam-doctor_salam-doctor-net
+
+volumes:
+  shirazbeauty_app_pg:
+    name: shirazbeauty_app_pg

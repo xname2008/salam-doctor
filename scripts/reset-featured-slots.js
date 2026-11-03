@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Reset the top-5 featured clinics to canonical /doctor/:slug links.
+ * Reset featured clinics to the real contracted clinic only (Nahal).
  *
  * On the server, node_modules is often Mac-built — use Docker instead:
  *   bash scripts/reset-featured-slots-docker.sh
@@ -14,11 +14,15 @@ const Database = require('better-sqlite3');
 const DB_PATH = path.join(__dirname, '..', 'leads.db');
 
 const SLOTS = [
-  { rank: 1, id: 'nahal-clinic-featured', name: 'کلینیک نهال', tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی', image: 'clinics/114/Hero.webp', link: '/doctor/nahal-clinic', badge: 'ویژه' },
-  { rank: 2, id: 'featured-slot-2', name: 'Shiraz Sample Clinic 1', tagline: 'کلینیک تخصصی پوست و مو', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-1', badge: null },
-  { rank: 3, id: 'featured-slot-3', name: 'Shiraz Sample Clinic 4', tagline: 'کلینیک زیبایی و کاشت مو', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-4', badge: null },
-  { rank: 4, id: 'featured-slot-4', name: 'Shiraz Sample Clinic 5', tagline: 'کلینیک زیبایی و کاشت مو', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-5', badge: null },
-  { rank: 5, id: 'featured-slot-5', name: 'Shiraz Sample Clinic 14', tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی', image: 'images/sample-clinic-services.webp', link: '/doctor/sample-clinic-14', badge: null },
+  {
+    rank: 1,
+    id: 'nahal-clinic-featured',
+    name: 'کلینیک نهال',
+    tagline: 'کلینیک کاشت مو،پوست،لیزر و زیبایی',
+    image: 'clinics/114/Hero.webp',
+    link: '/doctor/nahal-clinic',
+    badge: 'ویژه',
+  },
 ];
 
 const slotIds = SLOTS.map((s) => s.id);
@@ -39,33 +43,34 @@ try {
     WHERE id = @id
   `);
   const insert = db.prepare(`
-    INSERT INTO featured_clinics (
-      id, rank, name, tagline, phone, address, image, link, badge,
-      active, starts_at, ends_at, clicks, created_at
-    ) VALUES (
-      @id, @rank, @name, @tagline, '', '', @image, @link, @badge,
-      1, NULL, NULL, 0, @created_at
-    )
+    INSERT INTO featured_clinics (id, rank, name, tagline, image, link, badge, active, clicks, created_at)
+    VALUES (@id, @rank, @name, @tagline, @image, @link, @badge, 1, 0, @created_at)
   `);
 
+  let updated = 0;
+  let inserted = 0;
   for (const slot of SLOTS) {
-    const exists = db.prepare('SELECT id FROM featured_clinics WHERE id = ?').get(slot.id);
-    const payload = { ...slot, created_at: now };
-    if (exists) update.run(payload);
-    else insert.run(payload);
+    const row = { ...slot, created_at: now };
+    const result = update.run(row);
+    if (result.changes) updated += 1;
+    else {
+      insert.run(row);
+      inserted += 1;
+    }
   }
 
-  const active = db.prepare(`
-    SELECT rank, id, name, link FROM featured_clinics
-    WHERE active = 1 AND rank BETWEEN 1 AND 5
-    ORDER BY rank
-  `).all();
+  // Deactivate any remaining fixture / non-Nahal featured rows.
+  const fixtureOff = db
+    .prepare(
+      `UPDATE featured_clinics SET active = 0
+       WHERE active = 1 AND id != 'nahal-clinic-featured'
+         AND (link LIKE '%/doctor/%' AND link NOT LIKE '%/doctor/nahal-clinic%')`
+    )
+    .run().changes;
 
-  console.log('Deactivated non-canonical rows:', deactivated);
-  console.log('Active top-5 featured clinics:');
-  for (const row of active) {
-    console.log(`  ${row.rank}. ${row.name} → ${row.link} (${row.id})`);
-  }
+  console.log(
+    JSON.stringify({ deactivated, updated, inserted, fixtureOff, slots: SLOTS.length }, null, 2)
+  );
 } finally {
   db.close();
 }

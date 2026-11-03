@@ -7,6 +7,7 @@
 const { buildMedicalEntityJsonLd } = require('./jsonLdMedicalEntity');
 const { buildFaqPageJsonLd } = require('./faqPageJsonLd');
 const clinicSlug = require('./clinicSlug');
+const { sanitizeHubClinicList } = require('./hubClinicSanitize');
 const {
   breadcrumbListJsonLd,
   breadcrumbNavHtml,
@@ -18,6 +19,7 @@ const {
   isEnglishServiceSlug,
   resolveCanonicalEnglishSlug,
   canonicalServicePath,
+  SERVICES_REDIRECTED_TO_HUB,
 } = require('./serviceSlugMap');
 
 let sanitizeHtml;
@@ -33,7 +35,10 @@ const SITE_NAME_FA = 'سلام دکتر';
 const SITE_NAME_EN = 'Salam Doctor';
 const SITE_LOGO = `${SITE_BASE}/images/logo-heart.svg`;
 
-/** Public category landings (id → file + Persian name) */
+/** Public category landings (id → file + Persian name).
+ * Dual-hub losers (hair/skin/injection/surgery/laser) 301 to /shiraz/*;
+ * keep file keys for legacy categorySeo lookups only.
+ */
 const CATEGORY_PAGES = [
   { id: 'hair', file: 'hair-transplant.html', name: 'کاشت مو و ابرو' },
   { id: 'skin', file: 'skin-rejuvenation.html', name: 'جوانسازی و پوست' },
@@ -45,7 +50,6 @@ const CATEGORY_PAGES = [
   { id: 'femto-lasik', file: 'femto-lasik.html', name: 'فمتولیزیک' },
   { id: 'prk', file: 'prk.html', name: 'پی‌آر‌کی' },
   { id: 'products', file: 'products.html', name: 'محصولات زیبایی' },
-  { id: 'pharmacy', file: 'pharmacy.html', name: 'داروخانه' },
   { id: 'eye', file: 'eye.html', name: 'چشم و بینایی' },
 ];
 
@@ -94,7 +98,43 @@ function fmtDate(value) {
   return Number.isNaN(d.getTime()) ? todayIsoDate() : d.toISOString().slice(0, 10);
 }
 
-function categorySeo(categoryName) {
+function categorySeo(categoryName, fileName) {
+  const fileKey = String(fileName || '').trim();
+  const FILE_OVERRIDES = {
+    'skin-rejuvenation.html': {
+      title: 'بهترین مراکز جوانسازی پوست در شیراز | قیمت و نوبت‌دهی | سلام دکتر',
+      description:
+        'لیست کلینیک‌های جوانسازی و پوست در شیراز؛ معرفی مراکزی که تیم سلام دکتر حضوری از آن‌ها بازدید کرده است.',
+      h1: 'بهترین مراکز جوانسازی پوست در شیراز',
+    },
+    'slimming.html': {
+      title: 'بهترین مراکز لاغری و پیکرتراشی در شیراز | قیمت و نوبت‌دهی | سلام دکتر',
+      description:
+        'لیست کلینیک‌های لاغری و پیکرتراشی در شیراز؛ معرفی مراکزی که تیم سلام دکتر حضوری از آن‌ها بازدید کرده است.',
+      h1: 'بهترین مراکز لاغری و پیکرتراشی در شیراز',
+    },
+    'injection.html': {
+      title: 'بهترین مراکز تزریقات زیبایی در شیراز | قیمت و نوبت‌دهی | سلام دکتر',
+      description:
+        'لیست کلینیک‌های تزریق بوتاکس، فیلر و ژل در شیراز؛ معرفی مراکزی که تیم سلام دکتر حضوری از آن‌ها بازدید کرده است.',
+      h1: 'بهترین مراکز تزریقات زیبایی در شیراز',
+    },
+    'laser-hair.html': {
+      title: 'بهترین مراکز لیزر موهای زائد در شیراز | قیمت و نوبت‌دهی | سلام دکتر',
+      description:
+        'لیست کلینیک‌های لیزر موهای زائد در شیراز؛ معرفی مراکزی که تیم سلام دکتر حضوری از آن‌ها بازدید کرده است.',
+      h1: 'بهترین مراکز لیزر موهای زائد در شیراز',
+    },
+    'cosmetic-surgery.html': {
+      title: 'بهترین مراکز جراحی زیبایی در شیراز | قیمت و نوبت‌دهی | سلام دکتر',
+      description:
+        'لیست کلینیک‌های جراحی زیبایی در شیراز؛ معرفی مراکزی که تیم سلام دکتر حضوری از آن‌ها بازدید کرده است.',
+      h1: 'بهترین مراکز جراحی زیبایی در شیراز',
+    },
+  };
+  if (fileKey && FILE_OVERRIDES[fileKey]) {
+    return FILE_OVERRIDES[fileKey];
+  }
   const name = String(categoryName || '').trim() || 'زیبایی';
   const title = `بهترین کلینیک‌های ${name} در شیراز | سلام دکتر`;
   const description = `معرفی بهترین کلینیک‌های ${name} در شیراز. مقایسه مراکز معتبر، مشاهده خدمات و ارتباط مستقیم از طریق سلام دکتر.`;
@@ -190,8 +230,9 @@ function clinicSeo(clinicName, opts) {
   const modifiers = { specialty, city, neighborhood };
   const displayName = String(clinicName || '').trim() || 'مرکز درمانی';
   const bookingHeadline = formatLocalBookingHeadline(modifiers);
-  const h1 = displayName;
-  const title = city ? `${displayName} در ${city} | سلام دکتر` : `${displayName} | سلام دکتر`;
+  // Front-load clinic name + city; keep H1 shorter than <title>.
+  const h1 = `${displayName} شیراز | پوست، مو و زیبایی`;
+  const title = `${displayName} شیراز | پوست، مو و زیبایی | آدرس و نوبت | سلام دکتر`;
   return {
     title,
     h1,
@@ -224,6 +265,13 @@ function buildSeoTagsHtml(opts) {
     lines.push(
       `  <meta name="description" content="${escapeHtmlAttr(description)}">`
     );
+  }
+  if (opts.robots) {
+    lines.push(
+      `  <meta name="robots" content="${escapeHtmlAttr(opts.robots)}">`
+    );
+  } else if (opts.noindex) {
+    lines.push(`  <meta name="robots" content="noindex,follow">`);
   }
   if (!opts.skipCanonical) {
     lines.push(`  <link rel="canonical" href="${escapeHtmlAttr(canonical)}">`);
@@ -614,19 +662,44 @@ function directoryClinicMedicalClinicSchema(clinic, cityInfo) {
   return schema;
 }
 
+/** Minimum primary clinics before SERP/body use LIST (comparison) framing. */
+const HUB_LIST_MIN_CLINICS = 3;
+
+/**
+ * Count clinics rendered as primary cards on a hub (not relatedClinics).
+ * Same number must drive LIST vs GUIDE, FAQ, and JSON-LD.
+ */
+function hubListedClinicCount(data) {
+  const clinics = Array.isArray(data && data.clinics) ? data.clinics : [];
+  const active = clinics.filter((c) => c && c.isActive !== false);
+  return active.length > 0 ? active.length : clinics.length;
+}
+
+function isHubListMode(data) {
+  return hubListedClinicCount(data) >= HUB_LIST_MIN_CLINICS;
+}
+
 /**
  * Hub-level MedicalClinic representing the city+service landing.
  */
-function localHubMedicalClinicEntity(data, canonical) {
+function localHubMedicalClinicEntity(data, canonical, displayName) {
   const { service, cityInfo, stats, districts } = data;
   const city = cityInfo || { nameFa: data.city, regionFa: 'فارس', country: 'IR' };
   const hubId = `${canonical}#medical-clinic`;
+  const label = displayName || `${service.name} در ${city.nameFa}`;
+  const count = hubListedClinicCount(data);
+  const description =
+    count >= HUB_LIST_MIN_CLINICS
+      ? `لیست مراکز ${service.name} در ${city.nameFa}`
+      : count === 1
+        ? `معرفی مرکز ${service.name} در ${city.nameFa}`
+        : `راهنمای ${service.name} در ${city.nameFa}`;
   const entity = {
     '@type': 'MedicalClinic',
     '@id': hubId,
-    name: `${service.name} در ${city.nameFa}`,
+    name: label,
     url: canonical,
-    description: `لیست ${stats.total} مرکز ${service.name} در ${city.nameFa}`,
+    description,
     address: {
       '@type': 'PostalAddress',
       addressLocality: city.nameFa,
@@ -672,30 +745,80 @@ function localHubBreadcrumbList(data, canonical) {
   return built.jsonLd;
 }
 
+const HUB_COST_FAQ_ANSWERS = {
+  'botox': 'هزینه بوتاکس در شیراز به نوع و برند ماده تزریقی، مقدار لازم، ناحیه درمان، تعداد جلسات و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'breast-surgery': 'هزینه جراحی سینه در شیراز به نوع و پیچیدگی عمل، تخصص و تجربه جراح، نوع بیهوشی، امکانات مرکز درمانی و مراقبت‌های پس از عمل بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'buccal-fat': 'هزینه بوکال فت در شیراز به نوع و پیچیدگی عمل، تخصص و تجربه جراح، نوع بیهوشی، امکانات مرکز درمانی و مراقبت‌های پس از عمل بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'co2-fractional-laser': 'هزینه لیزر CO2 فرکشنال در شیراز به نوع دستگاه، ناحیه درمان، تعداد جلسات لازم و تجربه پزشک یا اپراتور بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'cosmetic-surgery': 'هزینه جراحی زیبایی در شیراز به نوع و پیچیدگی عمل، تخصص و تجربه جراح، نوع بیهوشی، امکانات مرکز درمانی و مراقبت‌های پس از عمل بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'dentistry': 'هزینه دندانپزشکی در شیراز به نوع خدمت، مواد مصرفی، تعداد جلسات و تخصص و تجربه دندانپزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'dermatology': 'هزینه پوست و مو در شیراز به روش درمان، تعداد جلسات لازم، دستگاه و محصولات مورد استفاده و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'ear-piercing': 'هزینه پیرسینگ گوش در شیراز به روش و ابزار سوراخ کردن، نوع گوشواره اولیه و مراقبت‌های بعدی بستگی دارد. قیمت دقیق را مرکز پیش از انجام کار، به‌صورت کتبی اعلام می‌کند.',
+  'eyebrow-transplant': 'هزینه کاشت ابرو در شیراز به روش کاشت، تعداد گرافت لازم، تجربه پزشک و تجهیزات مرکز بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'facial': 'هزینه فیشیال در شیراز به روش درمان، تعداد جلسات لازم، دستگاه و محصولات مورد استفاده و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'femto-lasik': 'هزینه فمتولیزیک در شیراز به روش اصلاح دید، دستگاه مورد استفاده، معاینات پیش از عمل و تجربه جراح بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'fillers': 'هزینه فیلر و ژل در شیراز به نوع و برند ماده تزریقی، مقدار لازم، ناحیه درمان، تعداد جلسات و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'fotona-laser': 'هزینه لیزر فوتونا در شیراز به نوع دستگاه، ناحیه درمان، تعداد جلسات لازم و تجربه پزشک یا اپراتور بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'hair-transplant': 'هزینه کاشت مو در شیراز به روش کاشت، تعداد گرافت لازم، تجربه پزشک و تجهیزات مرکز بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'hair-transplant-installment': 'هزینه کاشت مو اقساطی در شیراز به روش کاشت، تعداد گرافت لازم، تجربه پزشک، تجهیزات مرکز و شرایط اقساط (مبلغ پیش‌پرداخت و تعداد چک‌ها) بستگی دارد. مبلغ دقیق و شرایط پرداخت را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'hifu-doublo-gold': 'هزینه هایفو دابلو گلد در شیراز به نوع دستگاه، ناحیه درمان، تعداد جلسات لازم و تجربه پزشک یا اپراتور بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'injectables': 'هزینه زیبایی و تزریقات در شیراز به نوع و برند ماده تزریقی، مقدار لازم، ناحیه درمان، تعداد جلسات و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'laser-candela-2026': 'هزینه لیزر کندلا ۲۰۲۶ در شیراز به نوع دستگاه، ناحیه درمان، تعداد جلسات لازم و تجربه پزشک یا اپراتور بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'laser-hair-removal': 'هزینه لیزر موهای زائد در شیراز به نوع دستگاه، ناحیه درمان، تعداد جلسات لازم و تجربه پزشک یا اپراتور بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'laser-surgery': 'هزینه لیزر و جراحی در شیراز به نوع دستگاه، ناحیه درمان، تعداد جلسات لازم و تجربه پزشک یا اپراتور بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'laser-titanium-2026': 'هزینه لیزر تیتانیوم در شیراز به نوع دستگاه، ناحیه درمان، تعداد جلسات لازم و تجربه پزشک یا اپراتور بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'lasik': 'هزینه لیزیک در شیراز به روش اصلاح دید، دستگاه مورد استفاده، معاینات پیش از عمل و تجربه جراح بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'light-therapy': 'هزینه لایت تراپی در شیراز به نوع دستگاه، ناحیه درمان، تعداد جلسات لازم و تجربه پزشک یا اپراتور بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'mens-laser-shiraz': 'هزینه لیزر موهای زائد آقایان در شیراز به نوع دستگاه، ناحیه درمان، تعداد جلسات لازم و تجربه پزشک یا اپراتور بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'mesotherapy': 'هزینه مزوتراپی در شیراز به نوع و برند ماده تزریقی، مقدار لازم، ناحیه درمان، تعداد جلسات و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'micro-fit-hair-transplant': 'هزینه کاشت مو Micro FIT در شیراز به روش کاشت، تعداد گرافت لازم، تجربه پزشک و تجهیزات مرکز بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'mole-removal': 'هزینه برداشتن خال در شیراز به روش برداشتن خال، تعداد و اندازه خال‌ها، نیاز به آزمایش پاتولوژی و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'pharmacy': 'هزینه خرید از داروخانه در شیراز به نوع و برند دارو یا مکمل و پوشش بیمه بستگی دارد. قیمت دقیق هر قلم را داروخانه اعلام می‌کند.',
+  'pore-treatment': 'هزینه درمان منافذ باز پوست در شیراز به روش درمان، تعداد جلسات لازم، دستگاه و محصولات مورد استفاده و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'prk': 'هزینه پی‌آر‌کی در شیراز به روش اصلاح دید، دستگاه مورد استفاده، معاینات پیش از عمل و تجربه جراح بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'rhinoplasty': 'هزینه جراحی بینی در شیراز به نوع و پیچیدگی عمل، تخصص و تجربه جراح، نوع بیهوشی، امکانات مرکز درمانی و مراقبت‌های پس از عمل بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'skin-biopsy': 'هزینه نمونه‌برداری پوستی در شیراز به روش نمونه‌برداری، تعداد نمونه‌ها، آزمایش پاتولوژی و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'skin-rejuvenation': 'هزینه جوانسازی پوست در شیراز به روش درمان، تعداد جلسات لازم، دستگاه و محصولات مورد استفاده و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'slimming': 'هزینه لاغری و پیکرتراشی در شیراز به روش درمان (دستگاهی، تزریقی یا جراحی)، ناحیه و وسعت درمان، تعداد جلسات و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+  'wart-cryotherapy': 'هزینه درمان زگیل تناسلی در شیراز به روش درمان (مانند کرایو یا لیزر)، وسعت ضایعه، تعداد جلسات لازم و تجربه پزشک بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.',
+};
+
 function localHubFaqPage(data, extraFaqs) {
-  const { service, city, stats } = data;
-  const priceAnswer = service.minPrice
-    ? `هزینه ${service.name} در ${city} از حدود ${formatTomanFa(service.minPrice)} تومان شروع می‌شود و بسته به مرکز، تجهیزات و تعداد جلسات متغیر است.`
-    : `هزینه ${service.name} در ${city} بسته به مرکز، تجهیزات و تعداد جلسات متفاوت است؛ برای قیمت دقیق مشاوره رایگان بگیرید.`;
+  const { service, city } = data;
+  const count = hubListedClinicCount(data);
+  const listMode = isHubListMode(data);
+  const priceAnswer = HUB_COST_FAQ_ANSWERS[String(service.slug || '').trim()]
+    || `هزینه ${service.name} در ${city} به نوع خدمت، تجربه پزشک و امکانات مرکز بستگی دارد. قیمت دقیق را مرکز پس از معاینه، به‌صورت کتبی اعلام می‌کند.`;
 
   const custom = Array.isArray(extraFaqs)
     ? extraFaqs.filter((f) => f && f.q && f.a).map((f) => ({ name: f.q, text: f.a }))
     : [];
 
+  let bestClinicAnswer;
+  if (listMode) {
+    bestClinicAnswer = `در حال حاضر ${count} مرکز ارائه‌دهنده ${service.name} در ${city} در سلام دکتر ثبت شده‌اند؛ مراکز را از نظر منطقه، خدمات و اطلاعات تماس مقایسه کنید و برای درخواست نوبت مشاوره اقدام نمایید.`;
+  } else if (count === 1) {
+    bestClinicAnswer =
+      `در این صفحه می‌توانید پروفایل مرکز مرتبط با ${service.name} در ${city} را ببینید. فهرست مراکز این خدمت در حال تکمیل است؛ هنگام انتخاب به مجوز، تجربه پزشک و نمونه کار توجه کنید و برای معرفی مرکز از فرم ثبت‌نام استفاده کنید.`;
+  } else {
+    bestClinicAnswer =
+      `فهرست مراکز ${service.name} در ${city} در حال تکمیل است. معیارهایی مانند مجوز رسمی، تجربه پزشک و نمونه کار را بررسی کنید و برای معرفی مرکز از فرم ثبت‌نام سلام دکتر استفاده کنید.`;
+  }
+
   const qas = [
     ...custom,
     {
       name: `بهترین مرکز ${service.name} در ${city} کدام است؟`,
-      text: `در حال حاضر ${stats.total} مرکز ارائه‌دهنده ${service.name} در ${city} در سلام دکتر ثبت شده که ${stats.active} مرکز فعال با تجهیزات تأییدشده هستند.`,
+      text: bestClinicAnswer,
     },
     { name: `هزینه ${service.name} در ${city} چقدر است؟`, text: priceAnswer },
     {
       name: `چطور از اصل بودن دستگاه‌های ${service.name} مطمئن شویم؟`,
-      text: 'مراکزی که در سلام دکتر نشان «دستگاه اصل» دارند، مدارک اصالت تجهیزات آن‌ها بررسی و تأیید شده است.',
+      text: 'سلام دکتر اصالت دستگاه‌ها را تأیید نمی‌کند. پیش از درمان، نام دقیق دستگاه، مدل و مدارک ورود رسمی آن را از خود مرکز بپرسید و در صورت تردید از نمایندگی رسمی سازنده استعلام کنید.',
     },
     {
       name: `برای رزرو نوبت ${service.name} چه کنیم؟`,
-      text: 'کافی است روی دکمه «مشاوره رایگان» مرکز موردنظر کلیک کنید تا کارشناسان سلام دکتر شما را راهنمایی کنند.',
+      text: 'روی دکمه «درخواست نوبت مشاوره» در کارت مرکز موردنظر بزنید یا با شماره سلام دکتر تماس بگیرید تا درخواست شما به مرکز منتقل شود.',
     },
   ];
 
@@ -715,8 +838,9 @@ function localHubFaqPage(data, extraFaqs) {
  */
 function buildLocalHubDoctorItemList(data, canonical) {
   const { service, city, clinics, cityInfo } = data;
-  const activeClinics = (clinics || []).filter((c) => c && c.isActive !== false);
-  const listed = activeClinics.length ? activeClinics : clinics || [];
+  const cleaned = sanitizeHubClinicList(clinics || []);
+  const activeClinics = cleaned.filter((c) => c && c.isActive !== false);
+  const listed = activeClinics.length ? activeClinics : cleaned;
 
   return {
     '@type': 'ItemList',
@@ -746,21 +870,55 @@ function buildLocalHubDoctorItemList(data, canonical) {
 }
 
 /**
- * Build @graph JSON-LD for a local hub page (MedicalClinic + ItemList + FAQ).
+ * Build @graph JSON-LD for a local hub page.
+ * LIST (>=3 clinics): MedicalClinic + ItemList + FAQ.
+ * GUIDE (<3 real clinics): MedicalWebPage + FAQ only — never ItemList of 0/1.
  */
-function buildLocalHubJsonLd(data, canonical, extraFaqs) {
-  const hubClinic = localHubMedicalClinicEntity(data, canonical);
-  const itemList = buildLocalHubDoctorItemList(data, canonical);
+function buildLocalHubJsonLd(data, canonical, extraFaqs, displayName, webPageDescription) {
+  const listMode = isHubListMode(data);
+  const faq = localHubFaqPage(data, extraFaqs);
+  const crumbs = graphNodeStrip(localHubBreadcrumbList(data, canonical));
+  const graph = [];
+
+  if (listMode) {
+    graph.push(localHubMedicalClinicEntity(data, canonical, displayName));
+    graph.push(crumbs);
+    const itemList = buildLocalHubDoctorItemList(data, canonical);
+    itemList.description = `فهرست مراکز فعال ارائه‌دهنده ${data.service.name} در ${data.city}`;
+    graph.push(itemList);
+  } else {
+    graph.push({
+      '@type': 'MedicalWebPage',
+      '@id': `${canonical}#webpage`,
+      name: displayName || `${data.service.name} در ${data.city}`,
+      url: canonical,
+      description:
+        webPageDescription ||
+        `راهنمای ${data.service.name} در ${data.city}؛ معیارهای انتخاب مرکز و پرسش‌های پیش از مراجعه.`,
+      inLanguage: 'fa-IR',
+      isPartOf: { '@id': `${SITE_BASE}/#website` },
+      publisher: { '@id': `${SITE_BASE}/#organization` },
+    });
+    graph.push(crumbs);
+  }
+
+  graph.push(faq);
 
   return {
     '@context': 'https://schema.org',
-    '@graph': [
-      hubClinic,
-      graphNodeStrip(localHubBreadcrumbList(data, canonical)),
-      itemList,
-      localHubFaqPage(data, extraFaqs),
-    ],
+    '@graph': graph,
   };
+}
+
+/** Root-absolute internal links carry no rel; everything else keeps noopener noreferrer. */
+function hubLinkTransform(tagName, attribs) {
+  const next = Object.assign({}, attribs);
+  if (/^\/(?!\/)/.test(String(next.href || ''))) {
+    delete next.rel;
+  } else {
+    next.rel = 'noopener noreferrer';
+  }
+  return { tagName, attribs: next };
 }
 
 function sanitizeHubSeoHtml(html) {
@@ -781,45 +939,51 @@ function sanitizeHubSeoHtml(html) {
     allowedSchemes: ['http', 'https', 'mailto', 'tel'],
     transformTags:
       typeof sanitizeHtml.simpleTransform === 'function'
-        ? { a: sanitizeHtml.simpleTransform('a', { rel: 'noopener noreferrer' }) }
+        ? { a: hubLinkTransform }
         : undefined,
   });
 }
 
 /**
  * Title + meta description + H1 for a local hub (no HTML).
- * Precedence: DB LocalHubSeo → seo-config overrides → generated defaults.
+ * Precedence: seo-config overrides → DB LocalHubSeo → generated defaults.
+ * Never put raw clinic counts in SERP fields when listed clinics < HUB_LIST_MIN_CLINICS.
  */
 function buildLocalHubSeoMeta(data, overrides = {}) {
-  const { service, city, stats, districts, canonicalPath, hubSeo } = data;
+  const { service, city, districts, canonicalPath, hubSeo } = data;
   const canonical = absoluteUrl(canonicalPath || `/shiraz/${service.slug}`);
-  const count = stats.total;
+  const count = hubListedClinicCount(data);
+  const listMode = isHubListMode(data);
   const districtNames = (districts || []).slice(0, 4).map((d) => d.name).join('، ');
-  const priceBit = service.minPrice
-    ? ` قیمت از ${formatTomanFa(service.minPrice)} تومان.`
-    : '';
-
   const db = hubSeo || {};
 
-  const title =
-    overrides.title ||
-    db.metaTitle ||
-    `${service.name} در ${city} | لیست ${count} مرکز برتر + قیمت ۱۴۰۵ | سلام دکتر`;
+  const defaultTitle = `بهترین مراکز ${service.name} در ${city} | نوبت‌دهی | سلام دکتر`;
+  const defaultH1 = `بهترین مراکز ${service.name} در ${city}`;
+  const defaultDescription = listMode
+    ? (`بهترین مراکز ${service.name} در ${city}` +
+        (districtNames ? ` (${districtNames})` : '') +
+        `؛ ${count} مرکز معرفی‌شده پس از بازدید حضوری تیم سلام دکتر.`)
+    : count === 0
+      ? `راهنمای ${service.name} در ${city}. معیارهای انتخاب مرکز در سلام دکتر.`
+      : `لیست کلینیک‌های ${service.name} در ${city}. معیارهای انتخاب مرکز در سلام دکتر.`;
 
-  const description =
-    overrides.description ||
-    db.metaDescription ||
-    (`بهترین مراکز ${service.name} در ${city}` +
-      (districtNames ? ` (${districtNames})` : '') +
-      `؛ ${stats.active} مرکز فعال با تجهیزات اصل و دستگاه‌های تأیید‌شده.${priceBit} رزرو مشاوره رایگان.`);
-
-  const h1Title = overrides.h1 || db.h1Title || `بهترین ${service.name} در ${city}`;
+  const title = overrides.title || db.metaTitle || defaultTitle;
+  const description = overrides.description || db.metaDescription || defaultDescription;
+  const h1Title = overrides.h1 || db.h1Title || defaultH1;
 
   const seoDescriptionHtml = sanitizeHubSeoHtml(
     overrides.seoDescription || db.seoDescription || ''
   );
 
-  return { title, description, h1Title, canonical, seoDescriptionHtml };
+  return {
+    title,
+    description,
+    h1Title,
+    canonical,
+    seoDescriptionHtml,
+    hubMode: listMode ? 'list' : 'guide',
+    listedClinicCount: count,
+  };
 }
 
 /**
@@ -834,7 +998,7 @@ function buildCityHubSeo(data, overrides = {}) {
     `مراکز پزشکی و کلینیک‌های زیبایی ${city} | سلام دکتر`;
   const description =
     overrides.description ||
-    `فهرست خدمات پزشکی و زیبایی در ${city}؛ کاشت مو، بوتاکس، لیزر، جوانسازی پوست و سایر تخصص‌ها. معرفی مراکز فعال و مشاوره رایگان سلام دکتر.`;
+    `فهرست خدمات پزشکی و زیبایی در ${city}؛ کاشت مو، بوتاکس، لیزر، جوانسازی پوست و سایر تخصص‌ها. معرفی مراکزی که تیم سلام دکتر حضوری از آن‌ها بازدید کرده است.`;
   const h1Title = overrides.h1 || `مراکز پزشکی و کلینیک‌های زیبایی ${city}`;
 
   const crumbs = buildCityHubBreadcrumbs({
@@ -872,7 +1036,13 @@ function buildCityHubSeo(data, overrides = {}) {
 function buildLocalHubSeo(data, overrides = {}) {
   const meta = buildLocalHubSeoMeta(data, overrides);
   const ogImage = overrides.ogImage || DEFAULT_OG;
-  const jsonLdObject = buildLocalHubJsonLd(data, meta.canonical, overrides.faqs);
+  const jsonLdObject = buildLocalHubJsonLd(
+    data,
+    meta.canonical,
+    overrides.faqs,
+    meta.h1Title,
+    overrides.jsonLdDescription
+  );
   const jsonLd = JSON.stringify(jsonLdObject);
   const faqEntity = jsonLdObject['@graph'].find((n) => n && n['@type'] === 'FAQPage');
   const faq = faqEntity
@@ -908,6 +1078,8 @@ function buildLocalHubSeo(data, overrides = {}) {
     seoDescriptionHtml: meta.seoDescriptionHtml || '',
     breadcrumbHtml: crumbs.html,
     breadcrumbItems: crumbs.items,
+    hubMode: meta.hubMode,
+    listedClinicCount: meta.listedClinicCount,
   };
 }
 
@@ -918,21 +1090,23 @@ function clinicProfilePath(clinicId) {
 function categoryBreadcrumbs(category) {
   return breadcrumbList([
     { name: 'خانه', url: '/' },
-    { name: 'خدمات', url: '/category.html' },
+    { name: 'خدمات', url: '/category' },
     {
       name: category.name,
-      url: `/${category.file}`,
+      url: category.file === 'products.html' ? '/products' : `/${category.file}`,
     },
   ]);
 }
 
 function serviceBreadcrumbs(meta) {
+  const slug = meta && meta.slug;
+  const path = (slug && canonicalServicePath(slug)) || `/services/${slug || ''}`;
   return breadcrumbList([
     { name: 'خانه', url: '/' },
-    { name: 'خدمات', url: '/category.html' },
+    { name: 'خدمات', url: '/category' },
     {
       name: meta.label || meta.title,
-      url: `/services/${meta.slug}`,
+      url: path,
     },
   ]);
 }
@@ -1012,6 +1186,7 @@ async function collectUniqueServiceSlugs(deps) {
   const addSlug = (raw) => {
     const canonical = resolveCanonicalEnglishSlug(raw);
     if (!canonical || !isEnglishServiceSlug(canonical)) return;
+    if (SERVICES_REDIRECTED_TO_HUB.has(canonical)) return;
     slugs.add(canonical);
   };
 
@@ -1063,14 +1238,26 @@ async function collectUniqueServiceSlugs(deps) {
   return Array.from(slugs).sort();
 }
 
+/** Hubs that 301 elsewhere — never list in pages sitemap. */
+const SITEMAP_EXCLUDED_HUB_SLUGS = new Set([
+  'body-contouring', // → /shiraz/slimming
+  'dental-implant', // → /shiraz/dentistry
+  'dental-veneer', // → /shiraz/dentistry
+  'orthodontics', // → /shiraz/dentistry
+  'co2-laser', // → /shiraz/co2-fractional-laser
+]);
+
+/** Extra /shiraz/* required in pages sitemap but not always in HUB_SLUGS. */
+const SITEMAP_EXTRA_HUB_SLUGS = [];
+
 /**
- * Build sitemap entries from local catalog + optional Prisma/Postgres.
+ * Pages-only sitemap entries (NO articles, NO /services/*).
+ * Mirrors scripts/generate-sitemap.js allowlist — articles live in sitemap-articles.xml.
  * Doctor profiles: ACTIVE clinics only, canonical /doctor/:clean-slug, with <lastmod>.
  */
 async function collectSitemapEntries(deps) {
   const {
     loadClinicsData,
-    serviceLandings,
     hubSlugs,
     tryLoadPrismaUrls,
   } = deps;
@@ -1083,11 +1270,35 @@ async function collectSitemapEntries(deps) {
     if (!p.startsWith('/')) p = '/' + p;
     if (p.length > 1) p = p.replace(/\/+$/, '');
 
-    // Never list legacy query-param profile URLs or dirty transliterations.
+    // Never list articles, /services/*, redirects, or dirty doctor slugs.
+    if (p.startsWith('/articles/')) return;
+    if (p.startsWith('/services/')) return;
+    if (
+      p === '/laser-hair.html' ||
+      p === '/cosmetic-surgery.html' ||
+      p === '/hair-transplant.html' ||
+      p === '/skin-rejuvenation.html' ||
+      p === '/injection.html' ||
+      p === '/slimming.html' ||
+      p === '/rhinoplasty.html' ||
+      p === '/lasik.html' ||
+      p === '/femto-lasik.html' ||
+      p === '/prk.html' ||
+      p === '/pharmacy.html' ||
+      p === '/shiraz/co2-laser' ||
+      p === '/index.html' ||
+      p === '/search'
+    ) {
+      return;
+    }
     if (/profile\.html/i.test(p) || /[?&]id=/i.test(p)) return;
     if (p.startsWith('/doctor/')) {
       const slug = p.slice('/doctor/'.length);
-      if (!clinicSlug.isCleanCanonicalSlug(slug)) return;
+      if (!clinicSlug.isCleanCanonicalSlug(slug) || /^\d+$/.test(slug)) return;
+    }
+    if (p.startsWith('/shiraz/')) {
+      const hub = p.slice('/shiraz/'.length).split('/')[0];
+      if (SITEMAP_EXCLUDED_HUB_SLUGS.has(hub)) return;
     }
 
     const loc = SITE_BASE + p;
@@ -1102,19 +1313,18 @@ async function collectSitemapEntries(deps) {
     entries.push(entry);
   };
 
+  // Core + static category hubs (allowlist; laser-hair.html excluded above).
   add('/', today, '1.0', 'daily');
-  add('/category.html', today, '0.6', 'weekly');
-  add('/articles.html', today, '0.7', 'weekly');
-  add('/about.html', today, '0.6', 'monthly');
-  add('/faq.html', today, '0.5', 'monthly');
-  add('/clinic-promote.html', today, '0.7', 'weekly');
-
-  for (const cat of CATEGORY_PAGES) {
-    add('/' + cat.file, today, '0.9', 'weekly');
-  }
+  add('/about', today, '0.6', 'monthly');
+  add('/articles', today, '0.7', 'weekly');
+  add('/faq', today, '0.5', 'monthly');
+  add('/contact', today, '0.6', 'monthly');
+  add('/clinic-promote', today, '0.7', 'weekly');
+  add('/category', today, '0.6', 'weekly');
+  add('/products', today, '0.6', 'weekly');
+  add('/shiraz', today, '0.9', 'daily');
 
   // Active doctors — catalog (fallback when Prisma is empty / unavailable).
-  // Prefer Prisma ACTIVE rows via tryLoadPrismaUrls; catalog fills gaps.
   const clinics = typeof loadClinicsData === 'function' ? loadClinicsData() : [];
   try {
     clinicSlug.registerClinics(clinics);
@@ -1133,70 +1343,46 @@ async function collectSitemapEntries(deps) {
     }
     const slug = clinicSlug.slugForClinic(clinic);
     if (!clinicSlug.isCleanCanonicalSlug(slug)) continue;
-    // Use current ISO date so Google sees the clean-slug migration as an update.
     add(`/doctor/${slug}`, today, '0.6', 'weekly');
   }
 
-  // Distinct service / brand landing pages
-  const serviceSlugSet = new Set(
-    await collectUniqueServiceSlugs({
-      loadClinicsData,
-      serviceLandings,
-      loadSqliteServiceSlugs: deps.loadSqliteServiceSlugs,
-      loadPostgresServiceSlugs: deps.loadPostgresServiceSlugs,
-    })
-  );
-
-  if (typeof deps.loadUniqueServiceSlugs === 'function') {
-    try {
-      const extra = await deps.loadUniqueServiceSlugs();
-      for (const slug of extra || []) {
-        const canonical = resolveCanonicalEnglishSlug(slug);
-        if (canonical && isEnglishServiceSlug(canonical)) serviceSlugSet.add(canonical);
-      }
-    } catch (err) {
-      console.warn('[seo] loadUniqueServiceSlugs skipped:', (err && err.message) || err);
-    }
-  }
-
-  const serviceSlugs = Array.from(serviceSlugSet).sort();
-  for (const slug of serviceSlugs) {
-    if (!isEnglishServiceSlug(slug)) continue;
-    const path = canonicalServicePath(slug);
-    if (!path) continue;
-    add(path, today, '0.8', 'weekly');
-  }
-
+  // Prisma: doctors + /shiraz hubs only (skip /services/* and other city landings).
   if (typeof tryLoadPrismaUrls === 'function') {
     try {
       const extra = await tryLoadPrismaUrls();
       for (const row of extra || []) {
         if (!row || !row.path) continue;
-        const isService = String(row.path).startsWith('/services/');
-        if (isService) {
-          const rawSlug = String(row.path).replace(/^\/services\//, '');
-          const path = canonicalServicePath(rawSlug);
-          if (!path) continue;
-          add(path, row.lastmod || today, row.priority || '0.8', row.changefreq || 'weekly');
+        const p = String(row.path);
+        if (p.startsWith('/services/') || p.startsWith('/articles/')) continue;
+        if (p.startsWith('/doctor/')) {
+          add(p, row.lastmod || today, row.priority || '0.6', row.changefreq || 'weekly');
           continue;
         }
-        add(
-          row.path,
-          row.lastmod || today,
-          row.priority || '0.7',
-          row.changefreq
-        );
+        if (p.startsWith('/shiraz/')) {
+          add(p, row.lastmod || today, row.priority || '0.8', row.changefreq || 'weekly');
+        }
       }
     } catch (err) {
       console.warn('[seo] prisma sitemap merge skipped:', (err && err.message) || err);
     }
-  } else if (Array.isArray(hubSlugs)) {
-    for (const slug of hubSlugs) {
-      if (!slug) continue;
-      add('/shiraz/' + String(slug).toLowerCase(), today, '0.9', 'daily');
-    }
   }
 
+  // Curated /shiraz/:slug hubs (soft-404 landings + catalog leaves + extras).
+  const hubSet = new Set();
+  if (Array.isArray(hubSlugs)) {
+    for (const slug of hubSlugs) {
+      if (slug) hubSet.add(String(slug).toLowerCase());
+    }
+  }
+  for (const slug of SITEMAP_EXTRA_HUB_SLUGS) hubSet.add(slug);
+  for (const excluded of SITEMAP_EXCLUDED_HUB_SLUGS) hubSet.delete(excluded);
+  for (const slug of Array.from(hubSet).sort()) {
+    add('/shiraz/' + slug, today, '0.8', 'weekly');
+  }
+
+  add('/doctor/nahal-clinic', today, '0.6', 'weekly');
+
+  entries.sort((a, b) => a.loc.localeCompare(b.loc));
   return entries;
 }
 
@@ -1229,15 +1415,48 @@ function createSeoInfraHandlers(deps) {
     }
     let html = fs.readFileSync(filePath, 'utf8');
     if (cat) {
-      const seo = categorySeo(cat.name);
-      const canonical = `${SITE_BASE}/${cat.file}`;
+      const seo = categorySeo(cat.name, fileName);
+      const canonicalPath = fileName === 'products.html' ? '/products' : `/${cat.file}`;
+      const canonical = `${SITE_BASE}${canonicalPath}`;
+      const categoryEntity = {
+        '@context': 'https://schema.org',
+        '@type': 'MedicalBusiness',
+        name: seo.h1 || `سلام دکتر - ${cat.name}`,
+        description: seo.description,
+        url: canonical,
+        image: DEFAULT_OG,
+        telephone: '+989007000462',
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: 'شیراز',
+          addressCountry: 'IR',
+        },
+      };
       html = injectHeadSeo(html, {
         title: seo.title,
         description: seo.description,
         canonical,
         ogImage: DEFAULT_OG,
-        jsonLd: [categoryBreadcrumbs(cat)],
+        jsonLd: [categoryBreadcrumbs(cat), categoryEntity],
       });
+      if (seo.h1) {
+        html = html.replace(
+          /(<h1[^>]*data-hero-title[^>]*>)([\s\S]*?)(<\/h1>)/i,
+          `$1${seo.h1}$3`
+        );
+        html = html.replace(
+          /(<h1(?![^>]*data-hero-title)[^>]*>)([\s\S]*?)(<\/h1>)/i,
+          (m, open, _body, close) => {
+            if (/data-hero-title/i.test(open)) return m;
+            return `${open}${seo.h1}${close}`;
+          }
+        );
+      }
+      // Keep embedded MedicalBusiness blocks in sync with Title A (name/description/url).
+      html = html.replace(
+        /<script type="application\/ld\+json">\s*\{[\s\S]*?"@type"\s*:\s*"MedicalBusiness"[\s\S]*?\}\s*<\/script>/i,
+        `<script type="application/ld+json">\n${JSON.stringify(categoryEntity, null, 2)}\n  </script>`
+      );
     }
     deps.sendHtml(res, 200, html);
   }
@@ -1258,13 +1477,13 @@ function createSeoInfraHandlers(deps) {
     const name = (def && (def.label || def.name)) || 'زیبایی و درمان';
     const seo = categorySeo(name);
     const canonical = type
-      ? `${SITE_BASE}/category.html?type=${encodeURIComponent(type)}`
-      : `${SITE_BASE}/category.html`;
+      ? `${SITE_BASE}/category?type=${encodeURIComponent(type)}`
+      : `${SITE_BASE}/category`;
     const crumbs = breadcrumbList([
       { name: 'خانه', url: '/' },
-      { name: 'خدمات', url: '/category.html' },
+      { name: 'خدمات', url: '/category' },
       ...(def
-        ? [{ name, url: `/category.html?type=${encodeURIComponent(type)}` }]
+        ? [{ name, url: `/category?type=${encodeURIComponent(type)}` }]
         : []),
     ]);
     html = injectHeadSeo(html, {
@@ -1274,6 +1493,11 @@ function createSeoInfraHandlers(deps) {
       ogImage: DEFAULT_OG,
       jsonLd: [crumbs],
     });
+    try {
+      res.setHeader('X-Robots-Tag', 'noindex, follow');
+    } catch (_err) {
+      /* headers may already be sent */
+    }
     deps.sendHtml(res, 200, html);
   }
 
@@ -1374,6 +1598,9 @@ module.exports = {
   buildLocalHubSeoMeta,
   buildLocalHubSeo,
   buildCityHubSeo,
+  hubListedClinicCount,
+  isHubListMode,
+  HUB_LIST_MIN_CLINICS,
   sanitizeHubSeoHtml,
   formatTomanFa,
   breadcrumbList,

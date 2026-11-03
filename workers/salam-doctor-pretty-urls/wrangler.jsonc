@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "salam-doctor-pretty-urls",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-15",
+  "workers_dev": false,
+  "routes": [
+    { "pattern": "salam-doctor.com/*", "zone_name": "salam-doctor.com" },
+    { "pattern": "www.salam-doctor.com/*", "zone_name": "salam-doctor.com" }
+  ]
+}

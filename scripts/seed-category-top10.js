@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Seed per-category Top 10 clinics: Nahal (#1) + sample clinics (#2–#10).
+ * Seed per-category Top clinics with the real contracted clinic only (Nahal).
  *
  *   node scripts/seed-category-top10.js
  *
@@ -29,8 +29,9 @@ const CATEGORIES = [
   'prk',
 ];
 
-/** Rank 1 = Nahal, ranks 2–10 = samples with real images where possible */
-const CLINIC_IDS = [114, 101, 104, 105, 115, 106, 107, 108, 112, 103];
+/** Only the real contracted clinic. */
+const CLINIC_IDS = [114];
+const NAHAL_LINK = '/doctor/nahal-clinic';
 
 function loadCatalog() {
   const code = fs.readFileSync(path.join(ROOT, 'data.min.js'), 'utf8');
@@ -49,45 +50,22 @@ function uniqueId(prefix) {
 }
 
 const catalog = loadCatalog();
-const missing = CLINIC_IDS.filter((id) => !catalog.has(id));
-if (missing.length) {
-  console.error('Missing clinic ids in catalog:', missing.join(', '));
-  process.exit(1);
-}
-
 const db = new Database(DB_PATH);
-db.exec(`
-  CREATE TABLE IF NOT EXISTS category_top_clinics (
-    id TEXT PRIMARY KEY,
-    category_id TEXT NOT NULL,
-    clinic_id INTEGER NOT NULL,
-    rank INTEGER NOT NULL,
-    name TEXT,
-    tagline TEXT,
-    image TEXT,
-    link TEXT,
-    badge TEXT,
-    active INTEGER NOT NULL DEFAULT 1,
-    clicks INTEGER NOT NULL DEFAULT 0,
-    created_at TEXT NOT NULL
-  );
-  CREATE INDEX IF NOT EXISTS idx_category_top_cat
-    ON category_top_clinics (category_id, rank);
-`);
-
 const now = new Date().toISOString();
+
+const existingClicks = new Map();
+try {
+  for (const row of db
+    .prepare('SELECT clinic_id, clicks FROM category_top_clinics')
+    .all()) {
+    existingClicks.set(Number(row.clinic_id), Number(row.clicks) || 0);
+  }
+} catch (_err) {
+  /* table may be empty */
+}
 
 const tx = db.transaction(() => {
   for (const categoryId of CATEGORIES) {
-    const existingClicks = new Map();
-    for (const row of db
-      .prepare(
-        'SELECT clinic_id, clicks FROM category_top_clinics WHERE category_id = ?'
-      )
-      .all(categoryId)) {
-      existingClicks.set(Number(row.clinic_id), row.clicks || 0);
-    }
-
     db.prepare('DELETE FROM category_top_clinics WHERE category_id = ?').run(
       categoryId
     );
@@ -103,18 +81,18 @@ const tx = db.transaction(() => {
     `);
 
     CLINIC_IDS.forEach((clinicId, index) => {
-      const clinic = catalog.get(clinicId);
+      const clinic = catalog.get(clinicId) || {};
       const rank = index + 1;
       insert.run({
         id: uniqueId(`cat-${categoryId}-r${rank}`),
         category_id: categoryId,
         clinic_id: clinicId,
         rank,
-        name: clinic.sliderTitle || clinic.name || null,
-        tagline: clinic.sliderTagline || null,
-        image: clinicId === 114 ? (clinic.image || null) : (clinic.image || 'images/sample-clinic-services.webp'),
-        link: `/doctor/clinic-${clinicId}`,
-        badge: clinicId === 114 ? 'ویژه' : null,
+        name: clinic.sliderTitle || clinic.name || 'کلینیک نهال',
+        tagline: clinic.sliderTagline || 'کلینیک کاشت مو،پوست،لیزر و زیبایی',
+        image: clinic.image || 'clinics/114/Hero.webp',
+        link: NAHAL_LINK,
+        badge: 'ویژه',
         clicks: existingClicks.get(clinicId) || 0,
         created_at: now,
       });
@@ -124,7 +102,7 @@ const tx = db.transaction(() => {
 
 try {
   tx();
-  console.log(`Seeded Top 10 for ${CATEGORIES.length} categories in ${DB_PATH}`);
+  console.log(`Seeded Top clinics for ${CATEGORIES.length} categories in ${DB_PATH}`);
   for (const categoryId of CATEGORIES) {
     const rows = db
       .prepare(

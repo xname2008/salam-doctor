@@ -102,7 +102,7 @@ function parseStaticArticleHtml(html, slug) {
     status: 'published',
     views: 0,
     source: 'static',
-    url: `/articles/${slug}.html`,
+    url: `/articles/${slug}`,
   };
 }
 
